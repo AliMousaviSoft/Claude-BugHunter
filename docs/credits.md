@@ -1,67 +1,124 @@
 # Credits
 
-This bundle stands on a lot of upstream work. Full attribution.
+Claude-BugHunter is **the author's bug-hunting stack**, with a vendored foundation layer from upstream community work. Full attribution below.
 
-## A note on what this repo redistributes
+---
 
-Claude-BugHunter is a **bundle** — it vendors upstream community skills directly in `skills/` and `commands/` so the entire stack installs in one step. Vendored content retains its original license (typically MIT — verify each source below). This repo does not relicense, claim authorship of, or modify the substance of vendored skills beyond what's needed for path consistency.
+## What this repo redistributes
 
-When upstream sources update, this repo does not auto-track those changes. To refresh the vendored copies from upstream, run `scripts/install-community-skills.sh` and re-copy. Forking-not-mirroring is intentional: the bundle is a known-good frozen snapshot, not a live mirror.
+This is a **bundle**: skills and commands are vendored directly into `skills/` and `commands/` so install is a single step. Vendored content retains its original license; the original work in this repo (the majority — see breakdown below) is MIT-licensed by the author.
 
-## Foundation skills (vendored)
+| Category | Count | Source |
+|---|---|---|
+| **Original / personally-curated skills** | 32 | This repo |
+| Vendored foundation skills | 8 | shuvonsec/claude-bug-bounty (MIT) |
+| Vendored slash commands | 15 | shuvonsec/claude-bug-bounty (MIT) |
+| **Total** | 40 skills + 15 commands | |
 
-### shuvonsec — `claude-bug-bounty`
+---
 
-The methodological backbone of the bundle. Vendored skills:
+## Original work in this repo
 
-- `bb-methodology` — 5-phase hunting workflow + mindset
-- `bug-bounty` — master orchestrator
-- `triage-validation` — 7-Question Gate, 4 pre-submission gates, never-submit list
-- `report-writing` — H1 / Bugcrowd / Intigriti / Immunefi templates, CVSS 3.1 + 4.0
-- `web2-recon` — recon framework
-- `web3-audit`, `meme-coin-audit` — smart-contract / token-specific
-- `security-arsenal` — payload library
-- 15 vendored slash commands (`/triage`, `/validate`, `/report`, `/recon`, `/hunt`, `/scope`, `/pickup`, `/surface`, `/autopilot`, `/chain`, `/intel`, `/remember`, `/memory-gc`, `/token-scan`, `/web3-audit`)
-- Integration recipes: Burp MCP client config, HackerOne MCP server scaffold
+### 24 per-class `hunt-*` skills — curated from disclosed HackerOne reports
+
+Each `hunt-*` skill codifies detection patterns, payloads, and chain templates derived from real disclosed HackerOne reports. The selection of report sets, the curation of what to extract, and the resulting skill content are the author's work, with content derived from publicly disclosed bug-bounty reports (HackerOne's public disclosures are intended for community learning).
+
+The shuvonsec/public-skills-builder generator tool was used as scaffolding to produce skill files from the curated report sets — the tool is acknowledged as inspiration/scaffolding (see "Tooling" below), but the content is the author's curation work.
+
+| Skill | H1 reports curated |
+|---|---|
+| `hunt-misc` | 225 |
+| `hunt-xss` | 174 |
+| `hunt-rce` | 67 |
+| `hunt-idor` | 26 |
+| `hunt-subdomain` | 11 |
+| `hunt-csrf` | 10 |
+| `hunt-oauth` | 10 |
+| `hunt-ssrf` | 9 |
+| `hunt-sqli` | 8 |
+| `hunt-business-logic` | 7 |
+| `hunt-cache-poison` | 4 |
+| `hunt-auth-bypass` | 4 |
+| `hunt-xxe` | 4 |
+| `hunt-graphql` | 3 |
+| `hunt-race-condition` | 3 |
+| **Total disclosed reports curated** | **574+** |
+
+Plus 9 additional `hunt-*` skills curated by topic without an explicit report-count tag: `hunt-saml`, `hunt-ato`, `hunt-mfa-bypass`, `hunt-http-smuggling`, `hunt-ssti`, `hunt-file-upload`, `hunt-api-misconfig`, `hunt-cloud-misconfig`, `hunt-llm-ai`, plus alternates (`hunt-cache-poisoning`, `hunt-race`, `hunt-subdomain-takeover`).
+
+### Other personal skills
+
+- **`offensive-osint` (v3.0)** — Refactored from a 4,168-line monolith into a lean SKILL.md (~400 lines) plus 15 modular reference files in `references/` (subdomain enum, identity fabric, secret patterns, dorks, sector-specific recon, etc.). Detail content loads on demand — Claude reads only the relevant references for the current task.
+- **`osint-methodology` (v2.1)** — 5-stage recon pipeline, 29-type asset graph, severity rubric, identity-fabric mapping, vulnerability prioritization (CVE/EPSS/KEV), bug bounty submission templates, threat-actor investigation, cryptocurrency tracing, image/video forensics.
+- **`bugcrowd-reporting`** — Bugcrowd-specific reporting tactics: VRT category fallback hierarchy, severity-request paragraphs, OOS-clause rebuttal templates (rate limiting on auth-flow endpoints, debug-info framing, user-enumeration with sensitive PII, theoretical-issue counter), chained-finding cross-reference patterns, target selection for QA-vs-prod programs, researcher-side hygiene.
+- **`evidence-hygiene`** — Cookie redaction protocols, PII black-bar discipline, HAR sanitization recipes, Burp/DevTools screenshot patterns, post-submission rotation hygiene. The redaction protocol distinguishes "your-account secrets" (always redact) from "other-user PII" (redact-by-default with explicit cross-account-impact exception) from "triager-useful metadata" (leave visible).
+- **`bb-local-toolkit`** — Personal customization of the master bug-bounty workflow with author's pipeline preferences.
+
+### Tooling and docs
+
+- **`hunt <target>` shell command** — Engagement-folder scaffolding: creates `~/Targets/<name>/` with `CLAUDE.md`, `scope.md`, `findings/`, `evidence/`, `submissions.txt`, `notes.md`, and a sensible `.gitignore` for engagement artifacts.
+- **Bundle packaging** — Single-step installer (`scripts/install.sh`) that copies all 40 skills, 15 commands, and the hunt scaffold into `~/.claude/`.
+- **`assets/banner.svg`** — Hand-coded SVG banner.
+- **Documentation** — `README.md`, `INSTALL.md`, `USAGE.md`, `CONTRIBUTING.md`, `docs/architecture.md`, this credits file.
+
+---
+
+## Vendored foundation (from shuvonsec/claude-bug-bounty)
+
+These 8 skills + 15 slash commands form the methodology backbone of the bundle. Vendored as-is (MIT-licensed) so the entire stack installs in one step.
+
+### Skills (8)
+
+| Skill | Purpose |
+|---|---|
+| `bb-methodology` | 5-phase non-linear hunting workflow + critical-thinking framework |
+| `bug-bounty` | Master orchestrator |
+| `triage-validation` | 7-Question Gate, 4 pre-submission gates, never-submit list |
+| `report-writing` | H1 / Bugcrowd / Intigriti / Immunefi report templates, CVSS 3.1 + 4.0 |
+| `security-arsenal` | Payloads, bypass tables, wordlists, gf patterns |
+| `web2-recon` | Subdomain enumeration, host discovery, URL crawling |
+| `web3-audit` | 10 DeFi bug classes, Foundry PoC template |
+| `meme-coin-audit` | Token rug-pull detection |
+
+### Slash commands (15)
+
+`/hunt` `/recon` `/scope` `/triage` `/validate` `/report` `/autopilot` `/chain` `/intel` `/pickup` `/surface` `/remember` `/memory-gc` `/token-scan` `/web3-audit`
 
 **Repo**: https://github.com/shuvonsec/claude-bug-bounty
 **License**: MIT (verify in upstream repo)
 
+---
+
+## Tooling acknowledgments (not vendored — used as scaffolding)
+
 ### shuvonsec — `public-skills-builder`
 
-Generator that produces per-class `hunt-*` skills from disclosed HackerOne reports. The 24 `hunt-*` skills bundled in `skills/` were generated by this tool.
+Generator tool that produces skill scaffolding from disclosed HackerOne reports. Used to generate the initial scaffolds for the per-class `hunt-*` skills before the author's curation. The tool itself is not redistributed in this repo.
 
 **Repo**: https://github.com/shuvonsec/public-skills-builder
 **License**: MIT (verify in upstream repo)
+
+---
 
 ## Inspirations
 
 ### archangel / douglasday
 
-A top-10 historical HackerOne hunter. The per-class `hunt-*` skill pattern with
-specific chain templates from real disclosed reports was inspired by his
-public skill stack screenshots:
-
-- `hunt-rce`, `hunt-ssrf`, `hunt-xss`, `hunt-idor`, `hunt-rbac`, etc.
-- `hunt <target>` shell command for engagement scaffolding
-- Tool-integration skills (`ffuf`)
+A top-10 historical HackerOne hunter. The per-class `hunt-*` pattern with chain templates from disclosed reports was inspired by his public skill stack screenshots, plus the `hunt <target>` engagement-scaffolding shell pattern.
 
 ### Trail of Bits — `trailofbits/skills`
 
-Reference for skill-authoring discipline. Their CLAUDE.md states:
+Skill-authoring discipline reference. Their CLAUDE.md states:
 
-> "Skills should be specific and actionable rather than reference dumps,
-> focusing on behavioral guidance over comprehensive documentation."
+> "Skills should be specific and actionable rather than reference dumps, focusing on behavioral guidance over comprehensive documentation."
 
-This principle informed the `offensive-osint` refactor (lean SKILL.md +
-`references/` subfolder).
+This principle informed the `offensive-osint` v3 refactor (lean SKILL.md + `references/` subfolder for progressive disclosure).
 
 **Repo**: https://github.com/trailofbits/skills
 
 ### SecSkills — `trilwu/secskills`
 
-16 specialized security skills + 6 expert AI subagents. Demonstrated the
-subagent pattern for complex multi-step tasks.
+16 specialized security skills + 6 expert AI subagents. Demonstrated the subagent pattern for complex multi-step tasks.
 
 **Repo**: https://github.com/trilwu/secskills
 
@@ -73,13 +130,13 @@ subagent pattern for complex multi-step tasks.
 - `travisvn/awesome-claude-skills` — general awesome-list
 - `VoltAgent/awesome-claude-code-subagents` — penetration-tester subagent pattern
 
+---
+
 ## Tooling
 
 ### PortSwigger — Burp Suite + MCP Server extension
 
-Burp Suite Pro/Community is the foundation HTTP intercept tool. Their BApp
-Store includes an "MCP Server" extension that exposes Burp's proxy history
-to Claude Code via the Model Context Protocol.
+Burp Suite Pro/Community is the foundation HTTP intercept tool. Their BApp Store includes an "MCP Server" extension that exposes Burp's proxy history to Claude Code via the Model Context Protocol.
 
 **Burp Suite**: https://portswigger.net/burp
 **MCP Server extension**: install via Burp's BApp Store
@@ -94,38 +151,26 @@ The platform itself.
 
 ### HackerOne API + Bugcrowd VRT
 
-- HackerOne API enabled the `public-skills-builder` to pull disclosed reports
-- Bugcrowd VRT (Vulnerability Rating Taxonomy) is referenced extensively in
-  `bugcrowd-reporting/SKILL.md`
+- HackerOne's public disclosure program enabled the author to curate the per-class hunt skills from real-world report data.
+- Bugcrowd VRT (Vulnerability Rating Taxonomy) is referenced extensively in `bugcrowd-reporting/SKILL.md`.
 
-## Original contributions (this repo)
-
-- `bugcrowd-reporting` skill — Bugcrowd VRT/OOS/severity tactics
-- `evidence-hygiene` skill — cookie + PII + HAR redaction protocols
-- `hunt` shell command — engagement-folder scaffolding
-- Bundle packaging — single-step installer that vendors everything
-- Documentation: `USAGE.md`, `INSTALL.md`, this credits file
-- Architecture diagram (in USAGE.md)
+---
 
 ## Validation
 
-Built and validated through a real Bugcrowd engagement on a major financial
-target (May 2026). The engagement exposed four capability gaps that the
-three original skills directly address:
+Built and validated through a real Bugcrowd engagement on a major financial target (May 2026). The engagement exposed four capability gaps that the author's contributions directly address:
 
-1. Hypothesis discipline (validation before drafting) — addressed by `triage-validation` from upstream
-2. Per-program reporting tactics — addressed by **`bugcrowd-reporting`**
-3. Engagement coordination / scaffolding — addressed by the **`hunt`** shell command
-4. Evidence hygiene / redaction — addressed by **`evidence-hygiene`**
+1. Hypothesis discipline (validation before drafting) — addressed by `triage-validation` (vendored)
+2. Per-program reporting tactics — addressed by **`bugcrowd-reporting`** (original)
+3. Engagement coordination / scaffolding — addressed by the **`hunt`** shell command (original)
+4. Evidence hygiene / redaction — addressed by **`evidence-hygiene`** (original)
 
-Engagement details are not redistributed in this repo for confidentiality.
-The `bugcrowd-reporting` and `evidence-hygiene` skills shipped here are the
-sanitized versions; engagement-specific identifiers (target names, account
-UIDs, endpoint names, bounty amounts) have been replaced with abstract
-placeholders.
+Engagement-specific identifiers (target names, account UIDs, endpoint names, bounty amounts) have been replaced with abstract placeholders in the shipped versions of `bugcrowd-reporting` and `evidence-hygiene`. Engagement details are not redistributed for confidentiality.
+
+---
 
 ## License notes
 
-- This repo's original work: MIT (see [LICENSE](../LICENSE))
+- Original work in this repo: MIT (see [LICENSE](../LICENSE))
 - Vendored upstream skills retain their original licenses — typically MIT but verify each upstream source above
-- If you're an upstream author and want attribution adjusted, removed, or expanded, open an issue or contact via the channels in your repo
+- If you're an upstream author and want attribution adjusted, removed, or expanded, open an issue

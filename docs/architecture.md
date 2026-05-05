@@ -1,14 +1,17 @@
 # Architecture
 
-The Claude-BugHunter bundle maps to a 6-phase workflow. Each phase has a focused set of skills; skills compose left-to-right as you move through the workflow.
+The Claude-BugHunter bundle maps to a 6-phase bug-hunting workflow. Each phase has a focused set of skills; skills compose left-to-right as you move through the workflow, but you can jump in at any phase mid-engagement.
 
-The "Source" column tags each skill: `this repo` = original contribution, `shuvonsec` = vendored from [shuvonsec/claude-bug-bounty](https://github.com/shuvonsec/claude-bug-bounty), `personal` = personal customization layered onto upstream content.
+```mermaid
+flowchart LR
+    S[1 SCOPE]:::phase --> R[2 RECON]:::phase --> H[3 HUNT]:::phase --> V[4 VALIDATE]:::phase --> C[5 CAPTURE]:::phase --> Rep[6 REPORT]:::phase
 
+    classDef phase fill:#cc785c,stroke:#1f1f1e,stroke-width:2px,color:#faf9f5,font-weight:bold
 ```
-┌─────────┐  ┌─────────┐  ┌─────────┐  ┌──────────┐  ┌──────────┐  ┌─────────┐
-│ 1.SCOPE │→ │ 2.RECON │→ │ 3.HUNT  │→ │4.VALIDATE│→ │5.CAPTURE │→ │6.REPORT │
-└─────────┘  └─────────┘  └─────────┘  └──────────┘  └──────────┘  └─────────┘
-```
+
+The "Source" column tags each skill: **`original`** = author's work in this repo, `vendored` = from [shuvonsec/claude-bug-bounty](https://github.com/shuvonsec/claude-bug-bounty) (MIT). 32 of 40 skills are original; 8 are vendored.
+
+---
 
 ## Phase 1 — SCOPE (program intake, planning)
 
@@ -16,10 +19,11 @@ The "Source" column tags each skill: `this repo` = original contribution, `shuvo
 
 | Skill | Source | Purpose |
 |---|---|---|
-| `bug-bounty` | shuvonsec | Master orchestrator — pulls in other skills as needed |
-| `bb-methodology` | shuvonsec | 5-phase workflow + hunting mindset |
-| `osint-methodology` | personal | Recon framework, asset graph, time budgeting |
-| `hunt <target>` (shell) | this repo | Scaffolds `~/Targets/<name>/` with full template |
+| `bug-bounty` | vendored | Master orchestrator — pulls in other skills as needed |
+| `bb-methodology` | vendored | 5-phase workflow + hunting mindset |
+| **`osint-methodology`** | original | Recon framework, 29-type asset graph, time budgeting |
+| **`bb-local-toolkit`** | original | Full pipeline router for local cloned bug-bounty repos |
+| **`hunt <target>` (shell)** | original | Scaffolds `~/Targets/<name>/` with full template |
 
 ## Phase 2 — RECON (discovery)
 
@@ -27,9 +31,9 @@ The "Source" column tags each skill: `this repo` = original contribution, `shuvo
 
 | Skill | Source | Purpose |
 |---|---|---|
-| `offensive-osint` | personal | 15-reference probe/regex/dork arsenal — loads on demand |
-| `web2-recon` | shuvonsec | Subdomain enumeration, host discovery, URL crawling |
-| `bb-local-toolkit` | personal | Router for local cloned bug-bounty repos |
+| **`offensive-osint`** | original | 15-reference probe/regex/dork arsenal — loads on demand |
+| `web2-recon` | vendored | Subdomain enumeration, host discovery, URL crawling |
+| **`bb-local-toolkit`** | original | Routes to local cloned bug-bounty repos when applicable |
 
 ## Phase 3 — HUNT (active testing)
 
@@ -37,29 +41,31 @@ The "Source" column tags each skill: `this repo` = original contribution, `shuvo
 
 | Skill | Source | Purpose |
 |---|---|---|
-| 24 `hunt-*` skills | shuvonsec / public-skills-builder | One per vuln class — auto-trigger by topic |
-| `security-arsenal` | shuvonsec | Payload library (XSS / SSRF / SQLi / SSTI / etc.) |
-| `web3-audit` | shuvonsec | Smart-contract audit (10 bug classes, Foundry PoC) |
-| `meme-coin-audit` | shuvonsec | Token rug-pull detection |
+| **24 `hunt-*` skills** | original | One per vuln class, curated from disclosed H1 reports — auto-trigger by topic |
+| `security-arsenal` | vendored | Payload library (XSS / SSRF / SQLi / SSTI / etc.) |
+| `web3-audit` | vendored | Smart-contract audit (10 bug classes, Foundry PoC) |
+| `meme-coin-audit` | vendored | Token rug-pull detection |
 
 ### Per-class hunt skills (24)
 
-Each focuses on one vulnerability class with detection patterns, payloads, bypass tables, and chain opportunities drawn from disclosed bug-bounty reports.
+```
+hunt-rce          (67 reports)    hunt-business-logic  (7)
+hunt-sqli         (8)             hunt-race-condition  (3)
+hunt-xss          (174)           hunt-cache-poison    (4)
+hunt-ssrf         (9)             hunt-http-smuggling
+hunt-xxe          (4)             hunt-ssti
+hunt-idor         (26)            hunt-file-upload
+hunt-csrf         (10)            hunt-auth-bypass     (4)
+hunt-oauth        (10)            hunt-api-misconfig
+hunt-graphql      (3)             hunt-cloud-misconfig
+hunt-saml                         hunt-subdomain       (11)
+hunt-ato                          hunt-llm-ai
+hunt-mfa-bypass                   hunt-misc            (225)
+```
 
-```
-hunt-rce            hunt-business-logic
-hunt-sqli           hunt-race-condition
-hunt-xss            hunt-cache-poison
-hunt-ssrf           hunt-http-smuggling
-hunt-xxe            hunt-ssti
-hunt-idor           hunt-file-upload
-hunt-csrf           hunt-auth-bypass
-hunt-oauth          hunt-api-misconfig
-hunt-graphql        hunt-cloud-misconfig
-hunt-saml           hunt-subdomain
-hunt-ato            hunt-llm-ai
-hunt-mfa-bypass     hunt-misc
-```
+Plus alternates: `hunt-cache-poisoning`, `hunt-race`, `hunt-subdomain-takeover`.
+
+**Total disclosed reports curated**: 574+
 
 **How auto-triggering works**: just describe what you're testing — e.g., *"I see a `?url=` parameter on this endpoint"* — and Claude loads only `hunt-ssrf`. You don't invoke them by name.
 
@@ -69,7 +75,7 @@ hunt-mfa-bypass     hunt-misc
 
 | Skill | Source | Purpose |
 |---|---|---|
-| `triage-validation` | shuvonsec | 7-Question Gate, 4 pre-submission gates, never-submit list |
+| `triage-validation` | vendored | 7-Question Gate, 4 pre-submission gates, never-submit list |
 
 Slash commands: `/triage`, `/validate`
 
@@ -91,7 +97,7 @@ One NO = KILL. Move on. This single discipline is what separates productive rese
 
 | Skill | Source | Purpose |
 |---|---|---|
-| **`evidence-hygiene`** | this repo | Cookie redaction, PII black-bar, HAR sanitization, screenshot capture order |
+| **`evidence-hygiene`** | original | Cookie redaction, PII black-bar, HAR sanitization, screenshot capture order |
 
 Covered protocols:
 - Cookie redaction (which fields, what tools, screenshot timing)
@@ -108,10 +114,12 @@ Covered protocols:
 
 | Skill | Source | Purpose |
 |---|---|---|
-| `report-writing` | shuvonsec | H1 / Bugcrowd / Intigriti / Immunefi templates, CVSS 3.1 + 4.0 |
-| **`bugcrowd-reporting`** | this repo | Bugcrowd VRT search, severity-request paragraph, OOS rebuttals |
+| `report-writing` | vendored | H1 / Bugcrowd / Intigriti / Immunefi templates, CVSS 3.1 + 4.0 |
+| **`bugcrowd-reporting`** | original | Bugcrowd VRT search, severity-request paragraph, OOS rebuttals |
 
 Slash command: `/report`
+
+---
 
 ## Integration layer
 
@@ -119,10 +127,11 @@ Tools the skills call into during the workflow.
 
 | Tool | Purpose |
 |---|---|
-| **Burp MCP** | Claude reads/replays HTTP traffic directly from Burp's proxy history. Eliminates manual paste-curl-into-chat workflow. |
+| **Burp MCP** | Claude reads/replays HTTP traffic directly from Burp's proxy history. Eliminates manual paste-curl-into-chat. |
 | **`hunt` shell command** | Engagement-folder scaffold (`~/Targets/<name>/CLAUDE.md` + scope.md + findings/ + evidence/ + submissions.txt + notes.md + .gitignore). |
-| **Anthropic API + Claude Max** | API for skill regeneration tools, Max for daily Claude Code usage. Two separate billing systems. |
-| **HackerOne API** | Used by `public-skills-builder` to pull disclosed reports for fresh `hunt-*` skill content. |
+| **HackerOne API** | Used externally with `public-skills-builder` to refresh `hunt-*` skill content from newly disclosed reports. |
+
+---
 
 ## Composition example — full engagement walkthrough
 
@@ -161,24 +170,30 @@ Tools the skills call into during the workflow.
    → produces ready-to-paste body + VRT mapping + severity request paragraph
 ```
 
+---
+
 ## Skill-loading mechanics
 
-**Auto-trigger**: Skills load when their description matches your prompt. Skill matcher uses only the `description` field in the YAML frontmatter (the `triggers:` field is not officially supported and has no effect).
+**Auto-trigger**: Skills load when their description matches your prompt. The skill matcher uses the `description` field in the YAML frontmatter.
 
 **Progressive disclosure**: Large skills (e.g., `offensive-osint`) keep SKILL.md lean and put detailed reference content in subfolders that load only when needed.
 
 **Slash commands**: Some skills have explicit slash-command invocations (`/triage`, `/validate`, `/report`, `/recon`, `/hunt`, `/scope`, etc.) that force-load the relevant skill.
 
-## What's NOT in the stack (intentional gaps)
+---
 
-- **No automated exploitation tooling** — this stack guides hunting and reporting; it doesn't fire payloads automatically. Use Burp's Active Scanner, sqlmap, etc. for automated work.
+## What's NOT in the bundle (intentional gaps)
+
+- **No automated exploitation tooling** — this bundle guides hunting and reporting; it doesn't fire payloads automatically. Use Burp's Active Scanner, sqlmap, etc. for automated work.
 - **No CI/CD integration** — this is a workflow stack for individual researchers, not a continuous scanning pipeline.
 - **No secret leak deletion** — if the stack helps you find leaked credentials, you (and the program) handle remediation.
 - **No mobile-app testing skills** — out of scope for this repo. Use `Mobile-Security-Framework-MobSF` or Burp Mobile Assistant for Android/iOS work.
+
+---
 
 ## Further reading
 
 - [USAGE.md](../USAGE.md) — full usage walkthrough with worked example
 - [INSTALL.md](../INSTALL.md) — step-by-step setup
 - [docs/credits.md](credits.md) — full attribution to upstream sources
-- [shuvonsec/claude-bug-bounty](https://github.com/shuvonsec/claude-bug-bounty) — community foundation
+- [shuvonsec/claude-bug-bounty](https://github.com/shuvonsec/claude-bug-bounty) — vendored foundation
