@@ -2,14 +2,27 @@
 
 The Claude-BugHunter bundle maps to a 6-phase bug-hunting workflow. Each phase has a focused set of skills; skills compose left-to-right as you move through the workflow, but you can jump in at any phase mid-engagement.
 
-```mermaid
-flowchart LR
-    S[1 SCOPE]:::phase --> R[2 RECON]:::phase --> H[3 HUNT]:::phase --> V[4 VALIDATE]:::phase --> C[5 CAPTURE]:::phase --> Rep[6 REPORT]:::phase
+## Primary view — phase-by-phase architecture
 
-    classDef phase fill:#cc785c,stroke:#1f1f1e,stroke-width:2px,color:#faf9f5,font-weight:bold
-```
+40 skills mapped to 6 phases, with a 24-skill `hunt-*` sub-stack, integration layer, and usage decision tree. This is the main reference for "which skill do I use when?".
 
-The "Source" column tags each skill: **`original`** = author's work in this repo, `vendored` = from [shuvonsec/claude-bug-bounty](https://github.com/shuvonsec/claude-bug-bounty) (MIT). 32 of 40 skills are original; 8 are vendored.
+![architecture overview](../assets/architecture-overview.svg)
+
+The "Source" column in the per-phase tables below tags each skill: **`original`** = author's work in this repo, `vendored` = from [shuvonsec/claude-bug-bounty](https://github.com/shuvonsec/claude-bug-bounty) (MIT). 32 of 40 skills are original; 8 are vendored.
+
+## Alternate view — 3-layer capability stack
+
+The same 40 skills, regrouped by **role in an engagement** rather than by phase. Methodology + Recon (bottom) feeds the Hunt Arsenal (middle), which produces findings that flow up through Ship It (top) to a paid submission.
+
+![capability map](../assets/capability-map.svg)
+
+## Alternate view — engagement pipeline with branched outcomes
+
+The 6-phase workflow expanded into a pipeline showing per-phase active skills, tools, output, time budgets, and the **4 branched outcomes** of the Validate gate (PASS · KILL · CHAIN-REQUIRED · DOWNGRADE).
+
+![engagement flow](../assets/engagement-flow.svg)
+
+---
 
 ---
 

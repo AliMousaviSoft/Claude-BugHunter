@@ -164,21 +164,19 @@ Drop the contents of `skills/` into `~/.claude/skills/` and Claude auto-triggers
 
 ---
 
-## Capability Map
+## Architecture
 
-A 3-layer architecture: **Methodology + Recon** feeds the **Hunt Arsenal**, which produces findings that flow up through **Ship It** to a paid submission. Star-marked skills are author-curated; vendored skills come from [shuvonsec/claude-bug-bounty](https://github.com/shuvonsec/claude-bug-bounty) (MIT).
+40 skills across 6 phases, with a 24-skill `hunt-*` sub-stack, an integration layer (Burp MCP, the `hunt` shell command, optional Anthropic + HackerOne APIs), and a usage decision tree for picking the right skill per task.
 
-![capability map](assets/capability-map.svg)
+![architecture overview](assets/architecture-overview.svg)
+
+For deeper reference views — a 3-layer stack architecture and an engagement pipeline with the 4 branched outcomes from the Validate gate — see [`docs/architecture.md`](docs/architecture.md).
 
 ---
 
-## Engagement Flow
+## The 7-Question Gate
 
-A single bounty engagement walks through six phases — each with its own active skills, tooling, time budget, and output. Phase 04 (`VALIDATE`) is the gate that kills bad findings before drafting; it has four named outcomes.
-
-![engagement flow](assets/engagement-flow.svg)
-
-The 7-Question Gate (Phase 4):
+Before drafting any report — `/triage` or `/validate` runs every candidate finding through:
 
 1. Can an attacker use this RIGHT NOW with a real HTTP request?
 2. Is the impact on the program's accepted-impact list?
