@@ -166,86 +166,17 @@ Drop the contents of `skills/` into `~/.claude/skills/` and Claude auto-triggers
 
 ## Capability Map
 
-```mermaid
-%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#1e293b','primaryTextColor':'#f1f5f9','primaryBorderColor':'#475569','lineColor':'#94a3b8'}}}%%
-flowchart LR
-    Root(["🎯 claude-bughunter"])
+A 3-layer architecture: **Methodology + Recon** feeds the **Hunt Arsenal**, which produces findings that flow up through **Ship It** to a paid submission. Star-marked skills are author-curated; vendored skills come from [shuvonsec/claude-bug-bounty](https://github.com/shuvonsec/claude-bug-bounty) (MIT).
 
-    Root --> M["📘 Methodology<br/><i>how to think</i>"]
-    Root --> H["🔍 Hunt Arsenal<br/><i>what to look for</i>"]
-    Root --> S["📦 Ship It<br/><i>how to deliver</i>"]
-
-    M --> M1[bug-bounty<br/>master orchestrator]
-    M --> M2[bb-methodology<br/>5-phase workflow]
-    M --> M3[osint-methodology<br/>recon pipeline]
-    M --> M4[bb-local-toolkit<br/>pipeline router]
-
-    H --> H1[Web App<br/>XSS · IDOR · SQLi · XXE · CSRF · upload · SSTI]
-    H --> H2[Auth<br/>OAuth · SAML · ATO · MFA-bypass · auth-bypass]
-    H --> H3[API/Infra<br/>SSRF · RCE · GraphQL · API-misc · cloud · subdomain]
-    H --> H4[Advanced<br/>race · cache · smuggling · biz-logic · LLM · misc]
-    H --> H5[Recon<br/>offensive-osint · web2-recon]
-    H --> H6[Web3<br/>web3-audit · meme-coin-audit]
-
-    S --> S1[triage-validation<br/>7-Question Gate]
-    S --> S2[evidence-hygiene<br/>cookie/PII/HAR]
-    S --> S3[report-writing<br/>platform templates]
-    S --> S4[bugcrowd-reporting<br/>VRT · OOS rebuttals]
-    S --> S5[security-arsenal<br/>payloads · bypass]
-
-    style Root fill:#dc2626,stroke:#7f1d1d,color:#fff
-    style M fill:#1e293b,stroke:#475569,color:#f1f5f9
-    style H fill:#7f1d1d,stroke:#991b1b,color:#fef3c7
-    style S fill:#14532d,stroke:#166534,color:#dcfce7
-    style M1 fill:#0f172a,stroke:#334155,color:#cbd5e1
-    style M2 fill:#0f172a,stroke:#334155,color:#cbd5e1
-    style M3 fill:#0f172a,stroke:#334155,color:#cbd5e1
-    style M4 fill:#0f172a,stroke:#334155,color:#cbd5e1
-    style H1 fill:#1c1917,stroke:#44403c,color:#fed7aa
-    style H2 fill:#1c1917,stroke:#44403c,color:#fed7aa
-    style H3 fill:#1c1917,stroke:#44403c,color:#fed7aa
-    style H4 fill:#1c1917,stroke:#44403c,color:#fed7aa
-    style H5 fill:#1c1917,stroke:#44403c,color:#fed7aa
-    style H6 fill:#1c1917,stroke:#44403c,color:#fed7aa
-    style S1 fill:#052e16,stroke:#166534,color:#dcfce7
-    style S2 fill:#052e16,stroke:#166534,color:#dcfce7
-    style S3 fill:#052e16,stroke:#166534,color:#dcfce7
-    style S4 fill:#052e16,stroke:#166534,color:#dcfce7
-    style S5 fill:#052e16,stroke:#166534,color:#dcfce7
-```
+![capability map](assets/capability-map.svg)
 
 ---
 
 ## Engagement Flow
 
-A single bounty engagement walks through six phases. Skills auto-load by phase and topic.
+A single bounty engagement walks through six phases — each with its own active skills, tooling, time budget, and output. Phase 04 (`VALIDATE`) is the gate that kills bad findings before drafting; it has four named outcomes.
 
-```mermaid
-%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#1e293b','primaryTextColor':'#f1f5f9','primaryBorderColor':'#475569','lineColor':'#94a3b8'}}}%%
-flowchart TD
-    Start(["🎯 Target authorized<br/><i>BB scope · RoE · pentest contract</i>"]) --> S1
-
-    S1["📋 1. SCOPE<br/>parse program rules"] --> S2
-    S2["🔭 2. RECON<br/>asset discovery · OSINT · attack surface"] --> S3
-    S3["🐛 3. HUNT<br/>per-class testing · auto-trigger by topic"] --> S4
-    S4{"🚨 4. VALIDATE<br/>7-Question Gate"}
-    S4 -->|PASS| S5
-    S4 -->|KILL| End(["❌ Move on"])
-    S4 -->|DOWNGRADE| S5
-    S4 -->|CHAIN REQUIRED| S3
-    S5["📸 5. CAPTURE<br/>cookie redact · PII black-bar · HAR scrub"] --> S6
-    S6["📄 6. REPORT<br/>VRT mapping · severity request · OOS rebuttal"] --> Win(["💰 Submitted"])
-
-    style Start fill:#3b82f6,color:#fff
-    style S1 fill:#1e293b,color:#f1f5f9
-    style S2 fill:#1e293b,color:#f1f5f9
-    style S3 fill:#dc2626,color:#fff
-    style S4 fill:#7c2d12,color:#fef3c7
-    style S5 fill:#7c3aed,color:#fff
-    style S6 fill:#14532d,color:#dcfce7
-    style Win fill:#16a34a,color:#fff
-    style End fill:#374151,color:#f3f4f6
-```
+![engagement flow](assets/engagement-flow.svg)
 
 The 7-Question Gate (Phase 4):
 
