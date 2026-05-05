@@ -1,35 +1,269 @@
-<p align="center">
-  <img src="assets/banner.svg" alt="Claude-BugHunter — Bug Hunting Skills for Claude Code" width="100%">
-</p>
+![claude-bughunter banner](assets/banner.svg)
 
-<p align="center">
-  <strong>A Claude Code skill bundle for bug hunting.</strong><br>
-  40 skills · 15 slash commands · engagement scaffolding · curated from 574+ disclosed HackerOne reports.
-</p>
+# claude-bughunter
 
-<p align="center">
-  <a href="#quick-start">Quick start</a> ·
-  <a href="#whats-inside">What's inside</a> ·
-  <a href="#architecture">Architecture</a> ·
-  <a href="#why-this-exists">Why this exists</a> ·
-  <a href="docs/credits.md">Credits</a>
-</p>
+> A self-contained Claude skill bundle for bug hunting · **40 skills** · 15 slash commands · **574+ disclosed-report patterns** across 24 vulnerability classes · engagement-folder scaffolding · Burp MCP integration · battle-tested through real Bugcrowd engagements.
+
+Built by **[ElementalSoul](https://github.com/elementalsouls)** — Bug Bounty & GenAI Security Research.
 
 ---
 
 ## What is this?
 
-A self-contained skill bundle for [Claude Code](https://claude.ai/download) that turns it into a focused bug-hunting collaborator. Install once and Claude knows:
+`claude-bughunter` is a drop-in skill bundle for the [Claude Code skills system](https://docs.claude.com/en/docs/claude-code/skills). Install once and Claude Code stops being a chatbot and starts behaving like a senior bug-bounty researcher: it knows the techniques, the chain templates, the VRT mappings, and the hygiene — and it stays in scope.
 
-- **24 vulnerability classes** — RCE, SSRF, XSS, IDOR, OAuth, race conditions, SAML, SSTI, cache poisoning, HTTP smuggling, prompt injection, and more — each with detection patterns, payloads, and chain templates curated from real disclosed HackerOne reports.
-- **The full hunt workflow** — scope intake → recon → hunt → validate → capture evidence → report. Skills auto-trigger by topic; you don't invoke them by name.
-- **Bugcrowd-specific reporting tactics** — VRT category fallback, severity-request paragraphs, OOS-clause rebuttals, chained-finding cross-references.
-- **Evidence hygiene as a first-class concern** — cookie redaction, PII black-bar discipline, HAR sanitization, screenshot capture order.
-- **Engagement scaffolding** — a `hunt <target>` shell command that creates a per-engagement folder with all the files you need.
+Three layers stack:
+
+- **`bug-bounty` + `bb-methodology`** — *how to think.* 5-phase non-linear hunting workflow, critical-thinking framework, developer-psychology heuristics, anomaly detection patterns.
+- **24 `hunt-*` skills + `security-arsenal`** — *what to look for.* Per-class detection patterns, payloads, bypass tables, and chain templates curated from 574+ disclosed HackerOne reports.
+- **`triage-validation` + `bugcrowd-reporting` + `evidence-hygiene`** — *how to ship it.* 7-Question Gate, VRT category fallback, severity-request paragraphs, OOS rebuttals, cookie/PII redaction protocols.
+
+All triggered automatically by topic — describe what you're testing in plain English and the relevant skill loads. No invocation by name.
+
+> **40 skills · 15 commands · 574+ disclosed reports curated · 6-phase workflow · validated through a Bugcrowd financial-target engagement.**
 
 ---
 
-## Quick start
+## Structure
+
+```
+Claude-BugHunter/
+├── skills/                                # 40 SKILL.md bundles
+│   ├── bug-bounty/SKILL.md                # master orchestrator (vendored)
+│   ├── bb-methodology/SKILL.md            # 5-phase workflow + mindset (vendored)
+│   ├── bb-local-toolkit/SKILL.md          # full pipeline router
+│   ├── osint-methodology/SKILL.md         # 5-stage recon + asset graph
+│   ├── offensive-osint/                   # 15-reference probe arsenal
+│   │   ├── SKILL.md
+│   │   ├── references/                    # progressive-disclosure modules
+│   │   └── scripts/secret_scan.py
+│   ├── triage-validation/SKILL.md         # 7-Question Gate (vendored)
+│   ├── report-writing/SKILL.md            # H1/Bugcrowd/Intigriti templates (vendored)
+│   ├── bugcrowd-reporting/SKILL.md        # VRT, OOS rebuttals, severity requests
+│   ├── evidence-hygiene/SKILL.md          # cookie/PII/HAR redaction
+│   ├── security-arsenal/SKILL.md          # payloads + bypass tables (vendored)
+│   ├── web2-recon/SKILL.md                # subdomain enum, host discovery (vendored)
+│   ├── web3-audit/SKILL.md                # 10 DeFi bug classes (vendored)
+│   ├── meme-coin-audit/SKILL.md           # token rug-pull detection (vendored)
+│   └── hunt-*/SKILL.md                    # 24 per-class hunt skills
+├── commands/                              # 15 slash commands
+├── scripts/
+│   ├── hunt.sh                            # engagement-folder scaffolder
+│   ├── install.sh                         # single-step installer
+│   └── install-community-skills.sh        # optional: refresh upstream
+├── docs/                                  # architecture, credits
+├── assets/banner.svg
+├── INSTALL.md · USAGE.md · CONTRIBUTING.md · SECURITY.md
+└── LICENSE
+```
+
+Drop the contents of `skills/` into `~/.claude/skills/` and Claude auto-triggers on relevant phrases. The `install.sh` script does this plus copies commands to `~/.claude/commands/` and wires `hunt.sh` into your shell rc.
+
+---
+
+## Skill Index
+
+40 skills across 7 capability domains. Each row maps a capability to the skill that codifies it.
+
+### Web Application Hunting
+
+| Capability | H1 reports | Skill |
+|---|---|---|
+| Reflected · Stored · DOM · blind XSS · CSP bypass | 174 | `hunt-xss` |
+| IDOR / broken object-level authorization · cross-tenant access | 26 | `hunt-idor` |
+| SQL injection (classic, blind, time-based) · NoSQL injection | 8 | `hunt-sqli` |
+| XML external entity (in-band, OOB, XXE-via-DOCX) | 4 | `hunt-xxe` |
+| Cross-site request forgery (chain-required) | 10 | `hunt-csrf` |
+| File upload bypass (10 techniques: double-ext, magic-bytes, polyglot, ZIP slip) | curated | `hunt-file-upload` |
+| Server-side template injection (Jinja2, Twig, Freemarker, ERB, Spring) | curated | `hunt-ssti` |
+
+### Authentication & Identity
+
+| Capability | H1 reports | Skill |
+|---|---|---|
+| OAuth 2.0 / OIDC flaws · open-redirect chain · state-parameter abuse | 10 | `hunt-oauth` |
+| SAML / SSO attacks · XML signature wrapping · comment injection | curated | `hunt-saml` |
+| Account takeover taxonomy — 9 distinct paths + chains | curated | `hunt-ato` |
+| MFA / 2FA bypass — 7 patterns (OTP brute, race, recovery dump, factor downgrade) | curated | `hunt-mfa-bypass` |
+| Broken authentication / access control | 4 | `hunt-auth-bypass` |
+
+### API & Infrastructure
+
+| Capability | H1 reports | Skill |
+|---|---|---|
+| SSRF + 11 IP-bypass techniques · cloud metadata exfil | 9 | `hunt-ssrf` |
+| RCE — crown-jewel chains, deserialization, code injection | 67 | `hunt-rce` |
+| GraphQL — introspection, alias batching, depth, node() IDOR | 3 | `hunt-graphql` |
+| API misconfig — mass assignment, JWT attacks, prototype pollution, CORS | curated | `hunt-api-misconfig` |
+| Cloud / K8s misconfig — public S3, Lambda URLs, kubelet 10250, Docker 2375 | curated | `hunt-cloud-misconfig` |
+| Subdomain takeover — 27+ provider fingerprints + chain to ATO | 11 | `hunt-subdomain` |
+
+### Advanced & Concurrency
+
+| Capability | H1 reports | Skill |
+|---|---|---|
+| Race conditions / TOCTOU — double-spend, MFA-bypass-via-race | 3 | `hunt-race-condition` |
+| Web cache poisoning · cache deception · CDN exploitation | 4 | `hunt-cache-poison` |
+| HTTP request smuggling (CL.TE, TE.CL, H2.CL, H2.TE) | curated | `hunt-http-smuggling` |
+| Business logic flaws (coupon abuse, balance manipulation) | 7 | `hunt-business-logic` |
+| LLM / agentic AI — prompt injection, ASCII smuggling, ASI01-ASI10 | curated | `hunt-llm-ai` |
+| Misc — catch-all for less-common classes | 225 | `hunt-misc` |
+
+### Recon & OSINT
+
+| Capability | Skill |
+|---|---|
+| 15-reference probe arsenal: subdomain enum, identity fabric, secret patterns, sector recon | `offensive-osint` |
+| 5-stage recon pipeline · 29-type asset graph · severity rubric · time budgeting | `osint-methodology` |
+| Subdomain enumeration · host discovery · URL crawling | `web2-recon` |
+| Full pipeline router for local cloned bug-bounty repos | `bb-local-toolkit` |
+
+### Workflow & Validation
+
+| Capability | Skill |
+|---|---|
+| Master orchestrator · pulls in other skills as needed | `bug-bounty` |
+| 5-phase non-linear workflow + critical-thinking framework | `bb-methodology` |
+| 7-Question Gate · 4 pre-submission gates · never-submit list | `triage-validation` |
+| Payloads, bypass tables, wordlists, gf patterns | `security-arsenal` |
+
+### Reporting & Hygiene
+
+| Capability | Skill |
+|---|---|
+| H1 / Bugcrowd / Intigriti / Immunefi templates · CVSS 3.1 + 4.0 | `report-writing` |
+| **Bugcrowd VRT category fallback · severity-request paragraph · OOS rebuttals · chained-finding patterns** | `bugcrowd-reporting` |
+| **Cookie redaction · PII black-bar · HAR sanitization · screenshot hygiene** | `evidence-hygiene` |
+
+### Specialized
+
+| Capability | Skill |
+|---|---|
+| Smart-contract audit · 10 DeFi bug classes · Foundry PoC template | `web3-audit` |
+| Token rug-pull detection · honeypot · LP lock bypass | `meme-coin-audit` |
+
+### Slash Commands (15)
+
+| Command | Purpose |
+|---|---|
+| `/hunt <target>` | Start hunting on a target — loads scope, picks attack surface |
+| `/recon <target>` | Run full recon pipeline — subfinder · dnsx · httpx · katana · nuclei |
+| `/scope <asset>` | Check if an asset is in scope before hunting |
+| `/triage` | Quick 7-Question Gate (faster than `/validate`) |
+| `/validate` | Full 7-Question Gate + 4-gate checklist |
+| `/report` | Write submission-ready report — H1/Bugcrowd/Intigriti/Immunefi |
+| `/autopilot` | Autonomous hunt loop with configurable checkpoints |
+| `/chain` | Build A→B→C exploit chain for higher payouts |
+| `/intel <target>` | On-demand CVE / disclosed-report intel |
+| `/pickup <target>` | Resume previous hunt — shows history + suggestions |
+| `/surface <target>` | Ranked attack surface from recon + memory |
+| `/remember` | Log finding or pattern to hunt memory |
+| `/memory-gc` | Inspect / rotate hunt-memory JSONL files |
+| `/token-scan` | Meme-coin / token security scan |
+| `/web3-audit <contract>` | Smart-contract 10-class checklist |
+
+---
+
+## Capability Map
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#1e293b','primaryTextColor':'#f1f5f9','primaryBorderColor':'#475569','lineColor':'#94a3b8'}}}%%
+flowchart LR
+    Root(["🎯 claude-bughunter"])
+
+    Root --> M["📘 Methodology<br/><i>how to think</i>"]
+    Root --> H["🔍 Hunt Arsenal<br/><i>what to look for</i>"]
+    Root --> S["📦 Ship It<br/><i>how to deliver</i>"]
+
+    M --> M1[bug-bounty<br/>master orchestrator]
+    M --> M2[bb-methodology<br/>5-phase workflow]
+    M --> M3[osint-methodology<br/>recon pipeline]
+    M --> M4[bb-local-toolkit<br/>pipeline router]
+
+    H --> H1[Web App<br/>XSS · IDOR · SQLi · XXE · CSRF · upload · SSTI]
+    H --> H2[Auth<br/>OAuth · SAML · ATO · MFA-bypass · auth-bypass]
+    H --> H3[API/Infra<br/>SSRF · RCE · GraphQL · API-misc · cloud · subdomain]
+    H --> H4[Advanced<br/>race · cache · smuggling · biz-logic · LLM · misc]
+    H --> H5[Recon<br/>offensive-osint · web2-recon]
+    H --> H6[Web3<br/>web3-audit · meme-coin-audit]
+
+    S --> S1[triage-validation<br/>7-Question Gate]
+    S --> S2[evidence-hygiene<br/>cookie/PII/HAR]
+    S --> S3[report-writing<br/>platform templates]
+    S --> S4[bugcrowd-reporting<br/>VRT · OOS rebuttals]
+    S --> S5[security-arsenal<br/>payloads · bypass]
+
+    style Root fill:#dc2626,stroke:#7f1d1d,color:#fff
+    style M fill:#1e293b,stroke:#475569,color:#f1f5f9
+    style H fill:#7f1d1d,stroke:#991b1b,color:#fef3c7
+    style S fill:#14532d,stroke:#166534,color:#dcfce7
+    style M1 fill:#0f172a,stroke:#334155,color:#cbd5e1
+    style M2 fill:#0f172a,stroke:#334155,color:#cbd5e1
+    style M3 fill:#0f172a,stroke:#334155,color:#cbd5e1
+    style M4 fill:#0f172a,stroke:#334155,color:#cbd5e1
+    style H1 fill:#1c1917,stroke:#44403c,color:#fed7aa
+    style H2 fill:#1c1917,stroke:#44403c,color:#fed7aa
+    style H3 fill:#1c1917,stroke:#44403c,color:#fed7aa
+    style H4 fill:#1c1917,stroke:#44403c,color:#fed7aa
+    style H5 fill:#1c1917,stroke:#44403c,color:#fed7aa
+    style H6 fill:#1c1917,stroke:#44403c,color:#fed7aa
+    style S1 fill:#052e16,stroke:#166534,color:#dcfce7
+    style S2 fill:#052e16,stroke:#166534,color:#dcfce7
+    style S3 fill:#052e16,stroke:#166534,color:#dcfce7
+    style S4 fill:#052e16,stroke:#166534,color:#dcfce7
+    style S5 fill:#052e16,stroke:#166534,color:#dcfce7
+```
+
+---
+
+## Engagement Flow
+
+A single bounty engagement walks through six phases. Skills auto-load by phase and topic.
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#1e293b','primaryTextColor':'#f1f5f9','primaryBorderColor':'#475569','lineColor':'#94a3b8'}}}%%
+flowchart TD
+    Start(["🎯 Target authorized<br/><i>BB scope · RoE · pentest contract</i>"]) --> S1
+
+    S1["📋 1. SCOPE<br/>parse program rules"] --> S2
+    S2["🔭 2. RECON<br/>asset discovery · OSINT · attack surface"] --> S3
+    S3["🐛 3. HUNT<br/>per-class testing · auto-trigger by topic"] --> S4
+    S4{"🚨 4. VALIDATE<br/>7-Question Gate"}
+    S4 -->|PASS| S5
+    S4 -->|KILL| End(["❌ Move on"])
+    S4 -->|DOWNGRADE| S5
+    S4 -->|CHAIN REQUIRED| S3
+    S5["📸 5. CAPTURE<br/>cookie redact · PII black-bar · HAR scrub"] --> S6
+    S6["📄 6. REPORT<br/>VRT mapping · severity request · OOS rebuttal"] --> Win(["💰 Submitted"])
+
+    style Start fill:#3b82f6,color:#fff
+    style S1 fill:#1e293b,color:#f1f5f9
+    style S2 fill:#1e293b,color:#f1f5f9
+    style S3 fill:#dc2626,color:#fff
+    style S4 fill:#7c2d12,color:#fef3c7
+    style S5 fill:#7c3aed,color:#fff
+    style S6 fill:#14532d,color:#dcfce7
+    style Win fill:#16a34a,color:#fff
+    style End fill:#374151,color:#f3f4f6
+```
+
+The 7-Question Gate (Phase 4):
+
+1. Can an attacker use this RIGHT NOW with a real HTTP request?
+2. Is the impact on the program's accepted-impact list?
+3. Is the asset in scope?
+4. Does it work without privileged access an attacker can't get?
+5. Is this not already known or documented behavior?
+6. Can impact be proved beyond "technically possible"?
+7. Is this not on the never-submit list?
+
+One NO = KILL. Move on. This single discipline separates productive researchers from N/A noise.
+
+---
+
+## Quick Start
+
+### One-step install (recommended)
 
 ```bash
 git clone https://github.com/elementalsouls/Claude-BugHunter.git
@@ -37,158 +271,107 @@ cd Claude-BugHunter
 ./scripts/install.sh
 ```
 
-Done. Open a fresh terminal:
+That copies all 40 skills to `~/.claude/skills/`, all 15 commands to `~/.claude/commands/`, and sources `hunt.sh` from your shell rc.
+
+### First engagement
 
 ```bash
-hunt acme-bb              # scaffolds ~/Targets/acme-bb/
+hunt acme-bb              # scaffolds ~/Targets/acme-bb/ with CLAUDE.md, scope.md, findings/, evidence/, submissions.txt
 cd ~/Targets/acme-bb
-claude                    # opens Claude Code in this folder
+claude                    # opens Claude Code with engagement context
 ```
 
-In Claude, describe what you're testing in plain English — *"I see a `?url=` parameter, looks SSRF-prone"* — and the relevant skill auto-loads. No need to invoke skills by name.
+In Claude, describe what you're testing in plain English — *"I see a `?url=` parameter, looks SSRF-prone"* — and `hunt-ssrf` auto-loads with detection patterns, payloads, and the 11-bypass IP table.
+
+### Drop-in usage (Claude.ai, Claude API, other harnesses)
+
+```bash
+# Copy a single SKILL.md into a Project's system prompt:
+cat skills/hunt-rce/SKILL.md | pbcopy
+# Paste into Claude.ai project instructions or API system prompt.
+```
+
+All skills are plain Markdown — also usable as personal cheat sheets without Claude.
 
 For Burp Suite Pro MCP integration and the optional skill-regenerator setup, see [INSTALL.md](INSTALL.md). For the full workflow walkthrough with a worked example, see [USAGE.md](USAGE.md).
 
 ---
 
-## Architecture
+## Authorization
 
-The bundle maps to a 6-phase bug-hunting workflow. Skills compose left-to-right; you can also jump in at any phase mid-engagement.
+These skills are intended for assets you **own** or have **written authorization to assess** (bug-bounty in-scope assets, pentest engagement letters, CTF challenges, your own infrastructure).
 
-```mermaid
-flowchart LR
-    S[1 SCOPE]:::phase --> R[2 RECON]:::phase --> H[3 HUNT]:::phase --> V[4 VALIDATE]:::phase --> C[5 CAPTURE]:::phase --> Rep[6 REPORT]:::phase
+The skills include validation gates that auto-trigger when you point Claude at unverified third-party targets — `triage-validation`'s 7-Question Gate explicitly asks whether the asset is in scope (Q3) and on the program's accepted-impact list (Q2). The `bugcrowd-reporting` skill includes researcher-side hygiene (Bugcrowdninja alias, account-state restoration, friendly-tester posture) that signals legitimate authorized testing to the target's fraud team.
 
-    S -.-> S1[bug-bounty<br/>bb-methodology<br/>osint-methodology<br/>hunt &lt;target&gt; shell]:::skill
-    R -.-> R1[offensive-osint<br/>web2-recon<br/>bb-local-toolkit]:::skill
-    H -.-> H1[24 hunt-* skills<br/>security-arsenal]:::skill
-    V -.-> V1[triage-validation<br/>/triage · /validate]:::skill
-    C -.-> C1[evidence-hygiene]:::skill
-    Rep -.-> Rep1[report-writing<br/>bugcrowd-reporting<br/>/report]:::skill
-
-    classDef phase fill:#cc785c,stroke:#1f1f1e,stroke-width:2px,color:#faf9f5,font-weight:bold
-    classDef skill fill:#f5f0e8,stroke:#5a5a59,color:#1f1f1e
-```
-
-Detailed skill-to-phase mapping in [docs/architecture.md](docs/architecture.md).
+The bundle explicitly **excludes**: weaponizing 0-days against unauthorized targets, post-exploitation tooling, malware development, mass-targeting infrastructure. See [`SECURITY.md`](SECURITY.md) for the full posture.
 
 ---
 
-## What's inside
+## Documentation
 
-### 24 per-class hunt skills — curated from disclosed HackerOne reports
-
-| Skill | Reports | Skill | Reports |
-|---|---|---|---|
-| `hunt-misc` | 225 | `hunt-csrf` | 10 |
-| `hunt-xss` | 174 | `hunt-oauth` | 10 |
-| `hunt-rce` | 67 | `hunt-ssrf` | 9 |
-| `hunt-idor` | 26 | `hunt-sqli` | 8 |
-| `hunt-subdomain` | 11 | `hunt-business-logic` | 7 |
-| `hunt-cache-poison` | 4 | `hunt-auth-bypass` | 4 |
-| `hunt-xxe` | 4 | `hunt-graphql` | 3 |
-| `hunt-race-condition` | 3 | `hunt-saml` | curated |
-| `hunt-ato` | curated | `hunt-mfa-bypass` | curated |
-| `hunt-http-smuggling` | curated | `hunt-ssti` | curated |
-| `hunt-file-upload` | curated | `hunt-api-misconfig` | curated |
-| `hunt-cloud-misconfig` | curated | `hunt-llm-ai` | curated |
-
-Plus: `hunt-cache-poisoning`, `hunt-race`, `hunt-subdomain-takeover` (alternate / hand-crafted variants).
-
-### Workflow + reporting
-
-| Skill | Purpose |
+| Doc | Contents |
 |---|---|
-| `bb-methodology` | 5-phase non-linear hunting workflow + critical-thinking framework |
-| `bug-bounty` | Master orchestrator |
-| `bb-local-toolkit` | Full pipeline router for local cloned bug-bounty repos |
-| `triage-validation` | 7-Question Gate, 4 pre-submission gates, never-submit list |
-| `report-writing` | H1/Bugcrowd/Intigriti/Immunefi templates, CVSS 3.1 + 4.0 |
-| **`bugcrowd-reporting`** | VRT category fallback, severity-request paragraph, OOS rebuttals, chained-finding patterns |
-| **`evidence-hygiene`** | Cookie redaction, PII black-bar, HAR sanitization, screenshot capture order |
-
-### Recon
-
-| Skill | Purpose |
-|---|---|
-| **`offensive-osint`** | 15 modular reference files: subdomain enum, identity fabric, secret patterns, dorks, sector-specific recon |
-| **`osint-methodology`** | 5-stage recon pipeline + 29-type asset graph + severity rubric |
-| `web2-recon` | Subdomain enumeration, host discovery, URL crawling |
-
-### Specialized
-
-| Skill | Purpose |
-|---|---|
-| `security-arsenal` | Payloads, bypass tables, wordlists, gf patterns |
-| `web3-audit` | 10 DeFi bug classes, Foundry PoC template |
-| `meme-coin-audit` | Token rug-pull detection |
-
-### 15 slash commands
-
-`/hunt` `/recon` `/scope` `/triage` `/validate` `/report` `/autopilot` `/chain` `/intel` `/pickup` `/surface` `/remember` `/memory-gc` `/token-scan` `/web3-audit`
-
-### Tooling
-
-- **`hunt <target>`** — shell command that scaffolds `~/Targets/<name>/` with `CLAUDE.md`, `scope.md`, `findings/`, `evidence/`, `submissions.txt`, `notes.md`, and a sensible `.gitignore`
-- Burp Suite Pro MCP integration (see [INSTALL.md](INSTALL.md))
+| [`README.md`](README.md) | This file — capability map, structure, quick start |
+| [`INSTALL.md`](INSTALL.md) | Full setup with Burp MCP integration and optional skill regenerator |
+| [`USAGE.md`](USAGE.md) | Workflow walkthrough · decision tree · worked engagement example |
+| [`docs/architecture.md`](docs/architecture.md) | 6-phase architecture · skill-to-phase mapping · engagement composition |
+| [`docs/credits.md`](docs/credits.md) | Full attribution: 32 original skills + 8 vendored from upstream |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md) | PR guidelines · skill quality standards · scope |
+| [`SECURITY.md`](SECURITY.md) | Authorized-use posture · responsible disclosure · what's excluded |
+| [`LICENSE`](LICENSE) | MIT |
 
 ---
 
 ## Why this exists
 
-Most bug-hunting Claude setups are either generic (one big "security" prompt) or fragmented (you bookmark 30 disclosed reports and re-read them every engagement). Neither scales.
+Most bug-hunting Claude setups are either too generic (one big "security" prompt) or too fragmented (you bookmark 30 disclosed reports and re-read them every engagement). Neither scales past the second target.
 
-This bundle was built and validated through a real Bugcrowd engagement on a major financial target. That engagement exposed four capability gaps in a starter stack:
+This bundle was built and validated through a real Bugcrowd engagement on a major financial target. That engagement exposed four capability gaps that a starter 3-skill stack could not close:
 
 1. **No hypothesis discipline** — drafts written before validation → wasted hours, hurt validity ratio
-2. **No per-program reporting tactics** — VRT defaults auto-downgraded findings that should have been P3+
+2. **No per-program reporting tactics** — VRT defaults auto-downgraded P3-worthy findings to P4
 3. **No engagement coordination** — findings, evidence, and submission IDs scattered across folders
 4. **No evidence hygiene** — screenshots leaked cookies and victim PII
 
-The 24 per-class `hunt-*` skills address the gap-zero question (*"what should I look for"*) by codifying patterns from 574+ disclosed reports — so Claude knows the actual chain templates real triagers paid for, not abstract OWASP Top 10. The `bugcrowd-reporting`, `evidence-hygiene`, `triage-validation`, and `hunt` shell scaffold address the other four gaps directly.
+The 24 per-class `hunt-*` skills address gap-zero (*"what should I look for"*) by codifying patterns from 574+ disclosed HackerOne reports — Claude knows the actual chain templates real triagers paid for, not abstract OWASP Top 10. The other gaps are addressed directly by `triage-validation` (vendored), `bugcrowd-reporting`, `evidence-hygiene`, and the `hunt` shell scaffold (originals).
 
 ---
 
 ## Roadmap
 
 - [ ] HackerOne MCP integration (currently only Burp MCP wired in)
-- [ ] Per-engagement memory layer — pattern recall across engagements
+- [ ] Per-engagement memory layer — pattern recall across targets
 - [ ] Industry-specific hunt skills — `hunt-fintech-graphql`, `hunt-healthcare-fhir`, `hunt-gov-compliance`
 - [ ] Program-rules-parser skill — auto-generate structured `scope.md` from program text
 - [ ] Refresh `hunt-*` skills with newer disclosed reports (re-run `public-skills-builder`)
+- [ ] CHANGELOG.md and CODE_OF_CONDUCT.md (matching Claude-OSINT layout)
 
 ---
 
-## Status
+## About
 
-- ✅ 40 skills + 15 commands installable in one step
-- ✅ Burp MCP integration documented and working
-- ✅ Validated end-to-end on a real Bugcrowd engagement
-- 🔄 HackerOne MCP integration is in upstream's repo but not yet wired into this stack
+Operational tradecraft accumulated across bug-bounty engagements and authorized pentests, codified into Claude skills. Platform-agnostic — slot into any engagement workflow you already use, or none.
 
----
+**Author:** [ElementalSoul](https://github.com/elementalsouls) · GenAI Security Research
 
-## Credits
+**Sister project:** [Claude-OSINT](https://github.com/elementalsouls/Claude-OSINT) — paired skills for the recon phase that this bundle picks up after.
 
-This bundle stands on community foundations. Full attribution in [docs/credits.md](docs/credits.md). The short version:
+**Vendored foundation:** [shuvonsec/claude-bug-bounty](https://github.com/shuvonsec/claude-bug-bounty) — methodology, validation, reporting, payload library (8 of 40 skills + 15 slash commands)
 
-- **32 of 40 skills are original/curated work in this repo** — including all 24 `hunt-*` skills (curated from disclosed H1 reports), `offensive-osint` v3.0 (refactored from a 4,168-line monolith into 15 modular references), `osint-methodology`, `bugcrowd-reporting`, `evidence-hygiene`, and `bb-local-toolkit`.
-- **8 foundation skills + 15 slash commands vendored** from [shuvonsec/claude-bug-bounty](https://github.com/shuvonsec/claude-bug-bounty) — `bb-methodology`, `bug-bounty`, `triage-validation`, `report-writing`, `security-arsenal`, `web2-recon`, `web3-audit`, `meme-coin-audit`. MIT-licensed, retain their original license.
-- **`public-skills-builder`** ([shuvonsec](https://github.com/shuvonsec/public-skills-builder)) — generator tool used to produce the per-class hunt skills from H1 disclosed reports.
-- **Burp Suite + MCP Server extension** — [PortSwigger](https://portswigger.net/burp).
-- **Skill-authoring discipline** — [Trail of Bits](https://github.com/trailofbits/skills).
-- **Claude Code, Skills protocol, MCP** — [Anthropic](https://anthropic.com).
+**Generator tool used (not vendored):** [shuvonsec/public-skills-builder](https://github.com/shuvonsec/public-skills-builder) — used to scaffold per-class skills from H1 disclosed reports
 
----
+**Inspirations:**
+- [archangel / douglasday](https://hackerone.com/) — top-10 H1 hunter; per-class skill pattern
+- [Trail of Bits — `trailofbits/skills`](https://github.com/trailofbits/skills) — skill-authoring discipline
+- [SecSkills — `trilwu/secskills`](https://github.com/trilwu/secskills) — subagent pattern
 
-## Contributing
+**Tool inventory:**
+- [PortSwigger Burp Suite + MCP Server extension](https://portswigger.net/burp)
+- [ProjectDiscovery](https://github.com/projectdiscovery) — subfinder · dnsx · httpx · katana · nuclei
+- [SecLists](https://github.com/danielmiessler/SecLists) · [Assetnote Wordlists](https://wordlists.assetnote.io/)
 
-PRs welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Especially valuable: per-program OOS rebuttal templates, industry-specific hunt skills, evidence-hygiene additions for new file formats.
+**License:** [MIT](LICENSE) — use freely, attribution appreciated.
 
 ---
 
-## License
-
-MIT — see [LICENSE](LICENSE).
-
-Original work in this repo (32 skills, the `hunt` shell command, all docs, banner) is MIT-licensed by the author. Vendored upstream skills retain their original licenses (typically MIT — verify each upstream source listed in [docs/credits.md](docs/credits.md)).
+> *"Give Claude the right skill and it stops being a chatbot. It becomes an operator."*
