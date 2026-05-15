@@ -335,3 +335,13 @@ For calibration:
 - Time-to-deliverable: ~6 hours after engagement close for first draft
 
 These numbers are typical for a 1-week external red-team engagement on a mid-size enterprise. Scale down for short tests, up for full purple-team exercises.
+
+---
+
+## Related Skills & Chains
+
+- **`triage-validation`** — This template ingests findings that have ALREADY passed the 7-Question Gate. Engagement flow: every finding through `triage-validation` first → only validated findings → `redteam-report-template` packaging. Skipping triage produces a deliverable padded with informational noise that erodes client trust.
+- **`evidence-hygiene`** — The DOCX with 16 embedded screenshots only works if evidence was captured systematically throughout the engagement. Engagement flow: `evidence-hygiene` discipline at session start → timestamped, organized screenshot folder → `redteam-report-template` consumes that folder to populate Evidence blocks.
+- **`redteam-mindset`** — The Subject / Observations / Description / Impact / Recommendation / PoC structure assumes the operator already thinks like a red-teamer (impact-first, blast-radius framing). Engagement flow: `redteam-mindset` loaded at engagement start → findings collected with red-team framing baked in → `redteam-report-template` produces deliverable without rewriting every Impact section.
+- **`mid-engagement-ir-detection`** — Defensive-action findings (SOC patches mid-test, new IPS rules deployed, account lockouts triggered by external attacker) are first-class findings in red-team deliverables. Engagement flow: `mid-engagement-ir-detection` captures behavior-change events → each becomes its own Subject in the deliverable, framed as "client capability observation" not as "bug we missed."
+- **`report-writing`** + **`bugcrowd-reporting`** — Bug-bounty platform reports use DIFFERENT structure (one finding per submission, platform-specific severity scoring, OOS-clause counters). Engagement flow: if engagement mode is `bug-bounty` per project memory → use `report-writing` / `bugcrowd-reporting` instead. This template is ONLY for external red-team / enterprise client deliverables.

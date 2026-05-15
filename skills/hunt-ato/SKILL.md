@@ -45,4 +45,14 @@ PUT /api/user/email
 - Medium: requires phishing + user interaction
 - Low: requires attacker to be MitM
 
+---
+
+## Related Skills & Chains
+
+- **`hunt-idor`** — The most reliable ATO primitive that requires no email control and no race. Chain primitive: `PATCH /api/users/{victim_uid}` with attacker session + victim UID + `{"email":"attacker@evil.com"}` → trigger password reset → reset email arrives at attacker → full ATO with zero victim interaction (Critical path).
+- **`hunt-mfa-bypass`** — Password reset / email change without re-auth is only Critical if it bypasses MFA too. Chain primitive: password-change endpoint accepts new password without current-password challenge AND without MFA step-up → cookie theft (XSS or token leak) + password oracle (timing diff on login) → set new password from stolen cookie → MFA-less ATO from any IP/device.
+- **`hunt-oauth`** — OAuth misconfigurations are the highest-yield no-interaction ATO path. Chain primitive: OAuth `redirect_uri` validation accepts subdomain match (`*.target.com`) + `hunt-subdomain` reveals a dangling CNAME on `staging.target.com` → claim that subdomain on Heroku/S3 → host an OAuth callback there → victim clicks crafted authorize URL → code lands on attacker subdomain → exchange for token → ATO.
+- **`hunt-misc`** — Host-header injection on password reset is the canonical Path 1 primitive. Chain primitive: `POST /forgot-password` with `Host: attacker.com` (or `X-Forwarded-Host`) → reset email constructs link from request Host header → link points to `attacker.com/reset?token=XXXX` → victim clicks → token leaked to attacker → ATO.
+- **`security-arsenal`** — Pull the Password-Reset Bypass Tables for host-header variants (`X-Forwarded-Host`, `X-Host`, `X-HTTP-Host-Override`, dual-Host smuggling), token-entropy payloads (sequential numeric, time-based predictable), and the always-rejected list for "rate-limit on /forgot-password" reports.
+- **`triage-validation`** — Run the Pre-Severity Gate before claiming Critical on an ATO that requires the victim to click a link AND enter credentials AND complete CAPTCHA. The reproducibility step (10-minute fresh-browser walkthrough on test account B from attacker A's session) is what separates Critical-paid from Self-XSS-tier rejected.
 

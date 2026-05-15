@@ -28,6 +28,10 @@ scope.md
 CLAUDE.md.local
 targets/
 
+# Local-only artifacts
+.obsidian/
+graphify-out/
+
 # Secrets
 .env
 .env.local

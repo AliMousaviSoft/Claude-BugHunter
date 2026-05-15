@@ -1545,3 +1545,13 @@ curl -s https://raw.githubusercontent.com/shuvonsec/claude-bug-bounty/main/SKILL
 ```
 
 Then in Claude Code, this skill loads automatically when you ask about bug bounty, recon, or vulnerability hunting.
+
+---
+
+## Related Skills & Chains
+
+- **`bb-methodology`** — When a hunting session starts and the user is "lost about what to do next." Workflow primitive: this skill is the orchestrator; `bb-methodology` is the 5-phase workflow it routes to. Load `bb-methodology` FIRST, then this skill names the topic-matched hunt-* skills.
+- **`hunt-dispatch`** — When PART 0 mode (red team / WAPT) has been confirmed. Workflow primitive: this skill's "what should I do" routing hands off to `hunt-dispatch` for the platform fingerprint + skill-set load.
+- **`web2-recon`** + **`offensive-osint`** — When Phase 1 (recon) starts. Workflow primitive: this skill's "Standard Recon Pipeline" section delegates the live execution to `web2-recon` and the operational arsenal (probes / wordlists / regexes) to `offensive-osint`.
+- **`triage-validation`** + **`report-writing`** — When a finding completes Phase 4. Workflow primitive: this skill routes to `triage-validation` (7Q gate) → only if all 7 pass, hand off to `report-writing` for the platform-specific body.
+- **`bb-local-toolkit`** — When you need to know which local clone has the tool for a given task. Workflow primitive: this skill is general bug-bounty guidance; `bb-local-toolkit` answers the specific "where is jhaddix/SecLists installed on this machine?" question.

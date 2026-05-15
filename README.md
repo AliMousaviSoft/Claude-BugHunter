@@ -2,7 +2,7 @@
 
 # claude-bughunter
 
-> A self-contained Claude skill bundle for bug hunting and external red-team work · **54 skills** · 15 slash commands · **574+ disclosed-report patterns** across 27 vulnerability classes · enterprise identity + infrastructure attack matrices · engagement-folder scaffolding · Burp MCP integration · battle-tested through Bugcrowd financial-target work AND a paid external red-team engagement against an a large enterprise (May 2026).
+> A self-contained Claude skill bundle for bug hunting and external red-team work · **51 skills** · 15 slash commands · **574+ disclosed-report patterns** across 24 vulnerability classes · enterprise identity + infrastructure attack matrices · engagement-folder scaffolding · Burp MCP integration · battle-tested through Bugcrowd financial-target work AND a paid external red-team engagement against an a large enterprise (May 2026).
 
 Built by **[ElementalSoul](https://github.com/elementalsouls)** — Bug Bounty & GenAI Security Research.
 
@@ -15,13 +15,13 @@ Built by **[ElementalSoul](https://github.com/elementalsouls)** — Bug Bounty &
 Four layers stack:
 
 - **`bug-bounty` + `bb-methodology` + `redteam-mindset`** — *how to think.* 5-phase non-linear hunting workflow, critical-thinking framework, developer-psychology heuristics, anomaly detection patterns, and the red-team operator-discipline corrections (when scope is "external red team" not "bug bounty / WAPT").
-- **27 `hunt-*` skills + `security-arsenal`** — *what to look for in webapps.* Per-class detection patterns, payloads, bypass tables, and chain templates curated from 574+ disclosed HackerOne reports.
+- **24 `hunt-*` skills + `security-arsenal`** — *what to look for in webapps.* Per-class detection patterns, payloads, bypass tables, and chain templates curated from 574+ disclosed HackerOne reports.
 - **Enterprise platform attack chains** — *what to look for on the perimeter.* `m365-entra-attack`, `okta-attack`, `cloud-iam-deep`, `vmware-vcenter-attack`, `enterprise-vpn-attack`, `hunt-sharepoint`, `hunt-aspnet`, `hunt-ntlm-info`, `apk-redteam-pipeline`, `supply-chain-attack-recon` — current 2024-2026 CVE chains, AADSTS error references, version-fingerprint matrices, and post-credential escalation paths.
 - **`triage-validation` + `bugcrowd-reporting` + `evidence-hygiene` + `redteam-report-template` + `mid-engagement-ir-detection`** — *how to ship it.* 7-Question Gate, VRT category fallback, severity-request paragraphs, OOS rebuttals, cookie/PII redaction, client-facing red-team deliverable format, and SOC-patch / mid-engagement-attacker detection methodology.
 
 All triggered automatically by topic — describe what you're testing in plain English and the relevant skill loads. No invocation by name.
 
-> **54 skills · 15 commands · 574+ disclosed reports curated · 6-phase workflow · validated through both a Bugcrowd financial-target engagement and a paid external red-team engagement (redacted-client, May 2026).**
+> **51 skills · 15 commands · 574+ disclosed reports curated · 6-phase workflow · validated through both a Bugcrowd financial-target engagement and a paid external red-team engagement (redacted-client, May 2026).**
 
 ---
 
@@ -29,7 +29,7 @@ All triggered automatically by topic — describe what you're testing in plain E
 
 ```
 Claude-BugHunter/
-├── skills/                                # 54 SKILL.md bundles
+├── skills/                                # 51 SKILL.md bundles
 │   ├── bug-bounty/SKILL.md                # master orchestrator (vendored)
 │   ├── bb-methodology/SKILL.md            # 5-phase workflow + mindset (vendored)
 │   ├── bb-local-toolkit/SKILL.md          # full pipeline router
@@ -60,7 +60,7 @@ Claude-BugHunter/
 │   ├── hunt-sharepoint/SKILL.md           # SharePoint on-prem (ToolShell chain, anon SOAP)
 │   ├── hunt-aspnet/SKILL.md               # ASP.NET ViewState, machineKey, WebForms
 │   ├── hunt-ntlm-info/SKILL.md            # NTLM Type-2 AD topology disclosure
-│   └── hunt-*/SKILL.md                    # 27 per-class web hunt skills
+│   └── hunt-*/SKILL.md                    # 24 per-class web hunt skills
 ├── commands/                              # 15 slash commands
 ├── scripts/
 │   ├── hunt.sh                            # engagement-folder scaffolder
@@ -78,7 +78,7 @@ Drop the contents of `skills/` into `~/.claude/skills/` and Claude auto-triggers
 
 ## Skill Index
 
-54 skills across 10 capability domains. Each row maps a capability to the skill that codifies it.
+51 skills across 10 capability domains. Each row maps a capability to the skill that codifies it.
 
 ### Web Application Hunting
 
@@ -210,7 +210,7 @@ Drop the contents of `skills/` into `~/.claude/skills/` and Claude auto-triggers
 
 ## Architecture
 
-54 skills across 6 phases, with a 27-skill `hunt-*` sub-stack, a 7-skill enterprise-platform attack layer (M365/Okta/cloud-IAM/vCenter/VPN/SharePoint/APK), an integration layer (Burp MCP, the `hunt` shell command, optional Anthropic + HackerOne APIs), and a usage decision tree for picking the right skill per task.
+51 skills across 6 phases, with a 24-skill `hunt-*` sub-stack, a 7-skill enterprise-platform attack layer (M365/Okta/cloud-IAM/vCenter/VPN/SharePoint/APK), an integration layer (Burp MCP, the `hunt` shell command, optional Anthropic + HackerOne APIs), and a usage decision tree for picking the right skill per task.
 
 ![architecture overview](assets/architecture-overview.svg)
 
@@ -244,7 +244,7 @@ cd Claude-BugHunter
 ./scripts/install.sh
 ```
 
-That copies all 54 skills to `~/.claude/skills/`, all 15 commands to `~/.claude/commands/`, and sources `hunt.sh` from your shell rc.
+That copies all 51 skills to `~/.claude/skills/`, all 15 commands to `~/.claude/commands/`, and sources `hunt.sh` from your shell rc.
 
 ### First engagement
 
@@ -288,7 +288,7 @@ The bundle explicitly **excludes**: weaponizing 0-days against unauthorized targ
 | [`INSTALL.md`](INSTALL.md) | Full setup with Burp MCP integration and optional skill regenerator |
 | [`USAGE.md`](USAGE.md) | Workflow walkthrough · decision tree · worked engagement example |
 | [`docs/architecture.md`](docs/architecture.md) | 6-phase architecture · skill-to-phase mapping · engagement composition |
-| [`docs/credits.md`](docs/credits.md) | Full attribution: 46 original skills + 8 vendored from upstream |
+| [`docs/credits.md`](docs/credits.md) | Full attribution: 43 original skills + 8 vendored from upstream |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | PR guidelines · skill quality standards · scope |
 | [`SECURITY.md`](SECURITY.md) | Authorized-use posture · responsible disclosure · what's excluded |
 | [`LICENSE`](LICENSE) | MIT |
@@ -316,7 +316,7 @@ This bundle was built and validated through two paid engagements that exposed di
 4. **No client-facing deliverable format** — bug-bounty report templates don't fit enterprise red-team where output is a 50KB+ MD + DOCX with embedded screenshots → `redteam-report-template`
 5. **No post-credential escalation model** — when recon yielded credentials (AWS keys, JWTs, GCP JSON), it was unclear what they granted or how to escalate → `cloud-iam-deep`
 
-The 27 per-class `hunt-*` skills address gap-zero (*"what should I look for in webapps"*) by codifying patterns from 574+ disclosed HackerOne reports — Claude knows the actual chain templates real triagers paid for, not abstract OWASP Top 10. The enterprise-platform and red-team-tradecraft layers address what bug-bounty alone cannot: external red-team engagements against monitored enterprise targets.
+The 24 per-class `hunt-*` skills address gap-zero (*"what should I look for in webapps"*) by codifying patterns from 574+ disclosed HackerOne reports — Claude knows the actual chain templates real triagers paid for, not abstract OWASP Top 10. The enterprise-platform and red-team-tradecraft layers address what bug-bounty alone cannot: external red-team engagements against monitored enterprise targets.
 
 ---
 
@@ -342,7 +342,7 @@ Operational tradecraft accumulated across bug-bounty engagements and authorized 
 
 **Sister project:** [Claude-OSINT](https://github.com/elementalsouls/Claude-OSINT) — paired skills for the recon phase that this bundle picks up after.
 
-**Vendored foundation:** [shuvonsec/claude-bug-bounty](https://github.com/shuvonsec/claude-bug-bounty) — methodology, validation, reporting, payload library (8 of 54 skills + 15 slash commands)
+**Vendored foundation:** [shuvonsec/claude-bug-bounty](https://github.com/shuvonsec/claude-bug-bounty) — methodology, validation, reporting, payload library (8 of 51 skills + 15 slash commands)
 
 **Generator tool used (not vendored):** [shuvonsec/public-skills-builder](https://github.com/shuvonsec/public-skills-builder) — used to scaffold per-class skills from H1 disclosed reports
 

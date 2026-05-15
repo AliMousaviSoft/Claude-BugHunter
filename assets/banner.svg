@@ -1,25 +1,42 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 720" width="1920" height="720" role="img" aria-label="claude-bughunter — a Claude skill for offensive security tradecraft">
   <defs>
-    <radialGradient id="bg" cx="35%" cy="50%" r="80%">
-      <stop offset="0%" stop-color="#1B1A17"/>
-      <stop offset="60%" stop-color="#13110E"/>
-      <stop offset="100%" stop-color="#0A0907"/>
+    <!-- Background: deep warm + soft radial glow on the hero -->
+    <radialGradient id="bg" cx="32%" cy="50%" r="78%">
+      <stop offset="0%" stop-color="#23201C"/>
+      <stop offset="55%" stop-color="#14120F"/>
+      <stop offset="100%" stop-color="#080705"/>
     </radialGradient>
 
     <radialGradient id="coralHalo" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#DA7756" stop-opacity="0.55"/>
-      <stop offset="40%" stop-color="#DA7756" stop-opacity="0.18"/>
+      <stop offset="0%" stop-color="#FFB591" stop-opacity="0.55"/>
+      <stop offset="30%" stop-color="#DA7756" stop-opacity="0.32"/>
       <stop offset="100%" stop-color="#DA7756" stop-opacity="0"/>
     </radialGradient>
 
     <radialGradient id="coreGlow">
-      <stop offset="0%" stop-color="#FFE4D1"/>
-      <stop offset="40%" stop-color="#FFB591"/>
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="35%" stop-color="#FFE4D1"/>
+      <stop offset="80%" stop-color="#FFB591"/>
       <stop offset="100%" stop-color="#DA7756"/>
     </radialGradient>
 
+    <linearGradient id="rayShine" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#FFE4D1"/>
+      <stop offset="45%" stop-color="#FFB591"/>
+      <stop offset="100%" stop-color="#DA7756"/>
+    </linearGradient>
+
+    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFE4D1"/>
+      <stop offset="100%" stop-color="#DA7756"/>
+    </linearGradient>
+
     <pattern id="grid" x="0" y="0" width="48" height="48" patternUnits="userSpaceOnUse">
       <path d="M48 0 H0 V48" fill="none" stroke="#2A2622" stroke-width="0.4" opacity="0.4"/>
+    </pattern>
+
+    <pattern id="scanlines" x="0" y="0" width="3" height="3" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="3" y2="0" stroke="#DA7756" stroke-width="0.3" opacity="0.06"/>
     </pattern>
 
     <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
@@ -27,189 +44,297 @@
       <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
 
-    <filter id="bigGlow" x="-100%" y="-100%" width="300%" height="300%">
-      <feGaussianBlur stdDeviation="14" result="b"/>
+    <filter id="strongGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="10" result="b"/>
       <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
 
-    <!-- ============================================================ -->
-    <!-- Claude sunburst — the hero. True 8-ray Claude mark.          -->
-    <!-- ============================================================ -->
-    <symbol id="claudeSunburst" viewBox="-220 -220 440 440">
-      <!-- 4 main rays (long, sharp) -->
-      <g fill="#DA7756">
-        <path d="M 0 -210 L 14 -32 L 0 -8 L -14 -32 Z"/>
-        <path d="M 0 210 L 14 32 L 0 8 L -14 32 Z"/>
-        <path d="M -210 0 L -32 -14 L -8 0 L -32 14 Z"/>
-        <path d="M 210 0 L 32 -14 L 8 0 L 32 14 Z"/>
+    <!-- =================================================== -->
+    <!-- HERO MARK: full Claude sunburst, big and dramatic   -->
+    <!-- =================================================== -->
+    <symbol id="claudeSun" viewBox="-240 -240 480 480">
+      <!-- 4 main rays, dual-shaded for shine -->
+      <g>
+        <!-- N -->
+        <path d="M 0 -228 L 16 -34 L 0 -8 L -16 -34 Z" fill="url(#rayShine)"/>
+        <!-- S -->
+        <path d="M 0 228 L 16 34 L 0 8 L -16 34 Z" fill="url(#rayShine)"/>
+        <!-- E -->
+        <path d="M 228 0 L 34 -16 L 8 0 L 34 16 Z" fill="#DA7756"/>
+        <!-- W -->
+        <path d="M -228 0 L -34 -16 L -8 0 L -34 16 Z" fill="#DA7756"/>
       </g>
-      <!-- 4 secondary rays (shorter, fatter — Claude's diamonds) -->
+      <!-- 4 diagonal rays (Claude's diamond seconds) -->
       <g fill="#DA7756">
-        <path d="M -130 -130 L -22 -10 L -8 -4 L -10 -22 Z"/>
-        <path d="M 130 -130 L 22 -10 L 8 -4 L 10 -22 Z"/>
-        <path d="M -130 130 L -22 10 L -8 4 L -10 22 Z"/>
-        <path d="M 130 130 L 22 10 L 8 4 L 10 22 Z"/>
+        <path d="M -142 -142 L -24 -12 L -10 -4 L -12 -24 Z"/>
+        <path d="M 142 -142 L 24 -12 L 10 -4 L 12 -24 Z"/>
+        <path d="M -142 142 L -24 12 L -10 4 L -12 24 Z"/>
+        <path d="M 142 142 L 24 12 L 10 4 L 12 24 Z"/>
       </g>
-      <!-- Bright core -->
-      <circle cx="0" cy="0" r="11" fill="url(#coreGlow)"/>
-      <circle cx="0" cy="0" r="5" fill="#FFFFFF"/>
+      <!-- Bright glowing core -->
+      <circle r="22" fill="url(#coreGlow)" filter="url(#softGlow)"/>
+      <circle r="10" fill="#FFFFFF"/>
     </symbol>
 
-    <!-- Pinned bug specimen (small, used inside the reticle) -->
-    <symbol id="specimenBug" viewBox="-22 -22 44 44">
-      <g fill="#1B1A17" stroke="#DA7756" stroke-width="1" stroke-linejoin="round">
-        <!-- mandibles -->
-        <path d="M -4 -10 Q -10 -14 -12 -8 Q -8 -8 -5 -7 Z"/>
-        <path d="M 4 -10 Q 10 -14 12 -8 Q 8 -8 5 -7 Z"/>
-        <!-- head -->
-        <ellipse cx="0" cy="-5" rx="4" ry="3.5"/>
-        <!-- thorax -->
-        <ellipse cx="0" cy="0" rx="5" ry="3"/>
-        <!-- abdomen -->
-        <ellipse cx="0" cy="6" rx="6" ry="7"/>
+    <!-- =================================================== -->
+    <!-- BUG TARGET: small reticle w/ a stag-beetle silhouette -->
+    <!-- =================================================== -->
+    <symbol id="bugTarget" viewBox="-36 -36 72 72">
+      <!-- reticle ring -->
+      <circle r="28" fill="#0A0907" stroke="#DA7756" stroke-width="1.4"/>
+      <circle r="28" fill="none" stroke="#DA7756" stroke-width="0.4" opacity="0.5" stroke-dasharray="1 3"/>
+      <!-- outer ticks -->
+      <g stroke="#DA7756" stroke-width="1.2" stroke-linecap="round">
+        <line x1="-34" y1="0" x2="-30" y2="0"/>
+        <line x1="30" y1="0" x2="34" y2="0"/>
+        <line x1="0" y1="-34" x2="0" y2="-30"/>
+        <line x1="0" y1="30" x2="0" y2="34"/>
       </g>
-      <!-- center seam -->
-      <line x1="0" y1="-2" x2="0" y2="13" stroke="#DA7756" stroke-width="0.6" opacity="0.6"/>
-      <!-- 6 thin legs -->
-      <g stroke="#DA7756" stroke-width="0.8" stroke-linecap="round" fill="none">
-        <path d="M -5 -2 L -10 -4"/>
-        <path d="M -5 1 L -11 1"/>
-        <path d="M -5 4 L -10 6"/>
-        <path d="M 5 -2 L 10 -4"/>
-        <path d="M 5 1 L 11 1"/>
-        <path d="M 5 4 L 10 6"/>
+      <!-- bug silhouette -->
+      <g fill="#DA7756">
+        <!-- mandibles -->
+        <path d="M -3 -10 Q -7 -13 -10 -8 Q -6 -8 -4 -7 Z"/>
+        <path d="M 3 -10 Q 7 -13 10 -8 Q 6 -8 4 -7 Z"/>
+        <!-- head -->
+        <ellipse cx="0" cy="-5" rx="3" ry="2.5"/>
+        <!-- thorax -->
+        <ellipse cx="0" cy="0" rx="4" ry="2.5"/>
+        <!-- abdomen -->
+        <ellipse cx="0" cy="5" rx="5" ry="6"/>
+      </g>
+      <!-- legs -->
+      <g stroke="#DA7756" stroke-width="0.7" fill="none" stroke-linecap="round">
+        <path d="M -4 -2 L -9 -4"/>
+        <path d="M -4 1 L -10 1"/>
+        <path d="M -4 4 L -9 6"/>
+        <path d="M 4 -2 L 9 -4"/>
+        <path d="M 4 1 L 10 1"/>
+        <path d="M 4 4 L 9 6"/>
+      </g>
+    </symbol>
+
+    <!-- A simpler "detected" marker (no full reticle, just crosshair) -->
+    <symbol id="bugDetected" viewBox="-22 -22 44 44">
+      <g stroke="#DA7756" stroke-width="1" stroke-linecap="round" opacity="0.85">
+        <line x1="-18" y1="0" x2="-10" y2="0"/>
+        <line x1="10" y1="0" x2="18" y2="0"/>
+        <line x1="0" y1="-18" x2="0" y2="-10"/>
+        <line x1="0" y1="10" x2="0" y2="18"/>
+      </g>
+      <g fill="#DA7756">
+        <ellipse cx="0" cy="-3" rx="2.5" ry="2"/>
+        <ellipse cx="0" cy="0" rx="3" ry="2"/>
+        <ellipse cx="0" cy="4" rx="4" ry="5"/>
       </g>
     </symbol>
   </defs>
 
-  <!-- ============================== BACKGROUND ============================== -->
+  <!-- ============================================================ -->
+  <!-- BACKGROUND LAYERS                                            -->
+  <!-- ============================================================ -->
   <rect width="1920" height="720" fill="url(#bg)"/>
   <rect width="1920" height="720" fill="url(#grid)"/>
+  <rect width="1920" height="720" fill="url(#scanlines)"/>
 
-  <!-- Subtle vignette that pulls focus to left-of-center -->
-  <ellipse cx="540" cy="380" rx="700" ry="500" fill="url(#coralHalo)" opacity="0.35"/>
+  <!-- Hero halo pulling focus to the sunburst -->
+  <ellipse cx="500" cy="380" rx="700" ry="520" fill="url(#coralHalo)" opacity="0.85"/>
+
+  <!-- Horizon line (subtle perspective) -->
+  <line x1="0" y1="380" x2="1920" y2="380" stroke="#DA7756" stroke-width="0.4" opacity="0.12"/>
 
   <!-- Cinematic corner brackets -->
-  <g stroke="#DA7756" stroke-width="2" fill="none" opacity="0.85">
-    <path d="M 30 30 L 30 78 M 30 30 L 78 30"/>
-    <path d="M 1890 30 L 1890 78 M 1890 30 L 1842 30"/>
-    <path d="M 30 690 L 30 642 M 30 690 L 78 690"/>
-    <path d="M 1890 690 L 1890 642 M 1890 690 L 1842 690"/>
+  <g stroke="#DA7756" stroke-width="2.2" fill="none">
+    <path d="M 28 28 L 28 84 M 28 28 L 84 28"/>
+    <path d="M 1892 28 L 1892 84 M 1892 28 L 1836 28"/>
+    <path d="M 28 692 L 28 636 M 28 692 L 84 692"/>
+    <path d="M 1892 692 L 1892 636 M 1892 692 L 1836 692"/>
   </g>
 
-  <!-- ============================== TOP MICROTEXT ============================== -->
-  <g font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="11" letter-spacing="3">
-    <text x="58" y="56" fill="#807565">▸ CLAUDE  SKILL  ·  v1.0  ·  MIT</text>
-    <text x="1862" y="56" text-anchor="end" fill="#807565">github.com/elementalsouls/Claude-BugHunter</text>
+  <!-- ============================================================ -->
+  <!-- TOP MICROTEXT                                                -->
+  <!-- ============================================================ -->
+  <g font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="11" letter-spacing="3.5">
+    <text x="58" y="58" fill="#807565">▸ CLAUDE  SKILL  ·  v1.0  ·  MIT</text>
+    <text x="370" y="58" fill="#807565">·</text>
+    <text x="390" y="58" fill="#C5BEB0">HUNT-MODE  ACTIVE</text>
+    <text x="1862" y="58" text-anchor="end" fill="#807565">github.com/elementalsouls/Claude-BugHunter</text>
   </g>
 
-  <!-- ============================== HERO: Claude sunburst ============================== -->
-  <g transform="translate(540, 380)">
-    <!-- Big halo behind -->
-    <circle r="320" fill="url(#coralHalo)"/>
+  <!-- ============================================================ -->
+  <!-- HUNT SCENE — left of center                                  -->
+  <!-- Sunburst @ (500, 380), bug targets arrayed around it.        -->
+  <!-- ============================================================ -->
+  <g transform="translate(500, 380)">
+    <!-- Big diffuse halo -->
+    <circle r="350" fill="url(#coralHalo)"/>
 
-    <!-- Outer scan rings (subtle, hint at "scanning") -->
-    <g fill="none" stroke="#DA7756" opacity="0.35">
-      <circle r="270" stroke-width="0.8" stroke-dasharray="1 8"/>
-      <circle r="248" stroke-width="0.5" stroke-dasharray="1 4"/>
-      <circle r="228" stroke-width="0.4" opacity="0.2"/>
+    <!-- Outer scanning rings -->
+    <g fill="none" stroke="#DA7756">
+      <circle r="290" stroke-width="0.6" opacity="0.35" stroke-dasharray="1 9"/>
+      <circle r="262" stroke-width="0.4" opacity="0.25" stroke-dasharray="2 5"/>
+      <circle r="240" stroke-width="0.3" opacity="0.18"/>
     </g>
 
-    <!-- 4 cardinal scan ticks on the outer ring -->
+    <!-- Outer cardinal scan ticks -->
     <g stroke="#DA7756" stroke-width="2" stroke-linecap="round" opacity="0.7">
-      <line x1="0" y1="-275" x2="0" y2="-262"/>
-      <line x1="0" y1="262" x2="0" y2="275"/>
-      <line x1="-275" y1="0" x2="-262" y2="0"/>
-      <line x1="262" y1="0" x2="275" y2="0"/>
+      <line x1="0" y1="-298" x2="0" y2="-282"/>
+      <line x1="0" y1="282" x2="0" y2="298"/>
+      <line x1="-298" y1="0" x2="-282" y2="0"/>
+      <line x1="282" y1="0" x2="298" y2="0"/>
     </g>
 
-    <!-- Sunburst -->
-    <use href="#claudeSunburst" x="-220" y="-220" width="440" height="440" filter="url(#softGlow)"/>
-
-    <!-- =========== HUNT DETAIL =========== -->
-    <!-- A coral targeting beam extends from the SE diagonal ray to a captured bug. -->
-    <!-- Aim line -->
-    <line x1="120" y1="120" x2="200" y2="200" stroke="#DA7756" stroke-width="1" opacity="0.55" stroke-dasharray="2 4"/>
-
-    <!-- Targeting reticle around the captured bug -->
-    <g transform="translate(225, 225)">
-      <circle r="34" fill="#0E0D0A" stroke="#DA7756" stroke-width="1.5"/>
-      <circle r="34" fill="none" stroke="#DA7756" stroke-width="0.5" opacity="0.5" stroke-dasharray="2 3"/>
-      <!-- crosshair ticks -->
-      <g stroke="#DA7756" stroke-width="1.5" stroke-linecap="round">
-        <line x1="-44" y1="0" x2="-37" y2="0"/>
-        <line x1="37" y1="0" x2="44" y2="0"/>
-        <line x1="0" y1="-44" x2="0" y2="-37"/>
-        <line x1="0" y1="37" x2="0" y2="44"/>
-      </g>
-      <!-- inner thin crosshair -->
-      <g stroke="#DA7756" stroke-width="0.5" opacity="0.5">
-        <line x1="-26" y1="0" x2="-12" y2="0"/>
-        <line x1="12" y1="0" x2="26" y2="0"/>
-        <line x1="0" y1="-26" x2="0" y2="-12"/>
-        <line x1="0" y1="12" x2="0" y2="26"/>
-      </g>
-      <!-- the captured bug -->
-      <use href="#specimenBug" x="-18" y="-18" width="36" height="36"/>
-      <!-- LOCKED label -->
-      <text x="0" y="58" text-anchor="middle" font-size="9" letter-spacing="3"
-            fill="#DA7756" font-weight="700"
-            font-family="ui-monospace, monospace">▸ LOCKED</text>
+    <!-- =====  BEAMS from sunburst to each bug target ===== -->
+    <!-- Targets array (8 hunts) -->
+    <g stroke="#DA7756" stroke-width="1" stroke-linecap="round" opacity="0.55" stroke-dasharray="2 5">
+      <!-- N    -->  <line x1="0" y1="0" x2="0"    y2="-225"/>
+      <!-- NE   -->  <line x1="0" y1="0" x2="195"  y2="-150"/>
+      <!-- E-up -->  <line x1="0" y1="0" x2="305"  y2="-55"/>
+      <!-- E-dn -->  <line x1="0" y1="0" x2="305"  y2="55"/>
+      <!-- SE   -->  <line x1="0" y1="0" x2="195"  y2="150"/>
+      <!-- S    -->  <line x1="0" y1="0" x2="0"    y2="225"/>
+      <!-- SW   -->  <line x1="0" y1="0" x2="-195" y2="150"/>
+      <!-- W    -->  <line x1="0" y1="0" x2="-305" y2="0"/>
+      <!-- NW   -->  <line x1="0" y1="0" x2="-195" y2="-150"/>
     </g>
+
+    <!-- =====  THE SUNBURST  ===== -->
+    <use href="#claudeSun" x="-180" y="-180" width="360" height="360" filter="url(#softGlow)"/>
+
+    <!-- =====  BUG TARGETS w/ vuln labels  ===== -->
+    <!-- N: XSS -->
+    <g transform="translate(0, -245)">
+      <use href="#bugTarget" x="-26" y="-26" width="52" height="52"/>
+      <text x="0" y="-38" text-anchor="middle" font-size="11" letter-spacing="2.5"
+            font-family="ui-monospace, monospace" fill="#FFE4D1" font-weight="700">XSS</text>
+    </g>
+    <!-- NE: SQLi -->
+    <g transform="translate(215, -165)">
+      <use href="#bugTarget" x="-26" y="-26" width="52" height="52"/>
+      <text x="0" y="-38" text-anchor="middle" font-size="11" letter-spacing="2.5"
+            font-family="ui-monospace, monospace" fill="#FFE4D1" font-weight="700">SQLi</text>
+    </g>
+    <!-- E-up: RCE -->
+    <g transform="translate(335, -60)">
+      <use href="#bugTarget" x="-26" y="-26" width="52" height="52"/>
+      <text x="40" y="4" font-size="11" letter-spacing="2.5"
+            font-family="ui-monospace, monospace" fill="#FFE4D1" font-weight="700">RCE</text>
+    </g>
+    <!-- E-dn: SSRF -->
+    <g transform="translate(335, 60)">
+      <use href="#bugTarget" x="-26" y="-26" width="52" height="52"/>
+      <text x="40" y="4" font-size="11" letter-spacing="2.5"
+            font-family="ui-monospace, monospace" fill="#FFE4D1" font-weight="700">SSRF</text>
+    </g>
+    <!-- SE: OAuth -->
+    <g transform="translate(215, 165)">
+      <use href="#bugTarget" x="-26" y="-26" width="52" height="52"/>
+      <text x="0" y="46" text-anchor="middle" font-size="11" letter-spacing="2.5"
+            font-family="ui-monospace, monospace" fill="#FFE4D1" font-weight="700">OAuth</text>
+    </g>
+    <!-- S: IDOR -->
+    <g transform="translate(0, 245)">
+      <use href="#bugTarget" x="-26" y="-26" width="52" height="52"/>
+      <text x="0" y="46" text-anchor="middle" font-size="11" letter-spacing="2.5"
+            font-family="ui-monospace, monospace" fill="#FFE4D1" font-weight="700">IDOR</text>
+    </g>
+    <!-- SW: SSTI -->
+    <g transform="translate(-215, 165)">
+      <use href="#bugTarget" x="-26" y="-26" width="52" height="52"/>
+      <text x="0" y="46" text-anchor="middle" font-size="11" letter-spacing="2.5"
+            font-family="ui-monospace, monospace" fill="#FFE4D1" font-weight="700">SSTI</text>
+    </g>
+    <!-- W: Cloud -->
+    <g transform="translate(-335, 0)">
+      <use href="#bugTarget" x="-26" y="-26" width="52" height="52"/>
+      <text x="-40" y="4" text-anchor="end" font-size="11" letter-spacing="2.5"
+            font-family="ui-monospace, monospace" fill="#FFE4D1" font-weight="700">Cloud</text>
+    </g>
+    <!-- NW: MFA -->
+    <g transform="translate(-215, -165)">
+      <use href="#bugTarget" x="-26" y="-26" width="52" height="52"/>
+      <text x="0" y="-38" text-anchor="middle" font-size="11" letter-spacing="2.5"
+            font-family="ui-monospace, monospace" fill="#FFE4D1" font-weight="700">MFA</text>
+    </g>
+
+    <!-- Distant "detected" markers (further out, no full reticles) -->
+    <use href="#bugDetected" x="-296" y="-180" width="22" height="22"/>
+    <use href="#bugDetected" x="290"  y="-200" width="22" height="22"/>
+    <use href="#bugDetected" x="280"  y="220"  width="22" height="22"/>
+    <use href="#bugDetected" x="-310" y="200"  width="22" height="22"/>
 
     <!-- Atmospheric particles -->
-    <g fill="#FFB591" opacity="0.6">
-      <circle cx="-180" cy="-90" r="1.2"/>
-      <circle cx="170" cy="-160" r="1"/>
-      <circle cx="-220" cy="80" r="1.3"/>
-      <circle cx="-50" cy="-230" r="1"/>
-      <circle cx="230" cy="-40" r="1"/>
-      <circle cx="-130" cy="200" r="1.1"/>
-      <circle cx="80" cy="240" r="0.9"/>
+    <g fill="#FFB591" opacity="0.65">
+      <circle cx="-260" cy="-90" r="1.2"/>
+      <circle cx="250"  cy="-130" r="1"/>
+      <circle cx="-100" cy="-300" r="1.3"/>
+      <circle cx="120"  cy="-280" r="0.9"/>
+      <circle cx="-220" cy="80"   r="1.1"/>
+      <circle cx="180"  cy="285"  r="1"/>
     </g>
   </g>
 
-  <!-- ============================== TITLE BLOCK (right) ============================== -->
-  <g transform="translate(940, 0)">
-    <!-- Hairline accent above title -->
-    <line x1="0" y1="252" x2="48" y2="252" stroke="#DA7756" stroke-width="3"/>
-    <text x="58" y="258" font-size="11" letter-spacing="4"
-          font-family="ui-monospace, monospace" fill="#DA7756" font-weight="700">A  CLAUDE  SKILL</text>
+  <!-- ============================================================ -->
+  <!-- TITLE BLOCK — right side                                     -->
+  <!-- ============================================================ -->
+  <g transform="translate(960, 0)">
+    <!-- A CLAUDE SKILL chip -->
+    <g transform="translate(0, 222)">
+      <line x1="0" y1="0" x2="46" y2="0" stroke="#DA7756" stroke-width="3"/>
+      <circle cx="58" cy="0" r="3.6" fill="#DA7756"/>
+      <text x="74" y="5" font-size="12" letter-spacing="5"
+            font-family="ui-monospace, monospace" fill="#DA7756" font-weight="700">A  CLAUDE  SKILL</text>
+      <text x="280" y="5" font-size="11" letter-spacing="3"
+            font-family="ui-monospace, monospace" fill="#807565">·  HUNT-MODE  ACTIVE</text>
+    </g>
 
-    <!-- Wordmark — single text element so the slash flows naturally -->
-    <text y="365" font-size="96" font-weight="800"
+    <!-- Massive wordmark, stacked for punch -->
+    <text y="340" font-size="108" font-weight="900"
           font-family="ui-sans-serif, -apple-system, 'Segoe UI', Inter, sans-serif"
-          letter-spacing="-3">
-      <tspan x="0" fill="#F5F4EE">claude</tspan><tspan dx="14" fill="#DA7756" font-weight="300">/</tspan><tspan dx="14" fill="#DA7756">bughunter</tspan>
+          letter-spacing="-4" fill="#F5F4EE">claude</text>
+
+    <text y="456" font-size="108" font-weight="900"
+          font-family="ui-sans-serif, -apple-system, 'Segoe UI', Inter, sans-serif"
+          letter-spacing="-4" fill="url(#titleGrad)" filter="url(#softGlow)">bughunter</text>
+
+    <!-- Accent hairline under bughunter -->
+    <line x1="0" y1="474" x2="640" y2="474" stroke="#DA7756" stroke-width="2"/>
+
+    <!-- Punchy tagline -->
+    <text x="0" y="518" font-size="22"
+          font-family="ui-sans-serif, -apple-system, 'Segoe UI', Inter, sans-serif"
+          fill="#C5BEB0" letter-spacing="0.2">
+      Senior bug-bounty researcher reflexes, on tap.
     </text>
 
-    <!-- Underline accent under bughunter -->
-    <line x1="350" y1="382" x2="850" y2="382" stroke="#DA7756" stroke-width="2" opacity="0.55"/>
-
-    <!-- One-line tagline -->
-    <text x="0" y="430" font-size="22"
-          font-family="ui-sans-serif, -apple-system, 'Segoe UI', Inter, sans-serif"
-          fill="#C5BEB0">
-      Turns Claude into a senior bug-bounty researcher.
-    </text>
-
-    <!-- Stats line (just enough to set the scale, README has the rest) -->
-    <g font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-size="13" letter-spacing="2.5">
-      <text x="0" y="478" fill="#807565">▸</text>
-      <text x="22" y="478" fill="#F5F4EE">40 skills</text>
-      <text x="118" y="478" fill="#807565">·</text>
-      <text x="138" y="478" fill="#F5F4EE">24 vuln classes</text>
-      <text x="296" y="478" fill="#807565">·</text>
-      <text x="316" y="478" fill="#F5F4EE">574+ disclosed reports</text>
-      <text x="540" y="478" fill="#807565">·</text>
-      <text x="560" y="478" fill="#F5F4EE">6-phase workflow</text>
+    <!-- Stat pills (widened, generous padding) -->
+    <g font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-size="12" letter-spacing="2">
+      <g transform="translate(0, 568)">
+        <rect x="0" y="-18" width="130" height="28" rx="2" fill="none" stroke="#DA7756" stroke-width="1"/>
+        <text x="65" y="1" text-anchor="middle" fill="#F5F4EE" font-weight="700">40 SKILLS</text>
+      </g>
+      <g transform="translate(142, 568)">
+        <rect x="0" y="-18" width="190" height="28" rx="2" fill="none" stroke="#DA7756" stroke-width="1"/>
+        <text x="95" y="1" text-anchor="middle" fill="#F5F4EE" font-weight="700">24 VULN CLASSES</text>
+      </g>
+      <g transform="translate(344, 568)">
+        <rect x="0" y="-18" width="270" height="28" rx="2" fill="none" stroke="#DA7756" stroke-width="1"/>
+        <text x="135" y="1" text-anchor="middle" fill="#F5F4EE" font-weight="700">574+ DISCLOSED REPORTS</text>
+      </g>
+      <g transform="translate(626, 568)">
+        <rect x="0" y="-18" width="210" height="28" rx="2" fill="none" stroke="#DA7756" stroke-width="1"/>
+        <text x="105" y="1" text-anchor="middle" fill="#F5F4EE" font-weight="700">6-PHASE WORKFLOW</text>
+      </g>
     </g>
   </g>
 
-  <!-- ============================== BOTTOM STRIP ============================== -->
+  <!-- ============================================================ -->
+  <!-- BOTTOM STRIP                                                 -->
+  <!-- ============================================================ -->
   <g font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-size="11" letter-spacing="3">
     <text x="58" y="678" fill="#807565">▸ INVOKE :</text>
-    <text x="148" y="678" fill="#F5F4EE">drop into ~/.claude/skills · auto-triggers on topic</text>
+    <text x="146" y="678" fill="#F5F4EE">drop into  ~/.claude/skills  ·  auto-triggers on topic</text>
+    <text x="900" y="678" fill="#807565">·</text>
+    <text x="922" y="678" fill="#C5BEB0">recon · triage · validate · chain · capture · report</text>
     <text x="1862" y="678" text-anchor="end" fill="#DA7756" letter-spacing="6" font-weight="700">SHIP IT</text>
   </g>
 </svg>

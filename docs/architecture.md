@@ -4,17 +4,17 @@ The Claude-BugHunter bundle maps to a 6-phase workflow that supports both bug hu
 
 ## Primary view — phase-by-phase architecture
 
-54 skills mapped to 6 phases, with a 27-skill `hunt-*` sub-stack, a 7-skill enterprise-platform attack layer, integration layer, and usage decision tree. This is the main reference for "which skill do I use when?".
+51 skills mapped to 6 phases, with a 24-skill `hunt-*` sub-stack, a 7-skill enterprise-platform attack layer, integration layer, and usage decision tree. This is the main reference for "which skill do I use when?".
 
 ![architecture overview](../assets/architecture-overview.svg)
 
-> The architecture SVG predates the May 2026 red-team expansion and still shows the 40-skill / 24-hunt-* view. A refreshed diagram covering the new enterprise-platform and red-team-tradecraft layers is in the roadmap.
+> The architecture SVG still shows the original 40-skill / 24-hunt-* view from before the May-2026 red-team expansion. The hunt count happens to match again after dedup, but the SVG is missing the enterprise-platform and red-team-tradecraft layers. Refresh is in the roadmap.
 
-The "Source" column in the per-phase tables below tags each skill: **`original`** = author's work in this repo, `vendored` = from [shuvonsec/claude-bug-bounty](https://github.com/shuvonsec/claude-bug-bounty) (MIT). 46 of 54 skills are original; 8 are vendored.
+The "Source" column in the per-phase tables below tags each skill: **`original`** = author's work in this repo, `vendored` = from [shuvonsec/claude-bug-bounty](https://github.com/shuvonsec/claude-bug-bounty) (MIT). 46 of 51 skills are original; 8 are vendored.
 
 ## Alternate view — 3-layer capability stack
 
-The same 54 skills, regrouped by **role in an engagement** rather than by phase. Methodology + Recon (bottom) feeds the Hunt Arsenal (middle), which produces findings that flow up through Ship It (top) to a paid submission or client deliverable.
+The same 51 skills, regrouped by **role in an engagement** rather than by phase. Methodology + Recon (bottom) feeds the Hunt Arsenal (middle), which produces findings that flow up through Ship It (top) to a paid submission or client deliverable.
 
 ![capability map](../assets/capability-map.svg)
 
@@ -56,12 +56,12 @@ The 6-phase workflow expanded into a pipeline showing per-phase active skills, t
 
 | Skill | Source | Purpose |
 |---|---|---|
-| **27 `hunt-*` skills** | original | One per vuln class, curated from disclosed H1 reports — auto-trigger by topic |
+| **24 `hunt-*` skills** | original | One per vuln class, curated from disclosed H1 reports — auto-trigger by topic |
 | `security-arsenal` | vendored | Payload library (XSS / SSRF / SQLi / SSTI / etc.) |
 | `web3-audit` | vendored | Smart-contract audit (10 bug classes, Foundry PoC) |
 | `meme-coin-audit` | vendored | Token rug-pull detection |
 
-### Per-class hunt skills (27)
+### Per-class hunt skills (24)
 
 ```
 hunt-rce          (67 reports)    hunt-business-logic  (7)
@@ -80,7 +80,7 @@ hunt-aspnet  ★new                 hunt-sharepoint  ★new
 hunt-ntlm-info  ★new
 ```
 
-Plus alternates: `hunt-cache-poisoning`, `hunt-race`, `hunt-subdomain-takeover`. Plus the meta-router `hunt-dispatch` (used internally by the `/hunt` slash command — not user-invoked).
+Plus alternates: `hunt-cache-poison`, `hunt-race-condition`, `hunt-subdomain`. Plus the meta-router `hunt-dispatch` (used internally by the `/hunt` slash command — not user-invoked).
 
 **Total disclosed reports curated**: 574+ (plus enterprise CVE catalogues that aren't measured in H1-report counts)
 

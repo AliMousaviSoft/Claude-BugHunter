@@ -339,3 +339,13 @@ This is a more valuable deliverable than "I confirmed SQLi" alone, because it ca
 ## One-line summary
 
 **Your engagement leaves a footprint. The footprint changes the target. Capture both states. Both are findings.**
+
+---
+
+## Related Skills & Chains
+
+- **`redteam-mindset`** — This skill is a specific application of the broader red-team discipline. Engagement flow: `redteam-mindset` loaded at engagement start → baseline-capture habit built in → when response patterns shift mid-test, `mid-engagement-ir-detection` activates to capture the SOC-patch state as a NEW finding (defensive-action observed = client capability metric, not "the bug got fixed so we lose the finding").
+- **`evidence-hygiene`** — Mid-engagement IR detection produces TWO states (pre-patch and post-patch); both need disciplined evidence capture or the second finding can't be defended. Engagement flow: baseline screenshots + timestamped request/response dumps at session start → response shift detected → second capture set with explicit timestamp delta → both packaged together.
+- **`m365-entra-attack`** — The single richest source of mid-engagement IR signal in modern engagements. Engagement flow: M365 spray triggers AADSTS50053 lockout → baseline lockout policy captured → if lockout window changes mid-test (e.g., from 60min to 24hr) → `mid-engagement-ir-detection` captures the policy change as a finding ("CA policy hardened mid-engagement; defensive response measured").
+- **`enterprise-vpn-attack`** + **`vmware-vcenter-attack`** — Critical-infrastructure CVE exploitation is the highest-noise activity; expect SOC to patch within hours. Engagement flow: confirmed VPN/vCenter CVE → baseline capture BEFORE exploitation attempt → if appliance updates mid-test, capture as defensive-action finding → report both the original CVE AND the IR-response.
+- **`redteam-report-template`** — IR-observation findings get their own Subject in the deliverable, framed differently from technical-vuln findings. Engagement flow: `mid-engagement-ir-detection` captures behavior-change event → `triage-validation` 7-Question Gate (specifically: "is the behavior-change attributable to my activity?") → `redteam-report-template` packages as a "client capability observation" with explicit timeline and detection-latency metric.

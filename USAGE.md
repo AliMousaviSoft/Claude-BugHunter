@@ -1,6 +1,6 @@
 # Claude-BugHunter — Usage Guide
 
-A practical guide to using the 54-skill Claude-BugHunter bundle for bug hunting (bounty programs, authorized pentesting, CTFs, vuln research) **and external red-team engagements** against enterprise targets. This document covers what's in the bundle, how it composes, and how to use it on a real engagement from intake through paid bounty (or final client deliverable).
+A practical guide to using the 51-skill Claude-BugHunter bundle for bug hunting (bounty programs, authorized pentesting, CTFs, vuln research) **and external red-team engagements** against enterprise targets. This document covers what's in the bundle, how it composes, and how to use it on a real engagement from intake through paid bounty (or final client deliverable).
 
 > Built and validated through two paid engagements: a Bugcrowd engagement on a major financial target (exposed four bug-bounty capability gaps), and an external red-team engagement against an a large enterprise (redacted-client, May 2026 — exposed five additional gaps around platform attack chains, mid-engagement IR detection, and client-facing reporting). The final stack documented here addresses both modes.
 
@@ -18,7 +18,7 @@ The stack maps to a 6-phase bug-bounty workflow. Each phase has its own skill se
 |---|---|---|
 | **1. Scope** | Reading program rules, deciding what's in/out, scaffolding the engagement folder | `bug-bounty`, `bb-methodology`, `osint-methodology` + `hunt <target>` shell command |
 | **2. Recon** | Asset discovery, subdomain enum, endpoint mapping, secret hunting | `offensive-osint`, `web2-recon`, `bb-local-toolkit` |
-| **3. Hunt** | Active testing for bugs in specific vuln classes | 27 `hunt-*` skills + 7 enterprise-platform skills (M365/Okta/cloud-IAM/vCenter/VPN/SharePoint/APK) + `security-arsenal` |
+| **3. Hunt** | Active testing for bugs in specific vuln classes | 24 `hunt-*` skills + 7 enterprise-platform skills (M365/Okta/cloud-IAM/vCenter/VPN/SharePoint/APK) + `security-arsenal` |
 | **4. Validate** | Decide whether a lead is actually a reportable bug | `triage-validation` (7-Question Gate) via `/triage` or `/validate` |
 | **5. Capture** | PoC screenshots, HAR files, evidence redaction | `evidence-hygiene` |
 | **6. Report** | Draft and submit | `report-writing`, `bugcrowd-reporting` |
@@ -27,7 +27,7 @@ See [docs/architecture.md](docs/architecture.md) for a more detailed breakdown.
 
 ---
 
-## 2. Skill inventory (54 skills total)
+## 2. Skill inventory (51 skills total)
 
 ### Workflow skills — the spine of any engagement
 
@@ -45,7 +45,7 @@ See [docs/architecture.md](docs/architecture.md) for a more detailed breakdown.
 | `web2-recon` | Subdomain enumeration, host discovery, URL crawling | "find all subdomains of X" |
 | `bb-local-toolkit` | Router for local cloned bug-bounty repos | "which tool for X", refers to local stack |
 
-### Hunt — 27 per-class web skills
+### Hunt — 24 per-class web skills
 
 Each focuses on one vulnerability class with detection patterns, payloads, bypass tables, and chain opportunities drawn from disclosed bug-bounty reports.
 
@@ -256,7 +256,7 @@ Cross-reference this UUID in any chained submissions you file later.
 If another pentester wants to replicate this stack, the install steps are in [INSTALL.md](INSTALL.md). The short version:
 
 1. Clone this repo
-2. Run `./scripts/install.sh` (installs all 54 skills, 15 commands, and hunt scaffold in one step)
+2. Run `./scripts/install.sh` (installs all 51 skills, 15 commands, and hunt scaffold in one step)
 3. Set up Burp MCP (BApp Store extension + `claude mcp add burp ...`)
 4. (Optional) Refresh upstream snapshots via `./scripts/install-community-skills.sh`
 5. (Optional) Set up the skill regenerator with Anthropic + H1 API keys
