@@ -426,6 +426,49 @@ Priority 5: Admin/debug endpoints → auth bypass candidates
 
 ---
 
+## Toolchain fallback (when `dnsx` / `httpx` crash)
+
+The projectdiscovery Go binaries (`dnsx`, `httpx`, `naabu`) occasionally `SIGSEGV` on macOS arm64 due to a cgo / system-resolver interaction. The crash signature is identical regardless of install method — both `brew install` and `go install github.com/projectdiscovery/<tool>@latest` produce binaries that segfault at the same address. Smoke-test once before relying on them in a real engagement:
+
+```bash
+dnsx -version   # if SIGSEGV: use the dig fallback below
+httpx -version  # if SIGSEGV: use the curl fallback below
+```
+
+### `dnsx` → `dig` fallback
+
+```bash
+# Replaces: dnsx -l subs.txt -a -resp -silent
+while read s; do
+  ips=$(dig +short +tries=1 +time=3 "$s" \
+    | grep -E '^[0-9.]+$' \
+    | paste -sd, -)
+  [ -n "$ips" ] && echo "$s|$ips"
+done < subs.txt
+```
+
+### `httpx` → `curl` fallback
+
+```bash
+# Replaces: httpx -l subs.txt -silent -status-code -title -tech-detect
+while read s; do
+  resp=$(curl -s -L -m 5 -o /tmp/body \
+    -w "%{http_code}|%{url_effective}|%{header_server}" \
+    "https://$s")
+  code=$(echo "$resp" | cut -d'|' -f1)
+  if [ "$code" != "000" ]; then
+    title=$(grep -oE '<title[^>]*>[^<]*</title>' /tmp/body | head -1 | sed 's/<[^>]*>//g')
+    echo "$s|$resp|$title"
+  fi
+done < subs.txt
+```
+
+**Trade-off:** Serial vs. concurrent. The fallback handles ~24 subdomains in 14 seconds; the same workload on `httpx` with default 50 threads finishes in 2-3 seconds. For VDP-scale recon (< 100 subdomains) the fallback is fine. For mass recon (1000+) fix the toolchain first.
+
+Verified against HackerOne's own VDP in `docs/verification/recon-hackerone-vdp.md`.
+
+---
+
 ## Related Skills & Chains
 
 - **`offensive-osint`** — When recon needs concrete probes / wordlists / regexes beyond the basic pipeline. Workflow primitive: this skill produces the URL set; `offensive-osint` provides the secret regexes, GraphQL/Swagger paths, and identity-fabric probes you apply to that URL set.
