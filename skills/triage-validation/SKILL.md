@@ -239,6 +239,25 @@ The goal is to QUICKLY disqualify bad leads so you hunt real bugs:
 
 ---
 
+## PRE-SEVERITY GATE
+
+Before labelling any finding **Critical** or **High** anywhere in your notes or report — write out the answer to each of these as a one-liner. If you can't answer concretely, **the severity is wrong**.
+
+1. **Have I validated the FULL chain to attacker-attainable impact, or only one primitive in the middle?**
+   — "Primitive confirmed at layer N" ≠ exploitable. Multi-stage chains require ALL stages validated before the severity matches the chain's top end.
+2. **What does the attacker walk away with, in one concrete sentence?**
+   — "RCE on the SP front-end web server" is concrete. "Could lead to RCE" is not — that's High at best, often Medium.
+3. **Have I personally reproduced the full chain end-to-end at least twice?**
+   — Twice = once during discovery, once for the report screenshot/PoC. Not "I'm sure it would work."
+4. **Is there an inheritance gate, signature check, audience check, or other validation step still gating the chain?**
+   — If yes, the chain is not Critical. Document it as "primitive present" at lower severity until the gate is bypassed.
+5. **Has the program rejected this severity class before?**
+   — Many programs cap "info disclosure with no concrete impact" at Low/Info regardless of the data type. Read the program scope.
+
+**Lesson from a May-2026 authorized engagement:** JWT `alg:none` was initially labelled **Critical** based on the signature-bypass primitive being confirmed at the audience-validation layer. Subsequent testing showed the issuer-trust check still rejected unsigned tokens — the full ATO chain did not complete. Finding had to be retracted. If the Pre-Severity Gate had been run on the original draft, Q1 would have killed the Critical label before submission.
+
+---
+
 ## ANTI-PATTERNS THAT LOSE MONEY
 
 ```
@@ -250,3 +269,29 @@ Reporting B saying "similar to A in my other report" — fresh Gate 0 for every 
 Overclaiming severity — triagers trust you less next time
 Under-describing impact — triager doesn't understand why it matters
 ```
+
+---
+
+## RETRACTION DISCIPLINE
+
+When a previously-claimed finding fails reproduction — **never silently drop it.** Document the retraction in the report's appendix. This proves to the triager that you validate your own work, and it saves them from chasing a phantom you've already disproved.
+
+**Retraction entry template:**
+
+```markdown
+### Retracted: <finding name>
+
+- **Original signal:** <one-line description of what looked like a bug>
+- **Disproving evidence:** <concrete reproduction-step + observation that disproves it>
+- **Why it looked like a bug:** <root cause of the false positive — e.g., natural marker collision, network jitter, status-code-only confidence>
+- **Retraction date:** <YYYY-MM-DD>
+```
+
+**Concrete retractions from an authorized engagement — pattern reference:**
+
+- **X-Forwarded-Proto reflection** — looked like header reflection across 4 pages; was the literal word `javascript` in SP help-link hrefs. Cause: non-unique marker.
+- **Host header `:80@evil` bypass** — 200 OK on a path that normally 403s; body byte-identical to baseline (8341 bytes). Cause: status-code-only confidence; ELB Host normalisation dropped the `@evil` portion.
+- **`download.aspx` file-existence oracle** — looked like a file-existence differentiator across path types; was SP's file-extension blocklist (`.ashx`/`.asmx`/`.svc`/`.config` always blocked regardless of existence). Cause: confusing server-side policy with file state.
+- **`Administrator` timing leak** — single-shot 1527 ms vs ~700 ms control on Authentication.asmx Login; n=80 interleaved reproduction collapsed every group to 685-716 ms. Cause: single-sample statistical claim.
+
+**Why this matters:** retracted findings put in an appendix demonstrate methodological honesty. Silently dropping them looks like you cherry-picked. A clean 11-finding report with a retraction appendix is more trustworthy than a 13-finding report where 2 fall apart at triage.

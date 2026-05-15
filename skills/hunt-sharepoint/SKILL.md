@@ -250,7 +250,7 @@ HelpWindowKey('WSSEndUser_troubleshooting                  (anonymous error.aspx
     - `/_api/web/SiteUsers` — enumerate users
     - `/_api/web/getfolderbyserverrelativeurl('/Shared Documents')/Files` — file enumeration
     - `/_layouts/15/people.aspx` — user listing
-    - Custom <CustomerName>-style modules — check for IDOR, business logic
+    - Custom customer-branded modules — check for IDOR, business logic
     - Workflow Services (`/_api/SP.WorkflowServices.*`)
 
 ---
@@ -338,7 +338,7 @@ curl -sk "https://target.example/_layouts/15/Picker.aspx?PickerDialogType=Micros
 
 4. **NTLM enabled on public-zone IIS binding.** Default dual-auth (Forms + NTLM) leaves NTLM Negotiate available to anonymous internet users. Type-2 challenge leaks AD topology.
 
-5. **SP2013 farms past EoL still internet-exposed.** Microsoft extended support ended 2023-04-11. Every post-April-2023 SharePoint CVE is unpatched. Common in enterprise integrator scenarios (<CustomerName>/<ParentCorp>, SI-managed dealer portals).
+5. **SP2013 farms past EoL still internet-exposed.** Microsoft extended support ended 2023-04-11. Every post-April-2023 SharePoint CVE is unpatched. Common in enterprise integrator scenarios (system-integrator inside corporate-parent AD, SI-managed dealer portals).
 
 6. **`<SafeControl>` whitelist in web.config trusted as the only gate.** Picker.aspx enforces an `instanceof PickerDialog` check, which is patched against the original CVE-2019-0604 vector — but the underlying SafeControl model itself is anonymously enumerable via the Picker.aspx error differential.
 
@@ -395,9 +395,9 @@ Before writing the report:
 
 ## Real Impact Examples
 
-### Scenario A — a May-2026 authorized engagement, an enterprise dealer portal test mirror
+### Scenario A — a May-2026 SharePoint engagement against an EoL on-prem farm
 
-Target: `https://target-portal.example/` — SharePoint Server 2013 build `15.0.5545.1000` (KB5002381 / final EoL April 2023 CU). Tenant = a system-integrator tenant (Swiss <ParentCorp> importer) inside corporate-parent global AD (`customer.parent-corp.example`). Server hostname `WIN-XXXXXXXXXXX` (default Windows installer pattern).
+Target: `https://target-portal.example/` — SharePoint Server 2013 build `15.0.5545.1000` (KB5002381 / final EoL April 2023 CU). Tenant = a system-integrator tenant (Swiss <ParentCorp> importer) inside a corporate global AD (`customer.parent-corp.example`). Server hostname `WIN-XXXXXXXXXXX` (default Windows installer pattern).
 
 11 findings shipped: 3 Critical, 2 Medium, 6 Low/Info. The three Criticals:
 

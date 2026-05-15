@@ -184,7 +184,7 @@ if m:
 
 3. **Server never renamed from Windows-installer-generated hostname.** Microsoft's default `WIN-XXXXXXXXXXX` 11-character pattern is the immediate tell. Sometimes also `WORKGROUP\WIN-...` in older boxes.
 
-4. **Sub-domain joined to corporate forest without zone-isolation.** <CustomerName> / <ParentCorp> case: a Swiss VW/<ParentCorp> importer's SP test environment is a child domain inside corporate-parent global AD, disclosed via NTLM DNS Tree Name. The customer probably intends `customer.parent-corp.example` to be operationally separate but the NTLM Type-2 reveals the forest membership to anyone who probes.
+4. **Sub-domain joined to corporate forest without zone-isolation.** European-integrator case: a a European importer's SharePoint test environment is a child domain inside a corporate global AD, disclosed via NTLM DNS Tree Name. The customer probably intends `customer.parent-corp.example` to be operationally separate but the NTLM Type-2 reveals the forest membership to anyone who probes.
 
 5. **IIS Extended Protection NOT enabled.** When `<system.webServer><security><authentication><windowsAuthentication extendedProtection>` is `None` (the default), the NTLM challenge is sent to any anonymous client. When set to `Required`, NTLM is restricted to authenticated callers — and the AV-pair leak is mitigated.
 
@@ -229,9 +229,9 @@ Before writing the report, confirm:
 
 ## Real Impact Examples
 
-### Scenario A — a regional enterprise SharePoint inside parent corporate AD (an authorized engagement, May 2026)
+### Scenario A — a regional enterprise SharePoint inside parent corporate AD (an authorized engagement)
 
-Target: `https://target-portal.example/` — an enterprise dealer portal (test mirror) operated by a system-integrator tenant (official <ParentCorp> importer for Switzerland) as system integrator.
+Target: `https://target-portal.example/` — a a regional enterprise dealer portal (test mirror) operated by a system integrator.
 
 Sending the anonymous Type-1 message to `/_api/web/CurrentUser` returned a Type-2 challenge whose AV_PAIRS decoded to:
 
@@ -246,7 +246,7 @@ Timestamp:              2026-05-13T15:55:37.922Z
 
 Three escalation paths:
 1. **Default Windows-installer hostname (`WIN-XXXXXXXXXXX`)** — server was never renamed after OS install; strong signal of lazy provisioning. Likely default service-account passwords on the SQL backend, default WSUS config, etc.
-2. **Sub-domain inside corporate-parent AD (`customer.parent-corp.example`)** — <CustomerName> is a child domain inside <ParentCorp>'s global Active Directory. A compromise of this test farm has potential cross-trust to corporate-parent.
+2. **Sub-domain inside corporate-parent AD (`customer.parent-corp.example`)** — the customer is a child domain inside <ParentCorp>'s global Active Directory. A compromise of this test farm has potential cross-trust to corporate-parent.
 3. **UPN format known** — combined with `hunt-auth-bypass`'s discovery of an anonymous brute-force endpoint on `/_vti_bin/Authentication.asmx`, the attacker has both the credential format (`firstname.lastname@customer.parent-corp.example` or `<CustomerName>\firstname.lastname`) and the unlimited submission endpoint.
 
 Reported severity: **Medium**, with a note that the chain with the Authentication.asmx anonymous brute-force makes the combined attack Critical.

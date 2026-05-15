@@ -20,6 +20,36 @@ Payouts are highest when SSRF reaches: cloud credentials → account takeover, i
 
 ---
 
+## OOB-Or-It-Didn't-Happen Gate (Read First)
+
+**Claims of blind SSRF require an out-of-band (OOB) confirmation. Always. No exceptions.**
+
+OOB means: a Burp Collaborator domain, an `interactsh-client` listener, a canarytoken, or any DNS+HTTP receiver you control that confirms the server actually made an outbound network connection on your behalf.
+
+### What is NOT confirmation of SSRF
+
+- The server **echoing your URL back in an error message**. Example: `"The Web application at http://evil.example.com/x could not be found"` — this is the server formatting your input into an error string, NOT making an outbound HTTP request. The error came from string formatting, not from network failure.
+- The server returning a different status code for an external URL vs `localhost`. Different error responses can come from URL-scheme validators, not from actual fetching.
+- A delayed response when the URL is sent. Delay can come from DNS resolution attempts within the parser, not from completed HTTP fetches.
+
+### What IS confirmation of SSRF
+
+- A DNS lookup for your unique Collaborator subdomain appears in the OOB listener.
+- An HTTP request to your Collaborator HTTP endpoint with the server's source IP and User-Agent.
+- For SSRF in JavaScript-execution contexts (PDF renderers, headless browsers), a fetch from the server to your callback URL.
+
+### Default workflow
+
+1. **Plant the Collaborator subdomain first** (sub-tag it per sink: `dlsrcurl.<collab>`, `import.<collab>`, etc., so callbacks tell you which sink fired).
+2. **Send the request** to the target endpoint.
+3. **Wait 30–120 seconds**, then poll the OOB listener.
+4. **Only after a confirmed callback** do you claim SSRF.
+5. If zero callbacks across all sub-tagged sinks: SSRF claims must be retracted, even if error messages echo URLs.
+
+**Lesson from a May-2026 authorized engagement:** SharePoint's `/_layouts/15/download.aspx?SourceUrl=` returned 500 with the title `"The Web application at <attacker-URL> could not be found"`. Initial scan flagged this as SSRF (server clearly processed the URL). 38 Collaborator-tagged payloads across 12+ URL-accepting parameters yielded **zero DNS or HTTP interactions**. The "echo" was client-side error-string formatting; the server never made an outbound HTTP request. The path is actually an SP-internal `SPFile`/`SPWebApplication` resolver, not a generic URL fetcher. Reporting this as SSRF would have been N/A'd at triage.
+
+---
+
 ## Attack Surface Signals
 
 ### URL Patterns to Hunt
