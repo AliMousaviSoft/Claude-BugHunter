@@ -233,6 +233,22 @@ fragment F on User { repos { teams { members { ...F } } } }
 - Check if the server falls back to ad-hoc queries when the `extensions.persistedQuery` hash mismatches
 - Look for a non-whitelisted endpoint (dev, staging, internal proxy)
 
+### Alias batching: when it wins races vs when it doesn't
+
+A common claim is "alias batching defeats per-user rate limits and double-spend protections." Whether this actually wins depends on the **resolver execution model**:
+
+| Resolver type | Behavior on aliased mutations | Alias batching wins races? |
+|---|---|---|
+| Multi-threaded / `DataLoader`-batched async | Aliases run concurrently, share state via batch | **YES** — single HTTP request can amplify a race-target N times |
+| Single-threaded / single-DB-connection per request | Aliases run serially; first mutation closes the door | **NO** — combine with parallel HTTP |
+| Distributed gateway (Apollo Federation) | Sub-queries dispatched concurrently to subgraphs | Depends on each subgraph |
+
+**Verification example (single-threaded Flask + SQLite resolver):**
+- 10 aliased `redeemCoupon` mutations in one request → only `r1` succeeds, r2-r10 fail with `already_redeemed`. Alias batching alone is insufficient.
+- The same 10 mutations as **20 parallel HTTP POSTs** → 20 successes ($2000 from a $100 coupon).
+
+**Operator rule:** treat alias batching as a single-RTT recon primitive. For race-target exploitation, combine with `hunt-race-condition`'s parallel-HTTP / Turbo Intruder single-packet attack. Verified in `docs/verification/phase2e-jwt-graphql-race.md` Test 11 vs Test 12.
+
 ---
 
 ## Gate 0 Validation
