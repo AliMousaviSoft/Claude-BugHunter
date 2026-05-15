@@ -290,6 +290,39 @@ Content-Type: application/xml+json
 
 ---
 
+## Parser-ecosystem vulnerability matrix
+
+XXE classic payloads (`<!ENTITY xxe SYSTEM "file://...">`) are not universally exploitable in 2026. Most mainstream language ecosystems have hardened their default XML parsers since 2018-2024. Fingerprint the target stack BEFORE investing time in XXE — sometimes the parser is already safe and the bug class doesn't apply.
+
+| Ecosystem / parser | Default behavior on SYSTEM entity | Vulnerable by default? |
+|---|---|---|
+| Java SAX / DOM (`XMLInputFactory` without disabling external entities) | Expands SYSTEM file:// | **YES** |
+| Java JAXB / JAX-WS (older Spring versions) | Expands | **YES** |
+| PHP `DOMDocument` with `LIBXML_NOENT` flag | Expands SYSTEM | **YES** |
+| PHP `simplexml_load_*` with `LIBXML_NOENT` | Expands | **YES** |
+| .NET `XmlDocument` with `XmlResolver` explicitly set | Expands | **YES** |
+| .NET `XmlReader` without `DtdProcessing=Prohibit` | Expands | **YES** |
+| Python `xml.etree.ElementTree` ≥ 3.7.1 | SYSTEM disabled | NO |
+| Python `lxml` ≥ 5.x | Silently drops SYSTEM content even with `resolve_entities=True` | NO (verified locally — see `docs/verification/phase2g-saml-mfa-xxe.md`) |
+| Python `xml.dom.minidom` | Default safe in current versions | NO |
+| Python `defusedxml.lxml` | Disabled | NO |
+| Ruby Nokogiri default | Disabled | NO |
+| Ruby Nokogiri with `Nokogiri::XML::ParseOptions::DTDLOAD` | Expands | **YES** |
+| Apache Struts (older) | Often expands | **YES** |
+| Embedded IoT / industrial XML processors (firmware) | Frequently vulnerable | **YES** |
+| Microsoft Office OOXML processors that re-parse user content | Vulnerable in some legacy paths | **YES** |
+
+**Fingerprint signals to look for:**
+
+- `Server: Apache Tomcat`, `X-Powered-By: Servlet` → Java backend → **likely YES**
+- `X-Powered-By: PHP/...` + endpoint that ingests XML → **likely YES** if app uses `DOMDocument`
+- `Server: Microsoft-IIS` with `.aspx` and XML SOAP → **likely YES** on legacy code
+- Server says nothing identifiable + endpoint accepts XML → **probe with `&hello;` first**; if the inline entity expands, escalate to SYSTEM. If the inline entity also fails to expand, the parser may be hardened — pivot.
+
+**Pre-Severity Gate:** before claiming XXE on a candidate endpoint, run the inline-entity probe (`<!ENTITY hello "world!">` then `&hello;` in a node). If `hello!` does NOT echo back, parser-level entity expansion is disabled and SYSTEM file:// won't work either. Don't waste cycles on a hardened parser.
+
+---
+
 ## Gate 0 Validation
 
 Before writing the report, answer all three:
