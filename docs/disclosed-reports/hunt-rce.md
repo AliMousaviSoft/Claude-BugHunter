@@ -30,6 +30,12 @@ RCE remains the highest-paying bug class because the proof is unambiguous (shell
 - **Key trick:** The exploitable state requires more than one configuration condition to align — operator value lies in checking the *precondition set* (versions, patch level, exposed endpoints, FormDigest behavior) rather than firing a generic payload at every `/_layouts/15/` path.
 - **Why it matters:** EoL or near-EoL enterprise products (SharePoint 2013/2016/2019) accumulate permanent CVE windows. Operators who fingerprint the version and check the precondition set against published CVE advisories will out-perform anyone running generic scanners. See `hunt-sharepoint` for the SharePoint-specific dispatcher.
 
+### Jenkins CLI args4j `@`-prefix file read (CVE-2024-23897)
+- **Source:** Jenkins Security Advisory 2024-01-24 and Atlassian-style reference write-ups by SonarSource and others. CVE-2024-23897. Added to CISA's Known Exploited Vulnerabilities catalogue in 2024.
+- **Pattern shape:** Java's `args4j` library defaults to `expandAtFiles=true`, which interprets any CLI argument beginning with `@` as a filename whose contents replace the argument with the file's lines (one line per arg). Jenkins exposes its CLI over HTTP at `/cli` and `/jnlpJars/jenkins-cli.jar`. The server-side argument-parsing error verbatim echoes failed arguments back, giving an unauthenticated arbitrary-file-read primitive. With anonymous read access enabled (the default on fresh installs), no auth is required.
+- **Key trick:** `connect-node @/etc/passwd` returns *every line* of `/etc/passwd` in distinct "No such agent" error lines. The crown-jewel chain is `@/proc/self/environ` to locate `JENKINS_HOME`, then `@/var/jenkins_home/secret.key` + `@/var/jenkins_home/credentials.xml` to lift every stored credential the CI/CD server holds.
+- **Why it matters:** CI/CD servers concentrate every credential the org issues — AWS keys, kubeconfigs, SSH keys, source-repo tokens. A pre-auth file read on Jenkins is functionally equivalent to "internal lateral movement on day zero." The pattern generalizes to any Java service that embeds args4j without `expandAtFiles=false` and exposes the CLI handler over HTTP. Verified by live exploit run against `vulhub/jenkins:2.441` — see `docs/verification/jenkins-cve-2024-23897.md`.
+
 ---
 
 ## Pattern Library
