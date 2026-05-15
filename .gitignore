@@ -26,6 +26,7 @@ submissions.txt
 notes.md
 scope.md
 CLAUDE.md.local
+targets/
 
 # Secrets
 .env

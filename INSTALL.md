@@ -27,7 +27,7 @@ chmod +x scripts/install.sh
 ```
 
 This copies:
-- All 40 skills → `~/.claude/skills/`
+- All 54 skills → `~/.claude/skills/`
 - All 15 slash commands → `~/.claude/commands/`
 - The `hunt` shell command → `~/.claude/scripts/hunt.sh` (sourced from your `.zshrc` or `.bashrc` automatically)
 

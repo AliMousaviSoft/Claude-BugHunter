@@ -1,8 +1,8 @@
 # Claude-BugHunter — Usage Guide
 
-A practical guide to using the 40-skill Claude-BugHunter bundle for bug hunting (bounty programs, authorized pentesting, CTFs, vuln research). This document covers what's in the bundle, how it composes, and how to use it on a real engagement from intake through paid bounty.
+A practical guide to using the 54-skill Claude-BugHunter bundle for bug hunting (bounty programs, authorized pentesting, CTFs, vuln research) **and external red-team engagements** against enterprise targets. This document covers what's in the bundle, how it composes, and how to use it on a real engagement from intake through paid bounty (or final client deliverable).
 
-> Built and validated through a real Bugcrowd engagement on a major financial target. The engagement exposed four capability gaps in a starter 3-skill stack; the final stack documented here fixes all four and adds 30+ new skills, a Burp MCP integration, and engagement scaffolding.
+> Built and validated through two paid engagements: a Bugcrowd engagement on a major financial target (exposed four bug-bounty capability gaps), and an external red-team engagement against an a large enterprise (redacted-client, May 2026 — exposed five additional gaps around platform attack chains, mid-engagement IR detection, and client-facing reporting). The final stack documented here addresses both modes.
 
 ---
 
@@ -18,7 +18,7 @@ The stack maps to a 6-phase bug-bounty workflow. Each phase has its own skill se
 |---|---|---|
 | **1. Scope** | Reading program rules, deciding what's in/out, scaffolding the engagement folder | `bug-bounty`, `bb-methodology`, `osint-methodology` + `hunt <target>` shell command |
 | **2. Recon** | Asset discovery, subdomain enum, endpoint mapping, secret hunting | `offensive-osint`, `web2-recon`, `bb-local-toolkit` |
-| **3. Hunt** | Active testing for bugs in specific vuln classes | 24 `hunt-*` skills (auto-trigger by class) + `security-arsenal` (payloads) |
+| **3. Hunt** | Active testing for bugs in specific vuln classes | 27 `hunt-*` skills + 7 enterprise-platform skills (M365/Okta/cloud-IAM/vCenter/VPN/SharePoint/APK) + `security-arsenal` |
 | **4. Validate** | Decide whether a lead is actually a reportable bug | `triage-validation` (7-Question Gate) via `/triage` or `/validate` |
 | **5. Capture** | PoC screenshots, HAR files, evidence redaction | `evidence-hygiene` |
 | **6. Report** | Draft and submit | `report-writing`, `bugcrowd-reporting` |
@@ -27,7 +27,7 @@ See [docs/architecture.md](docs/architecture.md) for a more detailed breakdown.
 
 ---
 
-## 2. Skill inventory (40 skills total)
+## 2. Skill inventory (54 skills total)
 
 ### Workflow skills — the spine of any engagement
 
@@ -45,7 +45,7 @@ See [docs/architecture.md](docs/architecture.md) for a more detailed breakdown.
 | `web2-recon` | Subdomain enumeration, host discovery, URL crawling | "find all subdomains of X" |
 | `bb-local-toolkit` | Router for local cloned bug-bounty repos | "which tool for X", refers to local stack |
 
-### Hunt — 24 per-class skills
+### Hunt — 27 per-class web skills
 
 Each focuses on one vulnerability class with detection patterns, payloads, bypass tables, and chain opportunities drawn from disclosed bug-bounty reports.
 
@@ -74,9 +74,35 @@ Each focuses on one vulnerability class with detection patterns, payloads, bypas
 | `hunt-cloud-misconfig` | AWS/GCP/Azure/K8s misconfigurations |
 | `hunt-subdomain` | Subdomain takeover (27+ provider fingerprints) |
 | `hunt-llm-ai` | Prompt injection, ASCII smuggling, agentic AI bugs |
+| `hunt-aspnet` | ASP.NET ViewState deserialization, machineKey, WebForms, request-validator bypass |
+| `hunt-sharepoint` | SharePoint on-prem (ToolShell chain, anon SOAP, SafeControl enum, FormDigest) |
+| `hunt-ntlm-info` | NTLM Type-2 anonymous AD topology disclosure |
 | `hunt-misc` | Catch-all for less-common classes |
 
+Plus `hunt-dispatch` — the meta-router that the `/hunt` slash command uses to pick Red Team vs WAPT mode and load the right skill set.
+
 **How auto-triggering works**: just describe what you're testing — e.g., *"I see a `?url=` parameter on this endpoint"* — and Claude loads only `hunt-ssrf`. You don't invoke them by name. The skill matcher looks at your prose and triggers based on the description field.
+
+### Enterprise platform attack — 7 skills (red-team layer)
+
+Required for external red-team work where targets are full enterprise estates rather than a single webapp.
+
+| Skill | Purpose |
+|---|---|
+| `m365-entra-attack` | M365 / Entra ID — AADSTS codes, user enum, Smart Lockout math, CA bypass, ROPC, SAML SSO browser flow |
+| `okta-attack` | Okta-as-IdP — tenant discovery, factor enum, push fatigue, FastPass abuse, OIDC redirect_uri tampering |
+| `cloud-iam-deep` | AWS / Azure / GCP IAM priv-esc — STS chaining, IMDS, K8s SA tokens, confused-deputy |
+| `vmware-vcenter-attack` | vSphere / vCenter / Workspace ONE / Aria CVE chain (CVE-2021-21972 → CVE-2024-37085) |
+| `enterprise-vpn-attack` | SSL VPN appliances — Cisco ASA, Fortinet, Citrix NetScaler, PAN GlobalProtect, Pulse/Ivanti, SonicWall, F5 |
+| `apk-redteam-pipeline` | Android APK acquisition → jadx → secret grep → Frida instrumentation |
+| `supply-chain-attack-recon` | Dep-confusion, GH Actions injection, SBOM mining, container registry exposure |
+
+### Red-team tradecraft — 2 skills
+
+| Skill | Purpose |
+|---|---|
+| `redteam-mindset` | Operator discipline — mindset corrections that separate offensive from defensive WAPT. Load at start of every red-team engagement. |
+| `mid-engagement-ir-detection` | Detect SOC patches mid-test, external attacker activity, baseline shifts → convert observations into deliverable findings |
 
 ### Hunt support — payloads and specialized
 
@@ -104,6 +130,7 @@ Each focuses on one vulnerability class with detection patterns, payloads, bypas
 |---|---|---|
 | `report-writing` | H1 / Bugcrowd / Intigriti / Immunefi report templates, CVSS 3.1 + 4.0 | `/report` |
 | `bugcrowd-reporting` | Bugcrowd-specific: VRT search, severity-request paragraph, OOS rebuttals | (loaded with report-writing) |
+| `redteam-report-template` | Client-facing deliverable: Subject / Observations / Description / Impact / Recommendation / PoC. MD + DOCX with embedded screenshots. | (auto-loads on red-team scope) |
 
 ---
 
@@ -229,7 +256,7 @@ Cross-reference this UUID in any chained submissions you file later.
 If another pentester wants to replicate this stack, the install steps are in [INSTALL.md](INSTALL.md). The short version:
 
 1. Clone this repo
-2. Run `./scripts/install.sh` (installs all 40 skills, 15 commands, and hunt scaffold in one step)
+2. Run `./scripts/install.sh` (installs all 54 skills, 15 commands, and hunt scaffold in one step)
 3. Set up Burp MCP (BApp Store extension + `claude mcp add burp ...`)
 4. (Optional) Refresh upstream snapshots via `./scripts/install-community-skills.sh`
 5. (Optional) Set up the skill regenerator with Anthropic + H1 API keys

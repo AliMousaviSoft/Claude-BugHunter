@@ -10,18 +10,18 @@ This is a **bundle**: skills and commands are vendored directly into `skills/` a
 
 | Category | Count | Source |
 |---|---|---|
-| **Original / personally-curated skills** | 32 | This repo |
+| **Original / personally-curated skills** | 46 | This repo |
 | Vendored foundation skills | 8 | shuvonsec/claude-bug-bounty (MIT) |
 | Vendored slash commands | 15 | shuvonsec/claude-bug-bounty (MIT) |
-| **Total** | 40 skills + 15 commands | |
+| **Total** | 54 skills + 15 commands | |
 
 ---
 
 ## Original work in this repo
 
-### 24 per-class `hunt-*` skills — curated from disclosed HackerOne reports
+### 27 per-class `hunt-*` skills — curated from disclosed HackerOne reports and engagement data
 
-Each `hunt-*` skill codifies detection patterns, payloads, and chain templates derived from real disclosed HackerOne reports. The selection of report sets, the curation of what to extract, and the resulting skill content are the author's work, with content derived from publicly disclosed bug-bounty reports (HackerOne's public disclosures are intended for community learning).
+Each `hunt-*` skill codifies detection patterns, payloads, and chain templates derived from real disclosed HackerOne reports (24 skills) plus three additional skills (`hunt-aspnet`, `hunt-sharepoint`, `hunt-ntlm-info`) built from a May 2026 authorized engagement against an on-prem SharePoint 2013 farm. The selection of report sets, the curation of what to extract, and the resulting skill content are the author's work, with content derived from publicly disclosed bug-bounty reports (HackerOne's public disclosures are intended for community learning) and authorized-engagement observations.
 
 The shuvonsec/public-skills-builder generator tool was used as scaffolding to produce skill files from the curated report sets — the tool is acknowledged as inspiration/scaffolding (see "Tooling" below), but the content is the author's curation work.
 
@@ -44,7 +44,7 @@ The shuvonsec/public-skills-builder generator tool was used as scaffolding to pr
 | `hunt-race-condition` | 3 |
 | **Total disclosed reports curated** | **574+** |
 
-Plus 9 additional `hunt-*` skills curated by topic without an explicit report-count tag: `hunt-saml`, `hunt-ato`, `hunt-mfa-bypass`, `hunt-http-smuggling`, `hunt-ssti`, `hunt-file-upload`, `hunt-api-misconfig`, `hunt-cloud-misconfig`, `hunt-llm-ai`, plus alternates (`hunt-cache-poisoning`, `hunt-race`, `hunt-subdomain-takeover`).
+Plus 12 additional `hunt-*` skills curated by topic without an explicit report-count tag: `hunt-saml`, `hunt-ato`, `hunt-mfa-bypass`, `hunt-http-smuggling`, `hunt-ssti`, `hunt-file-upload`, `hunt-api-misconfig`, `hunt-cloud-misconfig`, `hunt-llm-ai`, plus three engagement-derived (`hunt-aspnet`, `hunt-sharepoint`, `hunt-ntlm-info`), plus alternates (`hunt-cache-poisoning`, `hunt-race`, `hunt-subdomain-takeover`), plus the meta-router `hunt-dispatch`.
 
 ### Other personal skills
 
@@ -54,10 +54,31 @@ Plus 9 additional `hunt-*` skills curated by topic without an explicit report-co
 - **`evidence-hygiene`** — Cookie redaction protocols, PII black-bar discipline, HAR sanitization recipes, Burp/DevTools screenshot patterns, post-submission rotation hygiene. The redaction protocol distinguishes "your-account secrets" (always redact) from "other-user PII" (redact-by-default with explicit cross-account-impact exception) from "triager-useful metadata" (leave visible).
 - **`bb-local-toolkit`** — Personal customization of the master bug-bounty workflow with author's pipeline preferences.
 
+### Enterprise-platform attack skills (May 2026)
+
+Built from two paid May-2026 red-team engagements (redacted-client — a large enterprise; on-prem SharePoint engagement — separate client) plus public CVE / advisory catalogues and IdP vendor documentation. Each skill is original work — vendor docs and public CVEs provided the technical primitives; the curation, current 2024-2026 chain assembly, and operator-discipline framing are the author's.
+
+- **`m365-entra-attack`** — M365 / Entra ID full chain. AADSTS error reference, user enum vectors (with hardening status), Smart Lockout math, Conditional Access bypass options, ROPC + SAML SSO browser flow. 1,996 ROPC attempts during the redacted-client engagement, 247 pre-existing lockouts surfaced, 1 valid CA-blocked credential confirmed.
+- **`okta-attack`** — Okta-as-IdP attack chain for orgs where Okta sits alongside or instead of Entra. Distinct endpoints, distinct rate-limiting, distinct factor flows.
+- **`cloud-iam-deep`** — AWS / Azure / GCP IAM red-team post-credential model. 24+ AWS, 8+ Azure, 6+ GCP priv-esc patterns. Built for the "recon yielded a credential, what does it grant" workflow.
+- **`vmware-vcenter-attack`** — vSphere / vCenter / Workspace ONE / Aria external attack matrix. Internet-exposed only.
+- **`enterprise-vpn-attack`** — Cisco ASA, Fortinet, Citrix NetScaler, PAN GlobalProtect, Pulse/Ivanti, SonicWall, F5 — versioning, CVE matrix 2018-2026, AAA backend identification, default credentials, config-disclosure paths.
+- **`apk-redteam-pipeline`** — End-to-end Android APK pipeline. 7 APKs processed manually during the redacted-client engagement, hardcoded JWT + 30 internal endpoints recovered.
+- **`supply-chain-attack-recon`** — Recon and identification ONLY — actual package publishing / typosquat attacks require explicit written sign-off because they can affect entire npm/PyPI ecosystems.
+- **`hunt-sharepoint`** — SharePoint Server 2013–Subscription Edition on-prem farms. Anonymous endpoint enum, legacy SOAP login bypass, ToolShell precondition chain (CVE-2025-53770), SafeControl reflection enumeration, NTLM Type-2 disclosure, custom-zone Forms auth bridging. Built from a separate an authorized engagement against a SharePoint 2013 EoL farm.
+- **`hunt-aspnet`** — ASP.NET-specific surface. ViewState deserialization, machineKey recovery, dual-parser MAC-bypass anti-pattern, request-validator bypass. Same SharePoint engagement.
+- **`hunt-ntlm-info`** — NTLM/Negotiate anonymous information disclosure on internet-reachable IIS/SharePoint/Exchange. AV_PAIRS leakage of internal DNS forest, NetBIOS domain, computer name, AD timestamp. Same SharePoint engagement.
+
+### Red-team tradecraft skills (May 2026)
+
+- **`redteam-mindset`** — Operator discipline corrections that separate offensive red-team work from defensive WAPT. Load at start of every red-team engagement; reload whenever feeling stuck on a defended target.
+- **`mid-engagement-ir-detection`** — Methodology for detecting client SOC patches, attacker activity, and security-state changes that occur DURING a red-team engagement. Built after observing a client patch a confirmed SQLi within 30 minutes of detection AND an external attacker lock 14 new accounts during a single test session.
+- **`redteam-report-template`** — Client-facing deliverable format: Subject / Observations / Description / Impact / Recommendation / PoC. Built from the redacted-client deliverable (14 findings → 52KB MD + 2.2MB DOCX with 16 embedded screenshots).
+
 ### Tooling and docs
 
 - **`hunt <target>` shell command** — Engagement-folder scaffolding: creates `~/Targets/<name>/` with `CLAUDE.md`, `scope.md`, `findings/`, `evidence/`, `submissions.txt`, `notes.md`, and a sensible `.gitignore` for engagement artifacts.
-- **Bundle packaging** — Single-step installer (`scripts/install.sh`) that copies all 40 skills, 15 commands, and the hunt scaffold into `~/.claude/`.
+- **Bundle packaging** — Single-step installer (`scripts/install.sh`) that copies all 54 skills, 15 commands, and the hunt scaffold into `~/.claude/`.
 - **`assets/banner.svg`** — Hand-coded SVG banner.
 - **Documentation** — `README.md`, `INSTALL.md`, `USAGE.md`, `CONTRIBUTING.md`, `docs/architecture.md`, this credits file.
 
@@ -158,14 +179,28 @@ The platform itself.
 
 ## Validation
 
-Built and validated through a real Bugcrowd engagement on a major financial target (May 2026). The engagement exposed four capability gaps that the author's contributions directly address:
+Built and validated through **two paid engagements**:
+
+### Engagement 1 — Bugcrowd financial target (early 2026)
+
+Exposed four bug-bounty capability gaps that the author's contributions directly address:
 
 1. Hypothesis discipline (validation before drafting) — addressed by `triage-validation` (vendored)
 2. Per-program reporting tactics — addressed by **`bugcrowd-reporting`** (original)
 3. Engagement coordination / scaffolding — addressed by the **`hunt`** shell command (original)
 4. Evidence hygiene / redaction — addressed by **`evidence-hygiene`** (original)
 
-Engagement-specific identifiers (target names, account UIDs, endpoint names, bounty amounts) have been replaced with abstract placeholders in the shipped versions of `bugcrowd-reporting` and `evidence-hygiene`. Engagement details are not redistributed for confidentiality.
+### Engagement 2 — redacted-client external red-team (May 2026)
+
+External red-team engagement against an a large enterprise. Exposed five additional gaps that bug-bounty defaults made worse:
+
+1. Conservative defaults retracted real findings → addressed by **`redteam-mindset`** (original)
+2. No mid-engagement situational awareness (client patched SQLi in 30 min; external attacker locked 14 accounts mid-test) → addressed by **`mid-engagement-ir-detection`** (original)
+3. No enterprise-platform attack chains for M365, on-prem SharePoint, SSL VPN, vCenter, APKs → addressed by **`m365-entra-attack`**, **`okta-attack`**, **`hunt-sharepoint`**, **`hunt-aspnet`**, **`hunt-ntlm-info`**, **`vmware-vcenter-attack`**, **`enterprise-vpn-attack`**, **`apk-redteam-pipeline`** (all original)
+4. No client-facing deliverable format → addressed by **`redteam-report-template`** (original)
+5. No post-credential escalation model → addressed by **`cloud-iam-deep`** (original)
+
+Engagement-specific identifiers (target names, account UIDs, endpoint names, bounty amounts) have been replaced with abstract placeholders in the shipped versions of all engagement-derived skills. Engagement details are not redistributed for confidentiality. The redacted-client engagement (May 2026) is referenced by name in skill metadata only because the engagement was disclosed publicly by the author with client consent.
 
 ---
 
