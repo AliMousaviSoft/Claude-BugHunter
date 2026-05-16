@@ -288,6 +288,8 @@ The bundle explicitly **excludes**: weaponizing 0-days against unauthorized targ
 | [`INSTALL.md`](INSTALL.md) | Full setup with Burp MCP integration and optional skill regenerator |
 | [`USAGE.md`](USAGE.md) | Workflow walkthrough · decision tree · worked engagement example |
 | [`docs/architecture.md`](docs/architecture.md) | 6-phase architecture · skill-to-phase mapping · engagement composition |
+| [`docs/cbh-cli.md`](docs/cbh-cli.md) | `cbh` CLI — native runner orchestrating recon + classify + triage + report |
+| [`docs/cve-coverage.md`](docs/cve-coverage.md) | CISA KEV coverage snapshot — refreshed weekly via the workflow template at `docs/automation/cve-refresh.yml.template` |
 | [`docs/credits.md`](docs/credits.md) | Full attribution: 43 original skills + 8 vendored from upstream |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | PR guidelines · skill quality standards · scope |
 | [`SECURITY.md`](SECURITY.md) | Authorized-use posture · responsible disclosure · what's excluded |
