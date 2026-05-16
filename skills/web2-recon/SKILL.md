@@ -476,3 +476,87 @@ Verified against HackerOne's own VDP in `docs/verification/recon-hackerone-vdp.m
 - **`hunt-subdomain`** — When recon surfaces stale CNAMEs / dangling DNS. Workflow primitive: any subdomain in `subdomains.txt` whose CNAME points to S3 / GitHub Pages / Heroku / Shopify / Azure should auto-route to `hunt-subdomain` for takeover validation.
 - **`security-arsenal`** — When the URL set is classified by `gf` and ready for active testing. Workflow primitive: `gf xss/ssrf/sqli/idor` output names become payload-class queries against `security-arsenal`'s payload library.
 - **`bb-methodology`** — When recon completes and Phase 1 transitions to Phase 2 (Mapping). Workflow primitive: hand the live host + URL set back to `bb-methodology` Phase 2 for endpoint mapping and Phase 3 vulnerability discovery routing.
+
+---
+
+## Operator Notes (Claude-BugHunter)
+
+> Engagement-derived + 2026-specific additions to the vendored foundation.
+> Wisdom from real May-2026 paid engagements + Phase 2 verification across
+> this repo's 31+ skill-area live tests. The upstream pipeline covers the WHAT;
+> this layer covers the WHEN-IT-WORKS-vs-WHEN-IT-DOESN'T.
+
+### Cross-TLD pivot discipline
+
+Phase 2C's HackerOne VDP recon walked from `hackerone.com` (24 subdomains) into a sister TLD `hacker.one` (12 more subdomains found in JS bundle references). Operators who only enumerate `*.target.com` miss attack surface that the target legitimately operates on a different domain.
+
+Always grep JS bundles for plausible sibling TLDs:
+
+```bash
+# pull all JS, grep for sibling-TLD candidates
+for url in $(cat live-hosts.txt); do
+  curl -s "$url" | grep -oE 'src="[^"]+\.js"' | sed 's/src="//;s/"//'
+done | sort -u > js-urls.txt
+
+# then on each JS file
+for j in $(cat js-urls.txt); do
+  curl -s "$j" | grep -oE '[a-z0-9.-]+\.(io|app|one|dev|test|cloud|ai|co)' | sort -u
+done | sort -u > sibling-tld-candidates.txt
+```
+
+Common sibling-TLD patterns: `target.com → target.io / target.app / target.one / target.dev / target.test / target-corp.com / target-cdn.net`. Always validate via WHOIS or by checking if the cert chain trusts the same internal CA before treating the sister TLD as in-scope.
+
+### Subdomain wordlist priorities by 2026
+
+Top discovery prefixes by hit rate against enterprise VDPs in our 2024-2026 corpus:
+
+```
+mta-sts.*          api.*              docs.*
+dev-*              staging-*          *-qa
+*-stage            *-uat              events.*
+portal.*           customer.*         partner.*
+vendor.*           internal-*         admin-*
+employee-*         hr.*               jobs.*
+sso.*              auth.*             id.*
+```
+
+Internal-looking subdomains often expose more surface than the marketing site — `partner.target.com` and `vendor-portal.target.com` frequently have weaker auth than the main app because they're scoped for "trusted" external users. Always send a probe to the long-tail wordlist after the standard subfinder run completes.
+
+### Live-host probe: how to fingerprint stack quickly
+
+`curl -sI <host>` headers are 80% of the fingerprint:
+
+- `Server:` — apache / nginx / cloudflare / kestrel (= .NET Core) / openresty / envoy
+- `X-Powered-By:` — PHP version, ASP.NET version, Express.js
+- `X-Drupal-Cache`, `X-Generator: Drupal 9` — Drupal
+- `X-Generator: WordPress` — WordPress
+- `Via:` — CDN chain (1.1 varnish, 1.1 cloudfront)
+- `Set-Cookie:` names — `JSESSIONID` (Java), `PHPSESSID` (PHP), `ASP.NET_SessionId` (.NET), `connect.sid` (Express), `laravel_session` (Laravel)
+
+JS bundle filename patterns:
+
+- `/_next/static/` = Next.js
+- `/_nuxt/` = Nuxt
+- `/assets/static/` with hash filenames = Vite
+- `/static/js/main.*.chunk.js` = Create React App
+- `runtime.*.js + polyfills.*.js + main.*.js` = Angular CLI
+
+The first 10s of recon should yield a stack guess; the rest is targeting. If your fingerprint contradicts itself (Server says nginx, Set-Cookie says ASP.NET) you've found a reverse proxy front-end — note the origin app for later smuggling/cache attacks.
+
+### GitHub Pages 404 vs takeover signal
+
+Critical distinction operators get wrong:
+
+- **"Page not found · GitHub Pages"** with HTTP 404 means the repo EXISTS — NOT a takeover.
+- **"There isn't a GitHub Pages site here"** means the repo was deleted — TAKEOVER candidate.
+
+Same distinction for CloudFront:
+
+- **"Error - 404"** with `Server: CloudFront` = distribution exists, origin returned 404 — NOT a takeover.
+- **"The request could not be satisfied"** with `X-Cache: Error from cloudfront` = origin missing entirely — potential takeover.
+
+Phase 2C verified both patterns live. Always check the EXACT response body string before filing a takeover finding — the takeover-scanner tools (subzy, subjack) match on multiple fingerprints and frequently false-positive on the "still owned, just empty" case.
+
+### Toolchain fallback
+
+Already covered in this file's Phase 2C addition. Quick reminder: dnsx/httpx may segfault on macOS arm64; the dig+curl fallback works for < 100-host runs in ~14 seconds. Don't burn an hour debugging Go binary panics when the fallback gets you to the same URL set.

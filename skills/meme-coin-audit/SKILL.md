@@ -302,3 +302,78 @@ For deep dives into specific areas:
 - **`report-writing`** — When writing up a confirmed token security finding for Immunefi / private bounty. Workflow primitive: Foundry PoC template here feeds into `report-writing`'s Immunefi body template.
 - **`offensive-osint`** — When the token has off-chain infrastructure (project website, Telegram, deployer doxxing). Workflow primitive: on-chain audit is this skill's domain; deployer wallet history, social presence, and project legitimacy checks route to `offensive-osint`.
 - **`bb-methodology`** — When confirming engagement mode. Workflow primitive: PART 0 separates "pre-investment due diligence" (this skill's primary use) from "Immunefi bug bounty submission" (different reporting + severity standards); the answer routes which post-audit handoff is correct.
+
+---
+
+## Operator Notes (Claude-BugHunter)
+
+> Engagement-derived + 2026-specific additions to the vendored foundation.
+> Wisdom from real May-2026 paid engagements + Phase 2 verification across
+> this repo's 31+ skill-area live tests. The upstream content covers the WHAT;
+> this layer covers the WHEN-IT-WORKS-vs-WHEN-IT-DOESN'T.
+
+### Solana-specific signals — 2025-2026 reality
+
+Token-2022 transfer hooks are the new rug-pull vector. Hook authority can be set to a single key; that key can pause / blacklist / fee-on-transfer arbitrary addresses post-launch. Always check hook authority + permanent-delegate authority for Token-2022 mints:
+
+```bash
+# get mint extensions for a Token-2022 mint
+spl-token display <MINT_ADDRESS> --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb
+# look for: TransferHook { authority: ... }, PermanentDelegate { delegate: ... }
+```
+
+If TransferHook authority is non-null → the holder of that key can revoke transfer rights mid-trade. If PermanentDelegate is non-null → that delegate can move any holder's tokens at any time (effectively a built-in confiscation). Either alone is rug-class.
+
+pump.fun bonding curves can be manipulated via the curve's K-parameter; mint authority retained beyond bonding-curve completion is the classic exit-scam shape. Check `mintAuthority` AFTER the curve completes — legitimate launches null it, scams retain it for the post-graduation dump.
+
+### Honeypot detection — beyond the obvious
+
+`transfer()` succeeds in dry-run but fails on certain addresses (sender allowlist / blocklist). Test with: simulated buy → simulated transfer to a different address → simulated sell. If buy + transfer succeed but sell fails, it's a honeypot.
+
+Quick triage matrix:
+
+| Test | Honeypot Signal |
+|------|----------------|
+| Buy from random wallet | Succeeds (must — or no one would touch it) |
+| Transfer to second random wallet | Often fails on honeypot |
+| Sell from original wallet | Fails or applies > 50% tax |
+| Sell from team-controlled wallet | Succeeds (the giveaway) |
+
+Cross-source verification: solana-rugcheck, rugcheck.xyz, dexscreener risk signals, honeypot.is (EVM). Never trust a single source — rug-checkers can be fooled by deferred-malice patterns (clean for first 7 days, hook activates later).
+
+### LP lock claims — verify, don't trust
+
+LP-lock badges on DexScreener mean nothing without on-chain verification. Check the actual lock contract (Unicrypt, TeamFinance, Bonkbot, PinkLock) for:
+
+- **Unlock date** — the on-chain timestamp, not the badge text
+- **Lock owner** — is it the deployer's wallet? Are there multiple lockers fragmenting the LP?
+- **Extension / shortening permission** — some lock contracts allow the owner to SHORTEN the lock; that's an exit hatch dressed as a lock
+- **Lock contract bytecode** — verify it's the canonical locker, not a fork with backdoors
+
+Some "locked" LPs are 1-day locks renewed weekly — visually the same as a year lock to the buyer, but the deployer can let it lapse on any Tuesday. Always read the lock contract source on the chain explorer.
+
+### Pre-investment due diligence in under 5 minutes
+
+The 6-question fast filter:
+
+1. Mint authority null?
+2. Freeze authority null?
+3. Update authority null (for metadata immutability)?
+4. LP locked in a verified contract for > 6 months?
+5. Top 10 holders concentration < 30% (excluding pools/burn addresses)?
+6. Bonding curve completed (for pump.fun) AND post-completion mint authority null?
+
+Five "no"s = walk away. Three "no"s = high risk, only enter with size you'd walk away from. Two "no"s with strong narrative + thin liquidity = the canonical retail trap.
+
+### MEV / sandwich amplification on illiquid mints
+
+Buying into a mint with < $50K liquidity guarantees you'll be sandwiched. The bot infrastructure on Solana and Ethereum is institutionalized in 2026 — Jito MEV-share, Flashbots SUAVE, Eden Network, private order-flow auctions. If your trade size > 1% of available liquidity, expect sandwich loss > 5%; > 5% of liquidity, expect > 20% slippage from sandwich alone.
+
+Mitigations (rank by 2026 effectiveness):
+
+1. **Jito bundles** (Solana) — submit with priority tip, atomic with no MEV window
+2. **Flashbots Protect RPC** (Ethereum) — private mempool submission
+3. **MEV-protected DEX aggregators** — Jupiter's slippage protection, 1inch Fusion, CoWSwap
+4. **Splitting orders** — N smaller trades vs 1 large; reduces sandwich profitability per trade
+
+If the mint is so illiquid that even split orders sandwich — that's the signal to skip the trade, not the signal to use better tooling.
