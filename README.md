@@ -25,6 +25,32 @@ All triggered automatically by topic — describe what you're testing in plain E
 
 ---
 
+## Scope — what this bundle is for, and what it isn't
+
+This bundle covers the **external attack surface** — anything reachable from the internet without first compromising an internal endpoint.
+
+### In scope
+
+- **Bug bounty hunting** — web apps, APIs, SaaS, GraphQL, OAuth, JWT, file upload, IDOR, SSRF, RCE chains
+- **Web application pentesting** — full hunt-* coverage of OWASP-mapped bug classes + discipline rules
+- **External red-team engagements** — initial-access against internet-facing enterprise estate: M365 / Entra ID, Okta-as-IdP, SharePoint on-prem (ToolShell + legacy SOAP), VMware vCenter / Workspace ONE, SSL VPN appliances (Cisco / Fortinet / Citrix / Palo Alto / Pulse / SonicWall / F5), Android APK red-team, supply-chain recon
+- **Cloud misconfig + post-credential escalation** — public S3, IMDS chains, STS AssumeRole, cross-account confused-deputy
+- **Recon + OSINT** — subdomain enum, identity-fabric mapping, certificate transparency, JS analysis, secret scanning
+- **Reporting** — H1, Bugcrowd (VRT-aware), Intigriti, Immunefi, plus client-facing red-team deliverable format
+
+### Out of scope (deliberate — not gaps, design decisions)
+
+- **Internal Active Directory attacks** — BloodHound, Kerberoasting, ASREProast, DCSync, Pass-the-Hash, AD CS abuse, ntlmrelayx, Responder, PetitPotam, etc. Different operational risk profile; needs different tooling and judgment. **Future bundle, not this one.**
+- **C2 frameworks** — Cobalt Strike, Sliver, Mythic, Havoc, BRC4 tradecraft. Out of scope for external-only engagement model.
+- **Post-exploit / persistence / lateral** — Mimikatz/comsvcs LSASS dumping, golden/silver tickets, named-pipe impersonation, persistence (registry, scheduled tasks, WMI events, COM hijacking), token theft. These start after the perimeter has already broken — different bundle territory.
+- **Evasion** — AMSI bypass, ETW patching, AV/EDR bypass. Tied to C2 tradecraft above.
+- **iOS pentesting / hardware / RF / ICS** — out of scope by design.
+- **Binary exploitation / kernel pwn / browser internals** — different skill universe.
+
+If you're running an internal red team that includes domain-takeover chains via Kerberos or lateral movement, **this bundle won't help you in those phases** — and we'd rather say that up front than have you find out mid-engagement. The external surface handoff to internal-RT tooling (Impacket, NetExec, CrackMapExec, Rubeus, Certify, BloodHound) is intentionally outside our scope. **Coverage for internal AD and post-exploit may come in a future update.**
+
+---
+
 ## Two interfaces — pick what fits your engagement
 
 The bundle exposes the same content through two interfaces. **Slash commands are the primary interface**; the `cbh` CLI is a secondary terminal-native runner. Both consume the same `skills/` content; they differ in execution model.

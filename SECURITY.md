@@ -32,6 +32,22 @@ The bundle does **not** include and is **not intended for**:
 
 If a finding requires going beyond authorized scope to demonstrate impact, the bundle's validation gates default to **DOWNGRADE** or **CHAIN REQUIRED** — never to "exploit further to prove it."
 
+## Scope of coverage — external attack surface only
+
+By design, this bundle covers the **external attack surface** — the boundary between the internet and authenticated production systems. It does **not** cover internal-network attacks once the perimeter has been crossed.
+
+**Out-of-scope-by-design** (not gaps — deliberate boundary):
+
+- Internal Active Directory attacks (BloodHound, Kerberoasting, ASREProast, DCSync, DCShadow, Pass-the-Hash, Pass-the-Ticket, AD CS abuse, ntlmrelayx, Responder, mitm6, PetitPotam, PrinterBug)
+- C2 framework tradecraft (Cobalt Strike, Sliver, Mythic, Havoc, BRC4)
+- Post-exploit / persistence (LSASS dumping, golden/silver tickets, registry persistence, scheduled tasks, WMI event subscriptions, COM hijacking, token theft, named-pipe impersonation)
+- Evasion (AMSI bypass, ETW patching, Sysmon awareness, AV/EDR bypass, syscall direct/indirect)
+- Internal-network protocols at L2 (LLMNR/NBT-NS poisoning, IPv6 SLAAC abuse, ARP spoofing)
+
+The reasoning: internal-AD attacks against monitored corporate networks have a fundamentally different operational risk profile (defender awareness, blue-team detection, legal exposure under specific authorization terms). The skill content + the operator-discipline rules in this bundle are calibrated for external-perimeter testing, not for inside-the-castle work. **Coverage for internal AD and post-exploit may come in a future update; do not treat the current omission as something to fill in by improvising.**
+
+If you reach domain-admin-class objectives during an engagement, the bundle's external-perimeter chain ends at "credential discovered + access verified" — handoff to specialist internal-RT tooling (Impacket, NetExec, CrackMapExec, Rubeus, Certify, BloodHound) is intentionally outside the bundle's scope.
+
 ## Reporting a security issue in this repo
 
 If you discover a security issue in **this repository itself** (not in a target you're hunting):
