@@ -295,7 +295,7 @@ def cmd_recon(args: argparse.Namespace) -> int:
     say(f"  HTTP-live:         {len(live)}")
     say(f"  Output:            {out_dir}")
     say()
-    say(f"  Next: {color(f'cbh classify <url>', 'bold')} to pattern-match attack candidates")
+    say(f"  Next: {color('cbh classify <url>', 'bold')} for fast pattern-match, or {color('/hunt <target>', 'bold')} in Claude Code for full LLM-driven hunting")
     return 0
 
 
@@ -449,6 +449,10 @@ def cmd_classify(args: argparse.Namespace) -> int:
     say(f"  2. Pick the highest-confidence attack from the Pattern Library")
     say(f"  3. Apply OOB-Or-It-Didn't-Happen Gate before claiming success")
     say(f"  4. {color('cbh triage <finding.md>', 'bold')} once you have a candidate finding")
+    say()
+    say(color("Need richer context? In a Claude Code conversation:", "dim"))
+    say(color(f"   /hunt <url>     — full hunt-dispatch routing with LLM judgment", "dim"))
+    say(color(f"   /chain          — build A→B→C exploit chains", "dim"))
     return 0
 
 
@@ -682,14 +686,22 @@ def cmd_report(args: argparse.Namespace) -> int:
 def main() -> int:
     parser = argparse.ArgumentParser(
         prog="cbh",
-        description="claude-bughunter CLI — orchestrate the engagement loop",
+        description=("claude-bughunter CLI — terminal-native deterministic runner.\n"
+                     "SECONDARY interface; slash commands (/hunt, /recon, /triage, /report) "
+                     "in Claude Code are PRIMARY. Use cbh for CI/CD, scripted runs, "
+                     "deterministic verification, or when not in a Claude Code session."),
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent("""\
             Examples:
               cbh recon hackerone.com
+              cbh recon target.com --burp                  # route via Burp proxy
               cbh classify "https://api.target.com/v1/users/42?next=https://evil.com"
               cbh triage findings/idor-2026-05-15.md
               cbh report findings/idor-2026-05-15.md --platform bugcrowd --out draft.md
+
+            For LLM-driven hunting with full skill context, use the slash commands
+            inside Claude Code: /hunt /recon /triage /report /validate /chain /autopilot
+            See docs/cbh-cli.md for the "when to use which" matrix.
             """),
     )
     sub = parser.add_subparsers(dest="command", required=True)

@@ -1,10 +1,28 @@
 # `cbh` — claude-bughunter CLI
 
-> Native runner that bridges the skill content into a real engagement loop.
-> Four subcommands compose intake → reconnaissance → triage → submission.
+> **Secondary interface — slash commands are primary.** Inside a Claude Code conversation, use the slash commands (`/recon`, `/hunt`, `/triage`, `/report`, `/validate`, `/chain`, `/autopilot`, `/scope`, etc.) — they leverage the full skill content and the LLM's judgment.
+>
+> `cbh` is the **terminal-native deterministic runner** — use it when you're outside Claude Code, automating in CI/CD, running scheduled recon, or verifying labs reproducibly. Same skills, different execution model.
+
+## When to use `cbh` vs slash commands
+
+| Use case | Use this |
+|---|---|
+| Hunting a new target conversationally, applying judgment | **Slash commands** in Claude Code (`/hunt`, `/triage`, etc.) |
+| Building a chain across multiple primitives | **Slash commands** — LLM keeps state across the conversation |
+| Scheduled / CI / scripted runs | **`cbh`** — deterministic exit codes, identical output across runs |
+| Bulk passive recon (hundreds of subdomains) | **`cbh recon`** — real `subfinder`/`dig`/`curl`, no LLM in the loop |
+| Verifying labs / reproducing claims | **`cbh`** — every Phase 2 doc's curls work via `cbh` too |
+| Reading skills without Claude Code installed | **`cbh`** + browsing `skills/` and `docs/disclosed-reports/` |
+| Triage gate at PR time / pre-submit linting | **`cbh triage`** — deterministic keyword-match against the 7-Question Gate |
+
+The two interfaces consume the same content (`skills/` + `docs/disclosed-reports/`). They produce different outputs because they execute differently. Pick by context, not by preference.
+
+## Operating modes for the CLI
+
 > Stdlib + optional `subfinder` for richer recon. No build step.
 >
-> **Two operating modes** — pick what fits your setup:
+> **Two HTTP-routing modes** within the CLI — pick what fits your setup:
 > 1. **Curl-only (default)** — stdlib HTTP, no Burp dependency. Works on any laptop with Python 3.9+.
 > 2. **Burp Suite integration** — `--burp` flag routes everything through Burp's proxy (default `127.0.0.1:8080`). Requests + responses land in Proxy → HTTP history; you can send any of them to Repeater/Intruder/Scanner/Collaborator. Pairs with the **Burp MCP server** (port 9876) for Claude-Code-conversational hunting.
 

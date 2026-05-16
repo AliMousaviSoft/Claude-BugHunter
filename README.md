@@ -25,6 +25,28 @@ All triggered automatically by topic — describe what you're testing in plain E
 
 ---
 
+## Two interfaces — pick what fits your engagement
+
+The bundle exposes the same content through two interfaces. **Slash commands are the primary interface**; the `cbh` CLI is a secondary terminal-native runner. Both consume the same `skills/` content; they differ in execution model.
+
+| | Slash commands (PRIMARY) | `cbh` CLI (SECONDARY) |
+|---|---|---|
+| Runs in | A Claude Code conversation | Any terminal with Python 3.9+ |
+| Execution | LLM-driven — reads full SKILL.md, applies judgment, can chain skills, can converse | Deterministic — Python stdlib, regex match, real `subfinder`/`dig`/`curl` calls |
+| Output | Conversational, contextual, varies per run | Files + structured stdout, identical across runs |
+| Best for | Hunting, chain construction, applying discipline rules with nuance, talking through findings | CI/CD, scripted automation, bulk recon, deterministic verification, non-Claude environments |
+| Examples | `/recon target.com` `/hunt target.com` `/triage` `/report` `/validate` `/chain` `/autopilot` `/scope` | `cbh recon target.com` (real network I/O) · `cbh triage finding.md` (deterministic 7Q grep) · `cbh report finding.md --platform bugcrowd` |
+
+**Choose by use case:**
+
+- **Exploring a new target?** Use Claude Code with slash commands. The LLM applies judgment that the deterministic CLI can't.
+- **Running scheduled recon? Verifying labs? CI gate?** Use `cbh`. It's reproducible and scriptable.
+- **You don't have Claude Code installed but want to read the skills/Pattern Libraries?** Use `cbh` plus `cat skills/<name>/SKILL.md`. The content stands on its own.
+
+See [`docs/cbh-cli.md`](docs/cbh-cli.md) for the CLI reference. See the slash command list under **Slash Commands** later in this file for the conversational interface.
+
+---
+
 ## Structure
 
 ```
