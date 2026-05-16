@@ -33,6 +33,42 @@ Cache poisoning → stored XSS at scale
 
 ---
 
+## Target-Suitability Matrix (2026 reality check)
+
+The classic CL.TE / TE.CL payloads are NOT universally exploitable in 2026. Modern proxies are RFC 9112 strict by default. Fingerprint the front-end BEFORE investing time.
+
+| Front-end | CL.TE | TE.CL | H2.CL | H2.TE | Notes |
+|---|---|---|---|---|---|
+| **Nginx ≥ 1.21** | NO | NO | partial (H2 ingress) | partial | RFC-strict; rejects CL+TE with HTTP 400. Verified locally on Nginx 1.27 — all 9 documented variants killed by front-end ([docs/verification/phase2h-smuggling-cachepoison.md](../../docs/verification/phase2h-smuggling-cachepoison.md)). |
+| **Caddy 2.x** | NO | NO | — | — | Hardened by default |
+| **Envoy ≥ 1.20** | NO | NO | partial | partial | Hardened in most paths |
+| **HAProxy ≤ 2.4** | ✓ | ✓ | — | — | **Vulnerable**, see CVE-2021-40346 |
+| **AWS ALB + specific upstream** | partial | partial | ✓ | ✓ | Several disclosed-paid reports 2022-2024 |
+| **Cloudflare → S3 / Lambda chains** | — | — | ✓ | ✓ | H2-downgrade attacks remain viable |
+| **Older F5 BIG-IP (TMM < 16)** | ✓ | — | — | — | Vendor advisories |
+| **Citrix ADC / NetScaler (older firmware)** | ✓ | ✓ | — | — | Disclosed in 2020-2022 |
+| **Squid 3.x** | ✓ | — | — | — | Older deployments |
+| **Apache Traffic Server (older)** | ✓ | ✓ | ✓ | ✓ | PortSwigger research |
+| **Custom Python / Go proxies** | ✓ | ✓ | — | — | Frequently miss RFC enforcement |
+
+### Operator fingerprint quick-check
+
+```bash
+curl -sI https://target/ | grep -i "Server:"
+```
+
+- `nginx/1.21+`, `Caddy`, `envoy` → CL/TE classic is dead — pivot to H2.CL/H2.TE if the front-end speaks HTTP/2, or look for legacy proxies upstream
+- `HAProxy`, header points to AWS/CDN → run the full payload matrix
+- No Server header → assume hardened, but run a single quick `space-before-colon` probe; if it doesn't 400, dig deeper
+
+### H2.CL / H2.TE (the modern dominant vector)
+
+H2-downgrade smuggling attacks rely on the front-end speaking HTTP/2 to the client and HTTP/1.1 to origin. The downgrade introduces CL/TE confusion because HTTP/2's frame-length headers don't survive the conversion cleanly. Most CDN+origin chains in 2024-2026 use this exact topology.
+
+Tools that send HTTP/2 raw frames (Burp Pro's HTTP Request Smuggler extension, `h2csmuggler`, `smuggler.py`) are the right starting point against CDN-fronted targets. Avoid HTTP/1.1-only test clients (curl, raw sockets) against H2-front-ended targets — you'll send the wrong protocol entirely.
+
+---
+
 ## Related Skills & Chains
 
 - **`hunt-cache-poison`** — Smuggling + cache is the canonical critical chain; one smuggled request becomes the cached response for every subsequent victim. Chain primitive: CL.TE smuggle a request whose response body contains attacker HTML/JS → front-end cache stores it under a popular URL (`/`, `/login`) → de-sync poisoning where the smuggled request becomes the cached response for the next N victims, persisting for the cache TTL.
