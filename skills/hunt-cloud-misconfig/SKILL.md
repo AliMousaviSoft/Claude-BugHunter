@@ -35,6 +35,25 @@ http://169.254.169.254/latest/meta-data/iam/security-credentials/ROLE-NAME  # ke
 
 ---
 
+## Local-verification toolchain
+
+For testing cloud-misconfig findings against a local AWS sim before/instead of hitting real cloud:
+
+```bash
+# LocalStack 3.0 community (pin the version — 4.x requires a Pro license)
+docker run -d --name lab-localstack -p 14566:4566 localstack/localstack:3.0
+
+# awscli ≥ 2.30 + LocalStack 3.0 incompatibility workaround (x-amz-trailer header):
+export AWS_REQUEST_CHECKSUM_CALCULATION=when_required
+export AWS_RESPONSE_CHECKSUM_VALIDATION=when_required
+export AWS_ENDPOINT_URL=http://localhost:14566
+export AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_DEFAULT_REGION=us-east-1
+```
+
+Without those env vars, `aws s3 cp/sync` fails with `InvalidRequest`. Document this for the team. See `docs/verification/phase2j-cloud-localstack.md` for the full reproducible flow.
+
+---
+
 ## Related Skills & Chains
 
 - **`hunt-subdomain`** — Stale CNAMEs pointing to deleted buckets are a takeover gold mine. Chain primitive: Cloud misconfig (S3 public/deleted) + `hunt-subdomain` → unclaimed CNAME points to bucket → `assets.target.com` takeover.
