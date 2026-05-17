@@ -284,37 +284,175 @@ One NO = KILL. Move on. This single discipline separates productive researchers 
 
 ## Quick Start
 
-### One-step install (recommended)
+**Time to first hunt:** ~10 minutes if you have prerequisites, ~25 minutes if you're starting fresh.
+
+### Step 1 — Prerequisites (5 minutes, one-time)
+
+You need these BEFORE the install will work. Check each one:
+
+| What | Why | Verify with | Where to get it |
+|---|---|---|---|
+| **macOS or Linux** | Install script + shell scaffold are POSIX | `uname -a` | (Windows users: use WSL2 Ubuntu) |
+| **Claude Code CLI** | The bundle runs as skills loaded by Claude Code | `claude --version` | https://claude.ai/download |
+| **Claude Pro/Team or Max plan** | Claude Code needs a subscription OR an API key | `claude /login` (then sign in) | https://claude.ai/upgrade |
+| **Python 3.9+** | For the `cbh` CLI (terminal-side companion) | `python3 --version` | `brew install python` (mac) / `apt install python3` (linux) |
+| **`git`** | To clone this repo | `git --version` | usually pre-installed |
+
+**Optional but recommended:**
+- **Burp Suite Pro or Community** — `https://portswigger.net/burp` — needed only if you want HTTP-history capture. Skills work fine without it.
+
+### Step 2 — Install the bundle (2 minutes)
+
+Copy-paste these three commands into your terminal:
 
 ```bash
+mkdir -p ~/Research && cd ~/Research
 git clone https://github.com/elementalsouls/Claude-BugHunter.git
-cd Claude-BugHunter
-./scripts/install.sh
+cd Claude-BugHunter && ./scripts/install.sh
 ```
 
-That copies all 51 skills to `~/.claude/skills/`, all 15 commands to `~/.claude/commands/`, and sources `hunt.sh` from your shell rc.
+**Expected output** (scrolls past ~80 lines — you can ignore the per-skill detail; just look for the banner at the bottom):
+```
+Installing Claude-BugHunter bundle from /Users/you/Research/Claude-BugHunter
 
-### First engagement
+Skills →  /Users/you/.claude/skills
+  ✓ Installed skill: apk-redteam-pipeline
+  ✓ Installed skill: bb-methodology
+  ... (one line per skill — 51 total) ...
+
+Commands →  /Users/you/.claude/commands
+  ✓ Installed command: /autopilot
+  ... (15 total) ...
+
+  ✓ Installed hunt shell command at /Users/you/.claude/scripts/hunt.sh
+  ✓ Added 'source ~/.claude/scripts/hunt.sh' to /Users/you/.zshrc
+
+============================================
+✓ Install complete
+============================================
+
+Next: open a new terminal (or 'source ~/.zshrc') and try:
+    hunt acme-test
+```
+
+If you see `command not found` for `git` or `python3`, go back to Step 1.
+
+Restart your terminal (or `source ~/.zshrc`) so the `hunt` shell command is available.
+
+### Step 3 — Verify install (30 seconds)
 
 ```bash
-hunt acme-bb              # scaffolds ~/Targets/acme-bb/ with CLAUDE.md, scope.md, findings/, evidence/, submissions.txt
-cd ~/Targets/acme-bb
-claude                    # opens Claude Code with engagement context
+# Verify the hunt scaffold (running with no args shows usage — that means it loaded)
+hunt
+# Expected: prints "Usage: hunt <target-name>" + default base path
+
+# Count the installed skills (should be 51)
+ls ~/.claude/skills/ | wc -l
+# Expected: 51
+
+# Spot-check a few skills loaded
+ls ~/.claude/skills/ | grep -E '^(hunt-xss|hunt-rce|m365-entra-attack|triage-validation)$'
+# Expected: all 4 lines print back
 ```
 
-In Claude, describe what you're testing in plain English — *"I see a `?url=` parameter, looks SSRF-prone"* — and `hunt-ssrf` auto-loads with detection patterns, payloads, and the 11-bypass IP table.
+If `hunt` says "command not found": run `source ~/.zshrc` (or `source ~/.bashrc` on Linux) and try again. If that doesn't fix it, see [INSTALL.md → Troubleshooting](INSTALL.md#troubleshooting).
 
-### Drop-in usage (Claude.ai, Claude API, other harnesses)
+### Step 4 — Your first hunt (5–10 minutes)
+
+**Don't have a target yet?** Use one of these — they EXIST to be tested by people new to bug hunting:
+
+| Where | What it is | Why use it for your first hunt |
+|---|---|---|
+| **`hackerone.com/security`** | HackerOne's own bug bounty | Mature program, accepts almost everything, fast response |
+| **`bugcrowd.com/programs`** | Browse public programs | Filter "Open to anyone" + "VDP" (no payout but no review either) |
+| **`juice-shop.herokuapp.com`** | OWASP Juice Shop (deliberately vulnerable) | Practice without authorization concerns |
+| **`testphp.vulnweb.com`** | Acunetix test target (deliberately vulnerable) | Practice SQLi, XSS in a safe environment |
+
+For your first real attempt against a public bug bounty program, use **HackerOne's own program** (`hackerone.com/security`). They're paid to receive your testing.
+
+**Run your first engagement:**
 
 ```bash
-# Copy a single SKILL.md into a Project's system prompt:
-cat skills/hunt-rce/SKILL.md | pbcopy
-# Paste into Claude.ai project instructions or API system prompt.
+# Set up an engagement folder (replace 'h1-vdp' with any name you want)
+hunt h1-vdp
+cd ~/Targets/h1-vdp
+
+# Open Claude Code in this folder
+claude
 ```
 
-All skills are plain Markdown — also usable as personal cheat sheets without Claude.
+You're now inside Claude Code, in an engagement folder with `CLAUDE.md`, `scope.md`, `findings/`, `evidence/` already set up. Now ask Claude to start:
 
-For Burp Suite Pro MCP integration and the optional skill-regenerator setup, see [INSTALL.md](INSTALL.md). For the full workflow walkthrough with a worked example, see [USAGE.md](USAGE.md).
+> **You type this into Claude:**
+> *I want to do a bug bounty hunt on hackerone.com — their own VDP at https://hackerone.com/security. Walk me through the workflow from scratch. Start with recon.*
+
+**What you'll see Claude do:**
+1. ✅ Load `bb-methodology` skill (the 6-phase workflow)
+2. ✅ Load `triage-validation` skill (the 7-Question Gate that runs before any submission)
+3. ✅ Load `offensive-osint` + `web2-recon` for recon
+4. ✅ Ask you to confirm scope and engagement mode (bug-bounty vs red-team vs pentest)
+5. ✅ Generate concrete commands you can run to start mapping the target
+
+You don't need to know what each skill does — they auto-load based on what you describe. Just keep telling Claude what you're seeing and what you want to do next.
+
+### Step 5 — When you think you found something
+
+**Before drafting any report, type this into Claude:**
+
+```
+/triage
+```
+
+Then describe the finding to Claude in plain English: *"I found that the password-reset page returns the user's email back in the response when given a valid user ID — looks like account-enumeration."*
+
+Claude runs the **7-Question Gate** (Q1: real HTTP request? Q2: accepted-impact? Q3: in-scope? … Q6: concrete impact, not technically-possible? Q7: not on the never-submit list?). Returns one of:
+- **PASS** → you're cleared to write the report (`/report`)
+- **DOWNGRADE** → you have a finding but it's a lower tier
+- **KILL** → don't draft this; move on
+- **CHAIN REQUIRED** → it's only valid as part of a larger chain
+
+**This single step prevents the most common mistake new hunters make: drafting reports for findings that get rejected as N/A.**
+
+### Step 6 — When ready to submit
+
+```
+/report
+```
+
+Claude triggers `report-writing` (the report body template) + the platform-specific skill (`bugcrowd-reporting` for Bugcrowd, generic H1 template otherwise). The output is copy-paste-ready.
+
+---
+
+### Beginner FAQ
+
+**Q: Do I need to know how to hack?**
+No. The skills explain detection patterns + payloads + validation. If you can read English and run a terminal command, you can use the bundle. You'll learn faster than reading 20 hacking books.
+
+**Q: What if a skill doesn't auto-load?**
+Mention the bug class explicitly: instead of *"this looks weird"* say *"I think this is XSS — let me test"*. The keyword `XSS` triggers `hunt-xss`. Same for SQLi, IDOR, SSRF, RCE, CSRF, etc.
+
+**Q: Can I use this on any website?**
+**NO.** Only on assets you own OR have written authorization to test (bug-bounty in-scope assets, pentest with signed engagement letter, CTF challenges, your own test environments). The bundle has guardrails — `triage-validation` Q3 explicitly checks scope before accepting any finding. Unauthorized testing violates computer-fraud laws.
+
+**Q: Where do I get bug bounty targets?**
+HackerOne (`hackerone.com/opportunities/all/search`), Bugcrowd (`bugcrowd.com/programs`), Intigriti (`intigriti.com/programs`), YesWeHack (`yeswehack.com/programs`). Filter for **VDP** programs first — they don't pay but they're also lower-pressure to learn on.
+
+**Q: What's the difference between bug bounty and red team?**
+- **Bug bounty** = open-scope, pay-per-finding, hundreds of researchers competing. Use `bb-methodology` + the `hunt-*` skills.
+- **Red team** = paid engagement, narrow scope, single tester, deliverable is a client-facing report. Use `redteam-mindset` + `redteam-report-template` + the platform-attack skills (`m365-entra-attack`, `enterprise-vpn-attack`, etc).
+- **Pentest** = paid engagement, broader coverage, methodology-driven. Mix of both skill sets.
+
+The bundle's `bb-methodology` Part 0 will ask you to confirm which mode at the start of every engagement.
+
+**Q: Skills aren't triggering — what's wrong?**
+Check `/mcp` inside Claude — see if everything's connected. Also: skills trigger on *keywords* in your prompt. If you say *"is this exploitable?"* nothing triggers because there's no keyword. Say *"is this an SSRF?"* and `hunt-ssrf` loads.
+
+**Q: Can I use this in Claude.ai (not Claude Code)?**
+Yes — copy any `skills/<name>/SKILL.md` content into a Claude.ai Project's system prompt. Single-file usage works but you lose the multi-skill composition. Claude Code is the intended interface.
+
+---
+
+For Burp Suite Pro MCP integration (optional layer), see [INSTALL.md](INSTALL.md). For the full engagement walkthrough with a worked example, see [USAGE.md](USAGE.md).
 
 ---
 

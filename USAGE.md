@@ -6,6 +6,128 @@ A practical guide to using the 51-skill Claude-BugHunter bundle for bug hunting 
 
 ---
 
+## 0. Brand new? Start here
+
+This section is for people who have **never used the bundle before, never used Claude Code, or never done bug hunting**. If you're already comfortable with any of those, skim to Section 1.
+
+### What is this bundle, in plain English?
+
+It's a collection of 51 markdown files (called **skills**) that turn Claude Code into a methodical bug-hunting assistant.
+
+Without the bundle, asking Claude *"is this XSS?"* gets you a generic answer. With the bundle installed, the same question loads the `hunt-xss` skill — which contains specific detection patterns from 574+ disclosed reports, the exact payloads that have worked, and a validation gate that prevents you from filing a false-positive bug report.
+
+You don't "learn" the bundle. You install it once, then describe what you're testing in plain English, and the relevant skill auto-loads. You read it together with Claude and follow the steps.
+
+### What you DO need before starting
+
+1. **A laptop running macOS or Linux** (Windows users: WSL2 Ubuntu works).
+2. **Claude Code installed** (from https://claude.ai/download) — this is the CLI app, not Claude.ai in your browser.
+3. **A Claude paid plan** (Pro/Team/Max) or an Anthropic API key with credit. Free Claude.ai doesn't include Claude Code.
+4. **The terminal app open** and the willingness to copy-paste 3 commands.
+5. **A target you're authorized to test** — meaning either: (a) you own it, (b) it's on a bug bounty program's in-scope list, (c) you have a signed pentest engagement letter, or (d) it's a deliberately-vulnerable practice site (OWASP Juice Shop, Vulnweb, HackTheBox, etc.).
+
+### What you DON'T need
+
+- ❌ You don't need to know how to write exploits. The skills include working payloads.
+- ❌ You don't need to know Burp Suite. It's optional. Skills work with curl + browser.
+- ❌ You don't need a bug bounty account yet. You can practice on OWASP Juice Shop first.
+- ❌ You don't need to read all 51 skills. They auto-load when relevant.
+- ❌ You don't need Python beyond `python3 --version` working.
+
+### Your first 30 minutes
+
+Open your terminal. Copy-paste this entire block:
+
+```bash
+# 1. Get the bundle
+mkdir -p ~/Research && cd ~/Research
+git clone https://github.com/elementalsouls/Claude-BugHunter.git
+cd Claude-BugHunter
+
+# 2. Install (copies 51 skills + 15 commands into Claude Code)
+./scripts/install.sh
+
+# 3. Reload your shell so the 'hunt' command becomes available
+source ~/.zshrc 2>/dev/null || source ~/.bashrc
+
+# 4. Verify — running 'hunt' with no args should print usage info
+hunt
+```
+
+The last line should print:
+```
+Usage: hunt <target-name>
+Creates a new engagement folder at $HUNT_BASE/<target-name>
+Default $HUNT_BASE is /Users/you/Targets
+```
+
+If it says `command not found` instead, restart your terminal entirely and try again. Still failing? Go to [INSTALL.md → Troubleshooting](INSTALL.md#troubleshooting).
+
+### Pick a practice target
+
+If this is your first time, **do not point this at a real bug bounty program yet**. Practice on a deliberately-vulnerable site first so you get comfortable with the workflow before there are real stakes.
+
+Three good first targets:
+
+| Target | URL | Why |
+|---|---|---|
+| **OWASP Juice Shop** | https://juice-shop.herokuapp.com (or `docker run bkimminich/juice-shop`) | Designed for learning, every OWASP Top 10 bug is in there, no auth concerns |
+| **Acunetix testphp** | http://testphp.vulnweb.com | Public, intentionally vulnerable, no signup |
+| **HackerOne CTF (Hacker101)** | https://www.hacker101.com/ | Free CTF challenges by HackerOne, walkthroughs available |
+
+### Walk through your first hunt on a practice target
+
+```bash
+# Set up an engagement folder
+hunt juiceshop-practice
+cd ~/Targets/juiceshop-practice
+
+# Open Claude Code in this folder
+claude
+```
+
+Claude Code opens. You'll see a prompt waiting for you to type. Copy-paste this:
+
+> *I'm practicing on OWASP Juice Shop running at https://juice-shop.herokuapp.com. This is a deliberately vulnerable training app, no authorization concerns. Walk me through finding my first bug — start with how to do recon on this target.*
+
+**What happens next:**
+- Claude reads your `CLAUDE.md` (the engagement context file `hunt` created)
+- Claude triggers `bb-methodology` (the 6-phase workflow) and walks you through Phase 1 (Scope)
+- Claude asks: *"Is this practice / training mode? (No real submissions, just learning.)"* — say **yes**
+- Claude triggers `web2-recon` or `offensive-osint` and gives you concrete commands to run
+
+**You follow along.** Each time Claude gives you a command, paste it in another terminal tab and run it. Tell Claude what came back. Claude will spot vulnerable patterns and trigger the matching `hunt-*` skill.
+
+For example, when you find Juice Shop's `/api/users` endpoint with an `id` parameter, Claude loads `hunt-idor` and walks you through testing for Insecure Direct Object Reference.
+
+### Common beginner mistakes (and how the bundle prevents them)
+
+1. **Filing a report for "200 OK on /admin without auth"** — the path 200's but content is the login page. Bundle catches this: `triage-validation` Q6 requires concrete impact (actual admin data shown), not "technically possible."
+2. **Testing on out-of-scope assets** — bundle catches this: `triage-validation` Q3 explicitly asks scope.
+3. **Submitting findings on the never-submit list** (missing security headers, clickjacking on non-sensitive pages, etc.) — bundle catches this: `triage-validation` Q7 has the rejection list.
+4. **Sharing screenshots with cookies/PII visible** — bundle catches this: `evidence-hygiene` skill walks you through the redaction protocol BEFORE you take the screenshot.
+5. **Brute-forcing a login form 10,000 times and getting your IP banned** — bundle catches this: `m365-entra-attack` + `bb-methodology` Part 3 enforce per-user attempt caps (1-2 max) with Smart Lockout math.
+
+### Where to ask for help
+
+- The bundle author: [GitHub Issues](https://github.com/elementalsouls/Claude-BugHunter/issues)
+- HackerOne's bug-bounty Hacker Slack
+- Bugcrowd's Discord
+- Reddit r/bugbounty (read first, search second, ask last)
+
+### When you're ready for a real bug bounty target
+
+Once you've practiced on Juice Shop and run through the full workflow (recon → hunt → triage → report) at least once:
+
+1. Sign up for HackerOne (`hackerone.com`) and/or Bugcrowd (`bugcrowd.com`)
+2. Browse public programs — filter by **"VDP"** (vulnerability disclosure program, no payout but lower stress) first
+3. Read the program's scope page carefully — paste it into Claude and ask it to parse with `bb-methodology`
+4. Run `hunt <program-slug>` and start the same workflow you practiced
+
+The skills behave the same on real and practice targets. The only difference is the report you produce at the end goes to a real program, not the trash.
+
+---
+
 ## 1. Architecture overview
 
 The stack maps to a 6-phase bug-bounty workflow. Each phase has its own skill set; skills compose left-to-right through the workflow.
