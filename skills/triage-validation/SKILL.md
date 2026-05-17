@@ -5,7 +5,9 @@ description: Finding validation before writing any report — 7-Question Gate (a
 
 # TRIAGE & VALIDATION
 
-One wrong answer = STOP. Kill it. Move on.
+One wrong answer = STOP **this finding**. Kill **the finding**. Move on **to the next test class**.
+
+> **Scope of "STOP" in this skill:** This skill's gates kill INDIVIDUAL FINDINGS that fail validation. They do NOT authorize stopping the engagement. Killing a finding via the 7-Question Gate just means *that finding* doesn't get submitted — every other test class in the engagement is still pending. See `redteam-mindset` "DO NOT STOP primary directive" for the coverage-axis rule.
 
 > "N/A hurts your validity ratio. Informative is neutral. Only submit what passes all 7 questions."
 
@@ -328,7 +330,7 @@ Without the 7Q gate, expect 10-20% submission validity loss across an engagement
 
 ### Pre-Severity Gate before reporting Critical
 
-The May-2026 redacted-portal.ch engagement nearly submitted a Critical when the chain didn't actually complete end-to-end — a primitive that read auth state was conflated with a primitive that mutated it. The Pre-Severity Gate (run all 7 questions specifically against the **Critical claim**, not the generic "is this a bug" claim) would have caught it.
+A May-2026 SharePoint engagement nearly submitted a Critical when the chain didn't actually complete end-to-end — a primitive that read auth state was conflated with a primitive that mutated it. The Pre-Severity Gate (run all 7 questions specifically against the **Critical claim**, not the generic "is this a bug" claim) would have caught it.
 
 Process: write your draft Critical title. Take each of the 7 questions and answer them with the Critical claim substituted for "the bug." If Q6 (impact beyond technically possible) returns "I have a primitive that should let me do X, but I haven't demonstrated X end-to-end on a test account," downgrade. Critical means impact-demonstrated, not impact-inferable.
 

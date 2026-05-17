@@ -1,7 +1,7 @@
 ---
 name: mid-engagement-ir-detection
-description: Methodology for detecting client SOC patches, attacker activity, and security-state changes that occur DURING a red-team engagement — and converting those observations into deliverable findings. Built from a paid external red-team engagement (redacted-client, May 2026) where the client patched a confirmed SQLi within 30 minutes of detection AND an external attacker locked 14 NEW accounts during a single test session. Use when (a) running ANY active engagement against a monitored target, (b) a previously-confirmed finding stops reproducing, (c) baseline timing shifts unexpectedly, or (d) you notice response patterns changing during testing.
-sources: redacted-client-redteam-2026
+description: Methodology for detecting client SOC patches, attacker activity, and security-state changes that occur DURING a red-team engagement — and converting those observations into deliverable findings. Built from a paid external red-team engagement (engagement-redacted) where the client patched a confirmed SQLi within 30 minutes of detection AND an external attacker locked 14 NEW accounts during a single test session. Use when (a) running ANY active engagement against a monitored target, (b) a previously-confirmed finding stops reproducing, (c) baseline timing shifts unexpectedly, or (d) you notice response patterns changing during testing.
+sources: engagement-redacted
 report_count: 1
 ---
 
@@ -43,7 +43,7 @@ Anti-pattern: treating reproduction failure as evidence the original signal was 
 # Capture pre-test fingerprint of the target
 fingerprint = {
     "ts_pre": time.time(),
-    "ip_seen": "49.36.184.19",
+    "ip_seen": "<operator-src-ip>",
     "baseline_response_time_ms": <measure>,
     "baseline_response_size_bytes": <measure>,
     "response_headers": <capture set>,
@@ -217,7 +217,7 @@ Maintain three pieces of state:
 ```json
 {
   "ts": "2026-05-08T13:00:00",
-  "source_ip": "49.36.184.19",
+  "source_ip": "<operator-src-ip>",
   "targets": {
     "https://target.example.com/login": {
       "baseline_response_time_ms": 584,
@@ -244,7 +244,7 @@ Every test logs:
 
 When a state change is detected, append:
 ```jsonl
-{"ts_observed":"2026-05-08T14:30:00","change_type":"baseline_time_shift","target":"https://eapps.../custdocument/scllogin.php","baseline_pre_ms":24412,"baseline_post_ms":90403,"interpretation":"likely WAF rule deployed","actions_taken":["tested WAF-evasion variants — no signal restoration","documented as IR-mitigation finding"]}
+{"ts_observed":"2026-05-08T14:30:00","change_type":"baseline_time_shift","target":"https://<employee-app-host>/<app>/login.php","baseline_pre_ms":24412,"baseline_post_ms":90403,"interpretation":"likely WAF rule deployed","actions_taken":["tested WAF-evasion variants — no signal restoration","documented as IR-mitigation finding"]}
 ```
 
 This third file is your finding evidence. Every entry is a candidate finding.

@@ -1,7 +1,7 @@
 ---
 name: apk-redteam-pipeline
-description: End-to-end Android APK red-team pipeline — automated APK acquisition (Play Store + apkpure + apkmirror fallback), jadx decompilation, secret/URL/JWT/Firebase grep, pinned-cert extraction, exported-component enumeration, Frida runtime instrumentation templates, intent-injection probes. Built from the redacted-client engagement (May 2026) where 7 APKs were pulled manually, 4 download attempts truncated, and a hardcoded JWT + 30 internal API endpoints were recovered from `com.redacted-client.redacted-brand2`. Use when target has a mobile app catalogue (Play Store developer page), when you find an APK URL hosted on a web server, or when post-recon mentions "mobile app" in scope.
-sources: redacted-client-redteam-2026
+description: End-to-end Android APK red-team pipeline — automated APK acquisition (Play Store + apkpure + apkmirror fallback), jadx decompilation, secret/URL/JWT/Firebase grep, pinned-cert extraction, exported-component enumeration, Frida runtime instrumentation templates, intent-injection probes. Built from a May-2026 external red-team engagement where 7 APKs were pulled manually, 4 download attempts truncated, and a hardcoded JWT + 30 internal API endpoints were recovered from one of the apps. Use when target has a mobile app catalogue (Play Store developer page), when you find an APK URL hosted on a web server, or when post-recon mentions "mobile app" in scope.
+sources: engagement-redacted
 report_count: 1
 ---
 
@@ -9,8 +9,8 @@ report_count: 1
 
 Trigger when:
 - Recon surfaces 1+ mobile apps under the target's developer name (Play Store dev page)
-- A web app hosts `*.apk` files directly (we found `Recruitz.apk` on sclepro this way)
-- APK package IDs leaked via stealer logs (we saw `com.redacted-client.redacted-client`, `com.redacted-client.redacted-brand2` in stealer dump format)
+- A web app hosts `*.apk` files directly (e.g. `Recruitz.apk` found on a subdomain during one engagement)
+- APK package IDs leaked via stealer logs (e.g. `com.<brand>.app`, `com.<brand>.<sub-brand>` patterns in stealer dump format)
 - Customer-facing app, dealer/partner portal, or employee mobile companion app is in scope
 - Bug bounty program lists Android in scope
 
@@ -32,19 +32,19 @@ curl -sk -A "Mozilla/5.0" "https://play.google.com/store/apps/developer?id=<Bran
 grep -oE 'id=[a-zA-Z0-9._]+' /tmp/dev.html | sort -u
 ```
 
-Example output (redacted-client):
+Example output (anonymized — 7 packages typical for a multi-brand conglomerate):
 ```
-com.events.redacted-brand2build
-com.redacted.redacted-brand2
-com.redacted.redacted-client
-com.redacted-client.redacted-brand2
-com.redacted-client.isaac
-com.redacted-client.rockstrong
-com.redacted-client.redacted-client
+com.events.<brand>build
+com.<corp>.<sub-brand-1>
+com.<corp>.<sub-brand-2>
+com.<corp>.<flagship>
+com.<corp>.<product-line-1>
+com.<corp>.<product-line-2>
+com.<corp>.<sub-brand-3>
 ```
 
 ### Cross-reference with stealer logs
-Stealer-log format includes package names like `*@com.redacted-client.redacted-client` — extract these from `creds_userpass.txt` if you have a leaked dump.
+Stealer-log format includes package names like `*@com.<corp>.<app>` — extract these from `creds_userpass.txt` if you have a leaked dump.
 
 ### Brand permutation guesses (a large enterprise patterns)
 ```
@@ -167,13 +167,13 @@ grep -oE 'client_secret["\s:=]+[A-Za-z0-9_-]{24,}' strings_<package>.txt
 grep -oE '"password"\s*:\s*"[^"]+"|password\s*=\s*"[^"]+"' decompiled_<package>/sources/**/*.java 2>/dev/null
 ```
 
-### Real-world example finding (from redacted-client engagement)
+### Real-world example finding (anonymized — from a an authorized engagement)
 ```
-# redacted-brand2 Pragati APK leaked:
-https://api.redacted-client.com/JQc1Ep1Qpp/29gY3Nel6xugywaW4ygbhQdMyjB5kdsxOqyrlQxRilyQg99xkgUlL?token=REDACTED-JWT
+# Customer-facing APK shipped a hardcoded URL of this shape:
+https://api.<client>.example/<path-token>/<resource-token>?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.<payload>.<sig>
 
-# Decoded JWT payload: {"sid":2407,"iat":1542777587,"exp":1543641587}
-# Expired since 2018-12-01 — but path tokens + 30 /v1/* endpoints still useful intel
+# Decoded JWT payload: {"sid":<int>,"iat":<unix-ts>,"exp":<unix-ts>}
+# Expired ~8 years earlier — but path tokens + 30 /v1/* endpoints still useful intel
 ```
 
 ---
@@ -196,7 +196,7 @@ done
 ```
 
 ### Real-world example
-redacted-brand2 Cement Nirman Mitra APK contained `assets/api_redacted-brand_com.cer` — revealed the existence of `api.redacted-brand.com` (new asset not in our recon spreadsheet).
+A customer-facing APK from a an authorized engagement contained `assets/api_<service>_<domain>_com.cer` — revealed the existence of an `api.<service>.<domain>.example` asset that had NOT surfaced in passive recon.
 
 ---
 
@@ -348,7 +348,7 @@ mitmproxy --listen-port 8080
 
 - **Don't grep only for "password"** — most secrets have specific high-signal patterns (AKIA, AIza, eyJ, etc.). Generic word grep produces too much noise.
 - **Don't skip XAPK split APKs** — config.armeabi splits and config.<lang> splits sometimes contain different code paths.
-- **Don't trust expired JWTs as "dead intel"** — the path structure, endpoint list, and signing algorithm are still useful. The redacted-brand2 Pragati example shows this.
+- **Don't trust expired JWTs as "dead intel"** — the path structure, endpoint list, and signing algorithm are still useful. The 8-year-expired-JWT example above shows this.
 - **Don't reverse only the latest version** — older APK versions (via APKMirror version history) sometimes have secrets removed in newer versions but still active server-side.
 - **Don't ignore Firebase even if app looks "simple"** — Firebase rules misconfigurations (public read on Firestore) are extremely common.
 - **Don't run Frida on a production device** — use rooted emulator or test device only.
@@ -385,13 +385,13 @@ download-apk() {
 
 ---
 
-## Real-world finding template (from redacted-client)
+## Real-world finding template (anonymized — an authorized engagement)
 
-**Finding: Hardcoded JWT + 30+ Internal API Endpoints in redacted-brand2 Pragati APK**
+**Finding: Hardcoded JWT + 30+ Internal API Endpoints in a customer-facing APK**
 
 - Subject: Hardcoded artifacts in legacy mobile build reveal internal API surface
-- Observations: Decompilation of `com.redacted-client.redacted-brand2` revealed embedded JWT (expired 2018-12-01) and 30+ `/v1/*` endpoint paths against `api2.redacted-client.com` (internal-only externally)
-- Description: APK ships with developer build artifacts. Path tokens (`JQc1Ep1Qpp/...`) are security-by-obscurity; API endpoint inventory is reconnaissance-grade.
+- Observations: Decompilation of `com.<client>.<app>` revealed embedded JWT (expired ~8 years earlier) and 30+ `/v1/*` endpoint paths against `api2.<client>.example` (internal-only externally)
+- Description: APK ships with developer build artifacts. Path tokens are security-by-obscurity; API endpoint inventory is reconnaissance-grade.
 - Impact: Post-VPN-foothold (via cred compromise), attacker has full API surface map without binary reverse. HS256 secret recovery (via SSRF/LFI) would yield arbitrary token forging.
 - Recommendation: rotate HS256 secret, migrate to RS256, remove hardcoded URLs from builds, audit all org APKs.
 - Evidence: extracted strings, decoded JWT, endpoint inventory

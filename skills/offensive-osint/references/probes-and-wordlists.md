@@ -1222,7 +1222,7 @@ old, legacy, archive, backup, beta, v1, v2, classic,
 cdn, static, assets, media, img, files, downloads, public,
 ns, ns1, ns2, dns, mx, mx1, mx2,
 zoom, teams, slack, lync, sip, voice, meet,
-sclepro, tender, tenders, suppliers, vendor, vendors, procurement, purchase
+eproc, tender, tenders, suppliers, vendor, vendors, procurement, purchase
 ```
 
 **One-liner (PowerShell):**
@@ -1258,9 +1258,9 @@ puredns resolve <(awk -v d="$D" '{print $1"."d}' assetnote-best-dns-wordlist.txt
 - For `vpn.*` / `gateway.*` / `gp.*` / `globalprotect.*` / `citrix.*` → flag for active vendor fingerprint (§16.16) under separate engagement scope.
 - For `api.*` / `app.*` → seed for §16.1–16.10 webapp probes.
 - For `staging.*` / `dev.*` / `uat.*` → seed for §16.5 always-on HTTP checks (often weaker auth + debug endpoints).
-- For `intranet.*` / `eapps.*` / `sclepro.*` → public-intranet finding (often MEDIUM; per §40).
+- For `intranet.*` / `eapps.*` / `eproc.*` / similar internal-app shortnames → public-intranet finding (often MEDIUM; per §40).
 
-**Real-engagement validation:** in an internal smoke test, prefix-sweep found `vpn.`, `api.`, `intranet.`, `staging.`, `support.`, `eapps.`, `sclepro.`, `autodiscover.` — all of which crt.sh missed (or returned 502 for). Treat passive + active as **complementary, not alternatives**.
+**Real-engagement validation:** in an internal smoke test, prefix-sweep found `vpn.`, `api.`, `intranet.`, `staging.`, `support.`, `eapps.`, `eproc.`, `autodiscover.` — all of which crt.sh missed (or returned 502 for). Treat passive + active as **complementary, not alternatives**.
 
 ---
 

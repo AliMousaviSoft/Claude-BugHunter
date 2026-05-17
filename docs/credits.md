@@ -56,14 +56,14 @@ Plus 12 additional `hunt-*` skills curated by topic without an explicit report-c
 
 ### Enterprise-platform attack skills (May 2026)
 
-Built from two paid May-2026 red-team engagements (redacted-client — a large enterprise; on-prem SharePoint engagement — separate client) plus public CVE / advisory catalogues and IdP vendor documentation. Each skill is original work — vendor docs and public CVEs provided the technical primitives; the curation, current 2024-2026 chain assembly, and operator-discipline framing are the author's.
+Built from two paid May-2026 red-team engagements (one against a large Indian manufacturing conglomerate; one on-prem SharePoint engagement — separate client) plus public CVE / advisory catalogues and IdP vendor documentation. Each skill is original work — vendor docs and public CVEs provided the technical primitives; the curation, current 2024-2026 chain assembly, and operator-discipline framing are the author's.
 
-- **`m365-entra-attack`** — M365 / Entra ID full chain. AADSTS error reference, user enum vectors (with hardening status), Smart Lockout math, Conditional Access bypass options, ROPC + SAML SSO browser flow. 1,996 ROPC attempts during the redacted-client engagement, 247 pre-existing lockouts surfaced, 1 valid CA-blocked credential confirmed.
+- **`m365-entra-attack`** — M365 / Entra ID full chain. AADSTS error reference, user enum vectors (with hardening status), Smart Lockout math, Conditional Access bypass options, ROPC + SAML SSO browser flow. ~2,000 ROPC attempts during the conglomerate engagement, ~250 pre-existing lockouts surfaced, 1 valid CA-blocked credential confirmed.
 - **`okta-attack`** — Okta-as-IdP attack chain for orgs where Okta sits alongside or instead of Entra. Distinct endpoints, distinct rate-limiting, distinct factor flows.
 - **`cloud-iam-deep`** — AWS / Azure / GCP IAM red-team post-credential model. 24+ AWS, 8+ Azure, 6+ GCP priv-esc patterns. Built for the "recon yielded a credential, what does it grant" workflow.
 - **`vmware-vcenter-attack`** — vSphere / vCenter / Workspace ONE / Aria external attack matrix. Internet-exposed only.
 - **`enterprise-vpn-attack`** — Cisco ASA, Fortinet, Citrix NetScaler, PAN GlobalProtect, Pulse/Ivanti, SonicWall, F5 — versioning, CVE matrix 2018-2026, AAA backend identification, default credentials, config-disclosure paths.
-- **`apk-redteam-pipeline`** — End-to-end Android APK pipeline. 7 APKs processed manually during the redacted-client engagement, hardcoded JWT + 30 internal endpoints recovered.
+- **`apk-redteam-pipeline`** — End-to-end Android APK pipeline. 7 APKs processed manually during the conglomerate engagement, hardcoded JWT + 30 internal endpoints recovered.
 - **`supply-chain-attack-recon`** — Recon and identification ONLY — actual package publishing / typosquat attacks require explicit written sign-off because they can affect entire npm/PyPI ecosystems.
 - **`hunt-sharepoint`** — SharePoint Server 2013–Subscription Edition on-prem farms. Anonymous endpoint enum, legacy SOAP login bypass, ToolShell precondition chain (CVE-2025-53770), SafeControl reflection enumeration, NTLM Type-2 disclosure, custom-zone Forms auth bridging. Built from a separate an authorized engagement against a SharePoint 2013 EoL farm.
 - **`hunt-aspnet`** — ASP.NET-specific surface. ViewState deserialization, machineKey recovery, dual-parser MAC-bypass anti-pattern, request-validator bypass. Same SharePoint engagement.
@@ -73,7 +73,7 @@ Built from two paid May-2026 red-team engagements (redacted-client — a large e
 
 - **`redteam-mindset`** — Operator discipline corrections that separate offensive red-team work from defensive WAPT. Load at start of every red-team engagement; reload whenever feeling stuck on a defended target.
 - **`mid-engagement-ir-detection`** — Methodology for detecting client SOC patches, attacker activity, and security-state changes that occur DURING a red-team engagement. Built after observing a client patch a confirmed SQLi within 30 minutes of detection AND an external attacker lock 14 new accounts during a single test session.
-- **`redteam-report-template`** — Client-facing deliverable format: Subject / Observations / Description / Impact / Recommendation / PoC. Built from the redacted-client deliverable (14 findings → 52KB MD + 2.2MB DOCX with 16 embedded screenshots).
+- **`redteam-report-template`** — Client-facing deliverable format: Subject / Observations / Description / Impact / Recommendation / PoC. Built from a 14-finding deliverable (52KB MD + 2.2MB DOCX with 16 embedded screenshots).
 
 ### Tooling and docs
 
@@ -190,9 +190,9 @@ Exposed four bug-bounty capability gaps that the author's contributions directly
 3. Engagement coordination / scaffolding — addressed by the **`hunt`** shell command (original)
 4. Evidence hygiene / redaction — addressed by **`evidence-hygiene`** (original)
 
-### Engagement 2 — redacted-client external red-team (May 2026)
+### Engagement 2 — External red-team, large Indian manufacturing conglomerate (May 2026)
 
-External red-team engagement against an a large enterprise. Exposed five additional gaps that bug-bounty defaults made worse:
+Paid external red-team engagement against a large Indian manufacturing conglomerate. Exposed five additional gaps that bug-bounty defaults made worse:
 
 1. Conservative defaults retracted real findings → addressed by **`redteam-mindset`** (original)
 2. No mid-engagement situational awareness (client patched SQLi in 30 min; external attacker locked 14 accounts mid-test) → addressed by **`mid-engagement-ir-detection`** (original)
@@ -200,7 +200,7 @@ External red-team engagement against an a large enterprise. Exposed five additio
 4. No client-facing deliverable format → addressed by **`redteam-report-template`** (original)
 5. No post-credential escalation model → addressed by **`cloud-iam-deep`** (original)
 
-Engagement-specific identifiers (target names, account UIDs, endpoint names, bounty amounts) have been replaced with abstract placeholders in the shipped versions of all engagement-derived skills. Engagement details are not redistributed for confidentiality. The redacted-client engagement (May 2026) is referenced by name in skill metadata only because the engagement was disclosed publicly by the author with client consent.
+Engagement-specific identifiers (target names, domains, account UIDs, IPs, endpoint names, internal app names, employee names, tenant IDs, and any other client-identifying data) have been replaced with abstract placeholders in the shipped versions of all engagement-derived skills. Engagement details are not redistributed.
 
 ---
 

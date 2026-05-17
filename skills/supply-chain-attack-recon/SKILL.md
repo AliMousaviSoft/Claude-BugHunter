@@ -41,7 +41,7 @@ Target Org
 ## Step 1 — GitHub org discovery
 
 ```bash
-TARGET="redacted-client"  # or target brand
+TARGET="<brand>"  # set to target brand name
 
 # Direct guesses
 for guess in $TARGET "${TARGET}-tech" "${TARGET}corp" "${TARGET}-io" "${TARGET}-eng"; do

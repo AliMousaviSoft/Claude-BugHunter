@@ -21,7 +21,7 @@ Four layers stack:
 
 All triggered automatically by topic — describe what you're testing in plain English and the relevant skill loads. No invocation by name.
 
-> **51 skills · 15 commands · 574+ disclosed reports curated · 6-phase workflow · validated through both a Bugcrowd financial-target engagement and a paid external red-team engagement (redacted-client, May 2026).**
+> **51 skills · 15 commands · 574+ disclosed reports curated · 6-phase workflow · validated through both a Bugcrowd financial-target engagement and a paid external red-team engagement against a large Indian manufacturing conglomerate (May 2026).**
 
 ---
 
@@ -177,7 +177,7 @@ Drop the contents of `skills/` into `~/.claude/skills/` and Claude auto-triggers
 
 | Capability | Source | Skill |
 |---|---|---|
-| **M365 / Entra ID — AADSTS codes, user enum, Smart Lockout math, CA bypass, ROPC, SAML SSO browser flow** | redacted-client red-team May 2026 | `m365-entra-attack` |
+| **M365 / Entra ID — AADSTS codes, user enum, Smart Lockout math, CA bypass, ROPC, SAML SSO browser flow** | engagement_2026_05 (external red-team) | `m365-entra-attack` |
 | **Okta-as-IdP — tenant discovery, user enum vectors, factor enumeration, push-fatigue, FastPass abuse, OIDC redirect_uri tampering** | original | `okta-attack` |
 | **Cloud IAM priv-esc — AWS (24+), Azure (8+), GCP (6+) patterns · STS chaining · IMDS · K8s SA tokens · confused-deputy** | original | `cloud-iam-deep` |
 
@@ -186,7 +186,7 @@ Drop the contents of `skills/` into `~/.claude/skills/` and Claude auto-triggers
 | Capability | Source | Skill |
 |---|---|---|
 | **VMware vSphere / vCenter / Workspace ONE / Aria CVE chain (CVE-2021-21972 → CVE-2024-37085)** | original | `vmware-vcenter-attack` |
-| **Enterprise SSL VPN — Cisco ASA/AnyConnect · Fortinet · Citrix NetScaler · Palo Alto · Pulse/Ivanti · SonicWall · F5** | redacted-client red-team May 2026 | `enterprise-vpn-attack` |
+| **Enterprise SSL VPN — Cisco ASA/AnyConnect · Fortinet · Citrix NetScaler · Palo Alto · Pulse/Ivanti · SonicWall · F5** | engagement_2026_05 (external red-team) | `enterprise-vpn-attack` |
 | **SharePoint on-prem (2013-SE) — ToolShell precondition chain (CVE-2025-53770), SOAP auth bypass, anon FormDigest, SafeControl enum** | engagement_2026_05 | `hunt-sharepoint` |
 | **NTLM/Negotiate anonymous Type-2 disclosure — AV_PAIRS leakage, internal DNS forest, default WIN-XXX hostnames** | engagement_2026_05 | `hunt-ntlm-info` |
 
@@ -194,9 +194,9 @@ Drop the contents of `skills/` into `~/.claude/skills/` and Claude auto-triggers
 
 | Capability | Source | Skill |
 |---|---|---|
-| **Red-team operator discipline — mindset corrections separating offensive from defensive WAPT** | redacted-client red-team May 2026 | `redteam-mindset` |
-| **Mid-engagement IR detection — SOC patches mid-test, external attacker activity, baseline-shift detection** | redacted-client red-team May 2026 | `mid-engagement-ir-detection` |
-| **Android APK red-team pipeline — Play Store + apkpure acquisition, jadx decompile, secret/JWT/Firebase grep, Frida templates** | redacted-client red-team May 2026 | `apk-redteam-pipeline` |
+| **Red-team operator discipline — mindset corrections separating offensive from defensive WAPT** | engagement_2026_05 (external red-team) | `redteam-mindset` |
+| **Mid-engagement IR detection — SOC patches mid-test, external attacker activity, baseline-shift detection** | engagement_2026_05 (external red-team) | `mid-engagement-ir-detection` |
+| **Android APK red-team pipeline — Play Store + apkpure acquisition, jadx decompile, secret/JWT/Firebase grep, Frida templates** | engagement_2026_05 (external red-team) | `apk-redteam-pipeline` |
 | **Supply-chain recon — dep-confusion, GH Actions injection, SBOM mining, container registry exposure, internal-package leakage** | original | `supply-chain-attack-recon` |
 
 ### Recon & OSINT
@@ -358,7 +358,7 @@ This bundle was built and validated through two paid engagements that exposed di
 3. **No engagement coordination** — findings, evidence, and submission IDs scattered across folders
 4. **No evidence hygiene** — screenshots leaked cookies and victim PII
 
-**External red-team — a large enterprise (redacted-client, May 2026)** — exposed five additional gaps that bug-bounty defaults made worse:
+**External red-team — large Indian manufacturing conglomerate (May 2026)** — exposed five additional gaps that bug-bounty defaults made worse:
 
 1. **Conservative defaults retracted real findings** — WAPT mindset stopped tests early on defended targets where red-team continuation would have surfaced bypass chains → `redteam-mindset`
 2. **No mid-engagement situational awareness** — client SOC patched confirmed SQLi within 30 min; external attacker locked 14 accounts during a live test session — both invisible without explicit detection methodology → `mid-engagement-ir-detection`

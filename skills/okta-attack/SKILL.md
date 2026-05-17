@@ -27,7 +27,8 @@ DO NOT use for:
 ### Direct guesses
 ```bash
 # Tenant subdomains often match the brand
-for tenant in redacted-client redacted-clientltd redacted-brand2cement uccrak <brand>; do
+# Replace these with your target's actual tenant slug candidates:
+for tenant in target-brand target-brand-ltd target-sister-brand target-brand-short target-other-variant; do
   for region in okta okta-emea oktapreview; do
     host="$tenant.$region.com"
     code=$(curl -sk -o /dev/null -w "%{http_code}" --max-time 8 "https://$host/")
@@ -39,7 +40,8 @@ done
 ### Cross-ref from DNS
 ```bash
 # Look for CNAME records pointing to Okta
-for domain in redacted-client.com redacted-clientltd.com; do
+# Replace with your target's actual domains:
+for domain in client.example client-ltd.example; do
   dig +short "sso.$domain" CNAME
   dig +short "login.$domain" CNAME
   dig +short "auth.$domain" CNAME
@@ -175,7 +177,7 @@ Discipline:
 
 If a valid password is obtained and `push` factor is available, the classic attack: hammer the push factor until the user accepts out of fatigue.
 
-⚠ **OUT OF SCOPE in most red-team engagements** (counts as social engineering / phishing — the user explicitly noted phishing OOS for redacted-client). Document the vector existence but do not execute without explicit sign-off.
+⚠ **OUT OF SCOPE in most red-team engagements** (counts as social engineering / phishing — e.g. phishing was explicitly OOS for engagement-redacted). Document the vector existence but do not execute without explicit sign-off.
 
 ### Detection-only check (does target allow it?)
 ```bash

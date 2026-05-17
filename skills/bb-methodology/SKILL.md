@@ -401,6 +401,8 @@ Before pushing back with "I think we're done because X," do this:
 
 Most retracted findings come from four recurring process bugs. Each has a hard rule.
 
+> **Important framing:** These discipline rules are about *correctness of findings* — not throttling of effort. They tell you which signals are real findings and which aren't. They do **not** tell you to send fewer probes. If you find yourself using these rules to justify stopping early, you're misreading them — load `redteam-mindset` (DO NOT STOP primary directive) and continue. Coverage discipline and finding-correctness discipline are orthogonal axes; you need both on full.
+
 ### Marker Discipline
 
 When testing for reflection, cache poisoning, parameter pollution, or OOB SSRF, the marker string you inject MUST be unique and unmistakable.

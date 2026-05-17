@@ -1,7 +1,7 @@
 ---
 name: redteam-mindset
-description: Red-team operator discipline — the mindset corrections that separate offensive testing from defensive WAPT. Built from a paid external red-team engagement (redacted-client, May 2026) where conservative defaults caused multiple findings to be missed and one to be incorrectly retracted. Use at the START of any red-team engagement and again whenever feeling stuck or considering "stopping" on a defended target. The single most important skill to load when scope is "external red team" not "bug bounty / WAPT".
-sources: redacted-client-redteam-2026
+description: Red-team operator discipline — the mindset corrections that separate offensive testing from defensive WAPT. Built from a paid external red-team engagement (engagement-redacted) where conservative defaults caused multiple findings to be missed and one to be incorrectly retracted. Use at the START of any red-team engagement and again whenever feeling stuck or considering "stopping" on a defended target. The single most important skill to load when scope is "external red team" not "bug bounty / WAPT".
+sources: engagement-redacted
 report_count: 1
 ---
 
@@ -30,6 +30,60 @@ These produce DIFFERENT decisions at every blocker. Internalize the difference b
 
 ---
 
+## DO NOT STOP — primary directive (read this twice)
+
+The 9 corrections below are nuance. THIS is the core. If you only retain one thing from this skill, retain this.
+
+### Authorization given at engagement start covers the entire engagement.
+
+Do not insert mid-engagement permission gates. If the user chose a mode at the start ("full engagement", "Option D", "go deep", "test these assets") that authorization stands until the engagement window expires or the user explicitly revokes it. **`AskUserQuestion` mid-loop after the user already chose a path is a stall, not a check.**
+
+### Discipline rules are about correctness of FINDINGS, not throttling of EFFORT.
+
+Read this twice. The bundle's discipline rules — OOB-Or-It-Didn't-Happen, Marker Discipline, Body-Diff, Pre-Severity Gate, Server-Policy-vs-State, Statistical Sampling — all answer one question: *"is this signal actually a finding?"*. **None of them answer the question *"should I send the next probe?"*** The answer to that second question is always *yes*, unless scope is exhausted or the user said stop.
+
+### "Stop at PoC" means stop ESCALATING, not stop TESTING.
+
+When you confirm impact on bug class X, don't keep escalating class X (no need to pivot from `id=1` IDOR to dumping the whole user table). But classes Y and Z have not been tested yet. Run Y. Then Z. Then the rest of the Pattern Library.
+
+### Marker Discipline ≠ "one probe per surface."
+
+Marker Discipline is about WHICH payloads to use (synthetic, identifiable, recoverable) — never about HOW MANY. A hardened target needs MORE marker-discipline probes than a soft one, not fewer. If the bundle's `hunt-sqli` Pattern Library lists 12 SQLi classes, you run 12 marker-discipline probes per parameter, not 1.
+
+### Self-throttling anti-patterns — flag immediately if you catch yourself doing any of these
+
+These all came out of a real engagement (engagement-redacted revalidation, 2026-05-17) where this skill *existed* and was *loaded* and the operator still self-throttled. The lesson is to make the failure modes explicit:
+
+1. **Asking "want me to continue?" mid-run** after the user already chose Option D / full engagement / "go deep". The answer they gave at start IS the answer.
+2. **Stopping at first-class-returning-401/403.** The bundle has ≥12 auth-bypass classes (header tricks, method tampering, parameter pollution, JSON parser confusion, race on session create, mass-assignment on optional fields, X-Forwarded-Host SSRF in SAML callback, alg=none JWT, audience confusion, scope claim manipulation, refresh-token replay, device-code flow). Run them all per surface.
+3. **"Interesting constant token, not chased."** If you see a token, hash, ID, or fingerprint that's constant across what should be varying responses, that's a *lead*, not an *artifact*. `GET` it. Decode it. Pass it back. A `view.php?view=<constant-md5>` redirect is a session/auth/error-key signal, not noise.
+4. **Reading robots.txt for cross-template signals and NOT READING the Disallow lines.** A 469-line robots.txt is a developer-curated map of every path they don't want public. Every Disallow line is a probe target.
+5. **Treating soft-404 as "noted."** A 37 KB body inside a 404 status is leaking the home page or worse. Read it. Grep it. Diff it against the home page.
+6. **"OpenAPI exposed → finding logged"** with only 4 of N endpoints probed. Every endpoint × every relevant test class. The OpenAPI spec is the attack-surface map handed to you; not running it is throwing away a free recon.
+7. **"APK retest deferred — needs tooling."** `brew install jadx`, apkpure direct download, `apk-redteam-pipeline` already documents the flow. Five minutes of setup, not "another session."
+8. **Volume framed as a problem.** For an authorized engagement, 3,000 well-tagged requests through Burp is normal cadence. Bug-bounty hunters at full pace exceed that per *hour*. The question to ask is *"have I run every test class on every live surface,"* not *"have I sent too many requests."*
+9. **Inserting `AskUserQuestion` at any decision point inside an active engagement loop.** If the user picked a mode at start, that mode is in effect until revoked. Choosing operationally between e.g. SAML acs raw POST vs SAML acs replay is a *technical* decision the operator can make and document — it does not require user pre-approval.
+10. **Skill-gap-as-stop-condition.** "No `hunt-zoho` skill exists, so I logged a v1.1 gap and moved on." NO. If a hunt-* skill doesn't exist for a discovered tech stack, do the same work *manually* using the vendor's public check matrix. Log the gap in v1.1 roadmap *and* run the checks now.
+
+### Real-engagement cadence — what a complete sweep per live host actually looks like
+
+Per live host, before declaring the host complete:
+
+- Top-100 path probe (admin, api, login, /.git, /.env, server-status, swagger, openapi.json, /docs, /actuator, /healthz, /metrics, /debug, /trace, /env, /heapdump, /threaddump, robots.txt, sitemap.xml, /.well-known/*, common-CMS-paths per fingerprint)
+- robots.txt content **read** — every Disallow becomes a probe target
+- sitemap.xml content **read** — every entry becomes a probe target
+- JS bundles harvested — grep'd with the FULL secret-regex catalogue (Firebase, AWS, GCP, JWT, Stripe, GitHub, generic high-entropy strings), route extraction, API-endpoint extraction
+- Source-map variant paths checked (`/*.js.map`, `/static/js/*.js.map`, `/_next/static/*.js.map`, `/build/*.js.map`)
+- For every form discovered: full SQLi marker-discipline sweep (12+ classes), auth-bypass class sweep (12+ classes), CSRF, parameter pollution, mass-assignment, race condition on state-changing submission
+- For every API endpoint discovered (from JS, OpenAPI, swagger, network capture): HTTP method tampering, content-type tampering, JWT alg=none, alg=HS256-with-RS256-key, audience confusion, prototype pollution, race conditions on idempotency-violating ops
+- For every SaaS tenant identified: vendor-specific check matrix from the vendor's known-vuln catalogue — even when no dedicated hunt-* skill exists yet
+- Identity fabric: GetUserRealm, OpenID well-known, autodiscover-v2, federation behavior testing, sister-brand-TLD pivot for shared tenant, OneDrive-based user enum (no lockout risk)
+- Mobile apps: pull every APK in the developer's catalogue, jadx decompile, secret + endpoint + cert-pin grep, exported-component enum
+
+**If you've done less than this per host, you have not finished the host. The engagement is not done until every host is finished.**
+
+---
+
 ## Mindset correction #1 — The blocker is data, not the stop sign
 
 **Anti-pattern (what I did wrong):**
@@ -52,10 +106,10 @@ When a defense suddenly appears mid-engagement:
 ## Mindset correction #2 — Sister-app pattern recognition
 
 **Anti-pattern:**
-> "I confirmed SQLi on /medical/wmc/. Moving on to other tasks."
+> "I confirmed SQLi on /app-a/. Moving on to other tasks."
 
 **The correct frame:**
-> "Same backend, same code template likely → /custdocument/, /tenderSys/, /etax/, /vMS/, /transporterbidding/ are all probable. Test them with the SAME payload."
+> "Same backend, same code template likely → /app-b/, /app-c/, /app-d/, /app-e/ (sibling apps on the same employee-portal host) are all probable. Test them with the SAME payload."
 
 When you confirm a vuln on app A:
 1. **Identify shared infrastructure** — same IP, same load balancer, same TLS cert, same response headers, same session cookie name, same login form HTML.
@@ -64,7 +118,7 @@ When you confirm a vuln on app A:
 4. **Document the class of vulnerability** — "vulnerability is in shared form-handler template across N apps", not just one finding.
 5. **Recommend class-fix** — fix the shared template, not just one app.
 
-The redacted-client engagement: WMC SQLi confirmed; custdocument, transporterbidding, etax, vMS sit on the same eapps host with similar form patterns — likely all share the same vulnerable template. Should have been a multi-app finding.
+The engagement-redacted case: SQLi confirmed on one sub-app (`<app-A>`); four sibling sub-apps (`<app-B>`, `<app-C>`, `<app-D>`, `<app-E>`) sit on the same employee-app host with similar form patterns — likely all share the same vulnerable template. Should have been a multi-app finding.
 
 ---
 
@@ -201,7 +255,7 @@ A single signal can be coincidence (network jitter, server hiccup, cache). Two d
 Real-time, append-only, structured:
 
 ```jsonl
-{"ts":"2026-05-08T14:40:53","ip":"49.36.184.19","tool":"m365_validator","target":"login.microsoftonline.com","payload":"chetan.sharma:redacted-client***","resp_code":400,"resp_body_size":154,"resp_ms":1280,"aadsts":"AADSTS53003","verdict":"VALID_CA_BLOCK","notes":""}
+{"ts":"2026-05-08T14:40:53","ip":"<src-ip>","tool":"m365_validator","target":"login.microsoftonline.com","payload":"user1@<client>.example:<pw-r4>***","resp_code":400,"resp_body_size":154,"resp_ms":1280,"aadsts":"AADSTS53003","verdict":"VALID_CA_BLOCK","notes":""}
 ```
 
 Why:
@@ -289,19 +343,25 @@ If you catch yourself thinking any of these, STOP and reconsider:
 ## When to stop (the legitimate stop conditions)
 
 Only stop when:
-- All in-scope assets have been actively probed (not just discovered) for top vuln classes
+- All in-scope assets have been actively probed (not just discovered) for top vuln classes — see "Real-engagement cadence" checklist near top of this skill
 - Every confirmed vuln has been validated via 2+ techniques
 - Every confirmed vuln has been swept on its sister apps
 - Every blocker has been attempted via 2+ alternative vectors
 - Engagement window has expired AND deliverables are documented
 - Client has explicitly directed you to stop
 
-NOT legitimate stop conditions:
+NOT legitimate stop conditions (each of these has produced a real failure):
 - "I'm tired of this target"
 - "The first attempt didn't work"
-- "Defenses are working"
-- "I documented it"
+- "Defenses are working" — defences working on class X says nothing about classes Y, Z
+- "I documented it" — documenting a gap is not running the test
 - "We've already informed the client"
+- "Volume is getting high" — for an authorized engagement, the only volume question is whether each request is well-tagged and audited
+- "The discipline rules say be careful" — they say be correct, not be quiet
+- "The skill for this tech stack doesn't exist yet" — apply the vendor's public check matrix manually; log v1.1 gap separately
+- "User chose Option X and I'm not sure if X covers Y" — if X was a full-engagement mode, Y is in scope unless the user said otherwise
+- "Tool isn't installed" — `brew install`, `apt install`, direct-download → most engagement tools install in under 5 minutes
+- "I'll defer to operator" — the operator authorized you to do the work. Doing the work IS the deferral they want.
 
 ---
 
@@ -323,5 +383,5 @@ This skill is the operational discipline; those are the techniques.
 - **`hunt-dispatch`** — Once mindset is loaded, the `/hunt` command needs a mode answer (redteam vs wapt, blackbox vs greybox) before it routes to platform-specific skills. Engagement flow: red-team mindset triggered → confirm engagement mode (`bug-bounty` vs red-team vs pentest per project memory) → invoke `/hunt` → `hunt-dispatch` loads the right cluster (M365 / SharePoint / VPN / vCenter / APK).
 - **`mid-engagement-ir-detection`** — Red-team mindset says "behavior changes ARE findings"; this skill operationalizes that. Engagement flow: red-team engagement underway → baseline established at session start → response patterns shift mid-test → `mid-engagement-ir-detection` captures the SOC-patch state as a NEW finding (defensive-action observed = client capability metric). Don't dismiss it as "the bug got fixed."
 - **`redteam-report-template`** — Red-team deliverable is NOT a bug-bounty report; different audience, different tone, different cadence. Engagement flow: findings collected throughout engagement → at session close, package via `redteam-report-template` (Subject / Observations / Description / Impact / Recommendation / PoC) for client-facing DOCX, not `report-writing` which is for H1/Bugcrowd/Intigriti platforms.
-- **`triage-validation`** — Red-team mindset includes "don't retract too fast" — the 4 retractions from redacted-portal.ch were mindset failures, not validation failures. Engagement flow: every finding through `triage-validation` 7-Question Gate, but with the red-team adjustment that "exploitable only with chain" is still a finding, not a no-finding.
+- **`triage-validation`** — Red-team mindset includes "don't retract too fast" — the 4 retractions from a an authorized engagement were mindset failures, not validation failures. Engagement flow: every finding through `triage-validation` 7-Question Gate, but with the red-team adjustment that "exploitable only with chain" is still a finding, not a no-finding.
 - **`evidence-hygiene`** — Red-team engagements often span weeks; without disciplined evidence capture the deliverable suffers. Engagement flow: red-team mindset triggered → set up `evidence-hygiene` capture cadence (screenshots, request/response dumps, timestamped logs) at session start, not at session close.
