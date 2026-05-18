@@ -10,7 +10,7 @@
 #   hunt                 # shows usage
 #
 # Customize HUNT_BASE in your environment to override the parent dir:
-#   export HUNT_BASE="$HOME/Research/Targets"
+#   export HUNT_BASE="$HOME/security-research/Targets"
 #
 # Install: source this file from your ~/.zshrc or ~/.bashrc
 #   echo 'source ~/.claude/scripts/hunt.sh' >> ~/.zshrc
