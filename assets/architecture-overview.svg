@@ -8,7 +8,8 @@
     </marker>
   </defs>
 
-  
+  <!-- Solid white background — keeps the dark-on-light design readable on GitHub dark mode -->
+  <rect x="0" y="0" width="1200" height="880" fill="#ffffff"/>
 
   <!-- ==================== TITLE ==================== -->
   <text x="24" y="28" style="fill:rgb(17, 24, 39);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:system-ui, -apple-system, sans-serif;font-size:17px;font-weight:700;text-anchor:start;dominant-baseline:auto">Claude-BugHunter — 51 skills, 6-phase workflow</text>
