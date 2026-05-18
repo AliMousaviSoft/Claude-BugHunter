@@ -51,6 +51,160 @@ If you're running an internal red team that includes domain-takeover chains via 
 
 ---
 
+## Capability Map
+
+The 51 skills group into 7 capability domains. Each box below is a real skill on disk. Skills auto-load when their description keywords match what you're describing to Claude.
+
+```mermaid
+graph TB
+    classDef recon fill:#FFE4D1,stroke:#DA7756,stroke-width:2px,color:#080705
+    classDef hunt fill:#FFB591,stroke:#DA7756,stroke-width:2px,color:#080705
+    classDef platform fill:#FF8B14,stroke:#DA7756,stroke-width:2px,color:#fff
+    classDef redteam fill:#DA7756,stroke:#23201C,stroke-width:2px,color:#fff
+    classDef workflow fill:#FFE4D1,stroke:#DA7756,stroke-width:2px,color:#080705
+    classDef report fill:#FFB591,stroke:#DA7756,stroke-width:2px,color:#080705
+    classDef cli fill:#23201C,stroke:#DA7756,stroke-width:2px,color:#FFE4D1
+
+    subgraph SCOPE [" "]
+        direction LR
+        S1["Engagement scaffold<br/>hunt &lt;target&gt;<br/>bug-bounty · bb-methodology"]:::workflow
+    end
+
+    subgraph RECON ["Recon & Intelligence (3)"]
+        direction TB
+        R1["offensive-osint<br/>15-ref probe arsenal"]:::recon
+        R2["web2-recon<br/>subdomain + endpoint enum"]:::recon
+        R3["osint-methodology<br/>5-stage pipeline"]:::recon
+    end
+
+    subgraph HUNT ["Hunt — Web App (24 hunt-* skills)"]
+        direction TB
+        H1["Injection<br/>hunt-sqli · hunt-xss · hunt-ssti · hunt-rce"]:::hunt
+        H2["Authorization<br/>hunt-idor · hunt-auth-bypass · hunt-csrf"]:::hunt
+        H3["Server-Side<br/>hunt-ssrf · hunt-xxe · hunt-http-smuggling · hunt-cache-poison"]:::hunt
+        H4["Identity<br/>hunt-jwt · hunt-saml · hunt-oauth · hunt-mfa-bypass · hunt-ato"]:::hunt
+        H5["API & Modern<br/>hunt-graphql · hunt-api-misconfig · hunt-file-upload"]:::hunt
+        H6["Business & Race<br/>hunt-business-logic · hunt-race-conditions · hunt-llm-ai · hunt-pii-leak"]:::hunt
+    end
+
+    subgraph PLATFORM ["Enterprise Platform Attack (7)"]
+        direction TB
+        P1["Identity Fabric<br/>m365-entra-attack · okta-attack"]:::platform
+        P2["Cloud & Virt<br/>cloud-iam-deep · vmware-vcenter-attack"]:::platform
+        P3["Perimeter Appliances<br/>enterprise-vpn-attack"]:::platform
+        P4["SharePoint Ecosystem<br/>hunt-sharepoint · hunt-aspnet · hunt-ntlm-info"]:::platform
+        P5["Mobile & Supply Chain<br/>apk-redteam-pipeline · supply-chain-attack-recon"]:::platform
+    end
+
+    subgraph REDTEAM ["Red Team Tradecraft (2)"]
+        direction TB
+        RT1["redteam-mindset<br/>DO NOT STOP directive<br/>operator discipline"]:::redteam
+        RT2["mid-engagement-ir-detection<br/>SOC-patch & attacker-activity<br/>baseline-shift detection"]:::redteam
+    end
+
+    subgraph WORKFLOW ["Validation & Discipline"]
+        direction TB
+        V1["triage-validation<br/>7-Question Gate<br/>PASS / DOWNGRADE / KILL / CHAIN"]:::workflow
+    end
+
+    subgraph REPORT ["Capture & Report (3)"]
+        direction TB
+        E1["evidence-hygiene<br/>cookie redaction · PII black-bar"]:::report
+        E2["report-writing<br/>H1 · Intigriti · Immunefi templates"]:::report
+        E3["bugcrowd-reporting · redteam-report-template<br/>VRT mapping · DOCX deliverable"]:::report
+    end
+
+    subgraph CLI ["Slash Commands & CLI (15 + 1)"]
+        direction LR
+        C1["Slash: /recon /hunt /triage /report /validate /chain /autopilot /scope /surface /pickup /intel /remember /memory-gc /token-scan /web3-audit"]:::cli
+        C2["cbh CLI: recon · classify · triage · report"]:::cli
+    end
+
+    SCOPE --> RECON
+    RECON --> HUNT
+    RECON --> PLATFORM
+    HUNT --> WORKFLOW
+    PLATFORM --> WORKFLOW
+    REDTEAM -.applies throughout.-> HUNT
+    REDTEAM -.applies throughout.-> PLATFORM
+    WORKFLOW --> REPORT
+    CLI -.routes into.-> RECON
+    CLI -.routes into.-> HUNT
+    CLI -.routes into.-> WORKFLOW
+    CLI -.routes into.-> REPORT
+```
+
+**How to read the map:**
+- **Boxes** are skills (auto-load by keyword) or skill clusters
+- **Solid arrows** = standard engagement progression (scope → recon → hunt → validate → report)
+- **Dotted arrows** = layered concerns (red-team mindset overlays the hunt phase; the CLI/slash layer routes into every phase)
+- **Numbers in parens** = how many skills are in that group
+
+If you're new and want to see what attacks the bundle teaches: focus on the **Hunt** (web) and **Platform Attack** (enterprise perimeter) groups. If you're already a hunter and want to know what's new vs your own workflow: look at **Red Team Tradecraft** and **Validation & Discipline** — those are the operator-discipline layer that most checklists skip.
+
+---
+
+## Engagement Flow
+
+Every engagement follows the same 6-phase loop. Skills auto-load at each phase. The Validate gate has 4 possible outcomes — only **PASS** or **DOWNGRADE** continue forward to a report; **KILL** and **CHAIN REQUIRED** return you to Hunt with a verdict that prevents wasted reporting effort.
+
+```mermaid
+flowchart TD
+    classDef phase fill:#FFB591,stroke:#DA7756,stroke-width:3px,color:#080705
+    classDef gate fill:#FF8B14,stroke:#23201C,stroke-width:2px,color:#fff
+    classDef decision fill:#FFE4D1,stroke:#DA7756,stroke-width:2px,color:#080705
+    classDef terminal fill:#23201C,stroke:#DA7756,stroke-width:2px,color:#FFE4D1
+    classDef discipline fill:#DA7756,stroke:#23201C,stroke-width:2px,color:#fff
+
+    Start(["🎯 Engagement starts"]):::terminal --> Mode
+
+    Mode{"Engagement mode?<br/><i>bb-methodology Part 0</i>"}:::decision
+    Mode -->|"Bug Bounty"| Scope
+    Mode -->|"Red Team"| RTSetup
+    Mode -->|"Pentest"| Scope
+
+    RTSetup["Load red-team layer<br/><b>redteam-mindset</b><br/>DO NOT STOP directive<br/><b>mid-engagement-ir-detection</b>"]:::discipline
+    RTSetup --> Scope
+
+    Scope["<b>1. SCOPE</b><br/>hunt &lt;target&gt; → scaffold folder<br/>Parse program rules<br/>Fill scope.md<br/><i>skills: bug-bounty, bb-methodology</i>"]:::phase
+    Scope --> Recon
+
+    Recon["<b>2. RECON</b><br/>Subdomain enum · endpoint mapping<br/>JS bundle harvest · identity fabric<br/><i>skills: offensive-osint, web2-recon</i><br/>commands: /recon · cbh recon &lt;target&gt;"]:::phase
+    Recon --> Hunt
+
+    Hunt["<b>3. HUNT</b><br/>Test bug-class hypotheses<br/>Apply payloads from Pattern Libraries<br/><i>24 hunt-* skills auto-load by keyword</i><br/>commands: /hunt · /chain"]:::phase
+    Hunt --> Found{"Lead<br/>found?"}:::decision
+    Found -->|"no"| Hunt
+    Found -->|"yes"| Validate
+
+    Validate["<b>4. VALIDATE</b><br/>Run the 7-Question Gate<br/>Q1: real HTTP request?<br/>Q2: accepted-impact list?<br/>Q3: in scope?<br/>Q4: no admin-only assumption?<br/>Q5: not already known?<br/>Q6: concrete impact, not 'technically possible'?<br/>Q7: not on never-submit list?<br/><i>skill: triage-validation</i><br/>command: /triage"]:::phase
+    Validate --> Verdict{"Gate verdict"}:::gate
+
+    Verdict -->|"PASS<br/>(all 7 ✓)"| Capture
+    Verdict -->|"DOWNGRADE<br/>(Q2 or Q5 fail)"| Capture
+    Verdict -->|"CHAIN REQUIRED<br/>(needs another primitive)"| Hunt
+    Verdict -->|"KILL<br/>(any other failure)"| Hunt
+
+    Capture["<b>5. CAPTURE</b><br/>Cookie redaction · PII black-bar<br/>HAR sanitization · screenshot order<br/><i>skill: evidence-hygiene</i>"]:::phase
+    Capture --> Report
+
+    Report["<b>6. REPORT</b><br/>Draft per platform template<br/>H1 / Bugcrowd VRT / Intigriti / Immunefi<br/>or client-facing DOCX (red-team)<br/><i>skills: report-writing, bugcrowd-reporting,<br/>redteam-report-template</i><br/>command: /report"]:::phase
+    Report --> Submit(["📨 Submit"]):::terminal
+
+    Submit --> Track["Append UUID to submissions.txt<br/>Cross-reference future chains<br/>command: /remember"]
+    Track --> Hunt
+```
+
+**Key properties of this flow:**
+
+- **Validate gate is non-optional.** Even if you're confident a finding is real, route it through `/triage` first. The gate is what separates productive researchers from N/A noise. Reported as the single most useful step by every researcher who used the bundle.
+- **KILL returns to Hunt, not to "end of engagement."** A killed lead doesn't mean the engagement is over — it means *that specific lead* is dead. Keep hunting.
+- **CHAIN REQUIRED is a real verdict.** Many high-severity findings only land as Critical when chained with another primitive (e.g., user-enum + no-rate-limit + weak password policy = ATO). The verdict tells you "go find the other half before reporting."
+- **Track loops back.** Once you submit, the engagement isn't done. Open leads exist; chained reports cross-reference submission UUIDs. The `/remember` command persists this state across Claude Code sessions.
+- **Red-team mode adds a discipline layer.** When mode=Red Team, `redteam-mindset` and `mid-engagement-ir-detection` are loaded throughout — applying "DO NOT STOP" discipline at every step and watching for client-SOC mid-engagement patches.
+
+---
+
 ## Two interfaces — pick what fits your engagement
 
 The bundle exposes the same content through two interfaces. **Slash commands are the primary interface**; the `cbh` CLI is a secondary terminal-native runner. Both consume the same `skills/` content; they differ in execution model.
