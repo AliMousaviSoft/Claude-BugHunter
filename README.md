@@ -309,7 +309,7 @@ If none of the above match: tell Claude *"I want to test for X"* (where X is the
 
 ---
 
-### Web Application Hunting (8 skills · sorted alphabetically)
+### Web Application Hunting (8 skills)
 
 | Skill | What it covers | Coverage source |
 |---|---|---|
@@ -322,7 +322,7 @@ If none of the above match: tell Claude *"I want to test for X"* (where X is the
 | `hunt-xss` | Reflected · Stored · DOM · blind XSS · CSP bypass | 174 H1 reports |
 | `hunt-xxe` | XML external entity (in-band, OOB, XXE-via-DOCX) | 4 H1 reports |
 
-### Authentication & Identity (5 skills · sorted alphabetically)
+### Authentication & Identity (5 skills)
 
 | Skill | What it covers | Coverage source |
 |---|---|---|
@@ -332,7 +332,7 @@ If none of the above match: tell Claude *"I want to test for X"* (where X is the
 | `hunt-oauth` | OAuth 2.0 / OIDC flaws · open-redirect chain · state-parameter abuse | 10 H1 reports |
 | `hunt-saml` | SAML / SSO attacks · XML signature wrapping · comment injection | curated |
 
-### API & Infrastructure (6 skills · sorted alphabetically)
+### API & Infrastructure (6 skills)
 
 | Skill | What it covers | Coverage source |
 |---|---|---|
@@ -343,7 +343,7 @@ If none of the above match: tell Claude *"I want to test for X"* (where X is the
 | `hunt-ssrf` | SSRF + 11 IP-bypass techniques · cloud metadata exfil | 9 H1 reports |
 | `hunt-subdomain` | Subdomain takeover — 27+ provider fingerprints + chain to ATO | 11 H1 reports |
 
-### Advanced & Concurrency (6 skills · sorted alphabetically)
+### Advanced & Concurrency (6 skills)
 
 | Skill | What it covers | Coverage source |
 |---|---|---|
@@ -354,7 +354,7 @@ If none of the above match: tell Claude *"I want to test for X"* (where X is the
 | `hunt-misc` | Catch-all for less-common classes (clickjacking, open-redirect, XS-leaks, etc.) | 225 H1 reports |
 | `hunt-race-condition` | Race conditions / TOCTOU — double-spend, MFA-bypass-via-race | 3 H1 reports |
 
-### Enterprise Identity & Cloud Attack ★ (3 skills · sorted alphabetically)
+### Enterprise Identity & Cloud Attack ★ (3 skills)
 
 | Skill | What it covers | Coverage source |
 |---|---|---|
@@ -362,7 +362,7 @@ If none of the above match: tell Claude *"I want to test for X"* (where X is the
 | `m365-entra-attack` | M365 / Entra ID — AADSTS codes, user enum, Smart Lockout math, CA bypass, ROPC, SAML SSO browser flow | engagement-redacted |
 | `okta-attack` | Okta-as-IdP — tenant discovery, user enum vectors, factor enumeration, push-fatigue, FastPass abuse, OIDC redirect_uri tampering | original |
 
-### Infrastructure & Appliance Attack ★ (4 skills · sorted alphabetically)
+### Infrastructure & Appliance Attack ★ (4 skills)
 
 | Skill | What it covers | Coverage source |
 |---|---|---|
@@ -371,7 +371,7 @@ If none of the above match: tell Claude *"I want to test for X"* (where X is the
 | `hunt-sharepoint` | SharePoint on-prem (2013–SE) — ToolShell precondition chain (CVE-2025-53770), SOAP auth bypass, anon FormDigest, SafeControl enum | engagement-redacted |
 | `vmware-vcenter-attack` | VMware vSphere / vCenter / Workspace ONE / Aria CVE chain (CVE-2021-21972 → CVE-2024-37085) | original |
 
-### Red Team Tradecraft ★ (4 skills · sorted alphabetically)
+### Red Team Tradecraft ★ (4 skills)
 
 | Skill | What it covers | Coverage source |
 |---|---|---|
@@ -380,7 +380,7 @@ If none of the above match: tell Claude *"I want to test for X"* (where X is the
 | `redteam-mindset` | Red-team operator discipline — mindset corrections separating offensive from defensive WAPT, "DO NOT STOP" primary directive | engagement-redacted |
 | `supply-chain-attack-recon` | Supply-chain recon — dep-confusion, GH Actions injection, SBOM mining, container registry exposure, internal-package leakage | original |
 
-### Recon & OSINT (4 skills · sorted alphabetically)
+### Recon & OSINT (4 skills)
 
 | Skill | What it covers | Coverage source |
 |---|---|---|
@@ -389,7 +389,7 @@ If none of the above match: tell Claude *"I want to test for X"* (where X is the
 | `osint-methodology` | 5-stage recon pipeline · 29-type asset graph · severity rubric · time budgeting | original |
 | `web2-recon` | Subdomain enumeration · host discovery · URL crawling | original |
 
-### Workflow & Validation (5 skills · sorted alphabetically)
+### Workflow & Validation (5 skills)
 
 | Skill | What it covers | Coverage source |
 |---|---|---|
@@ -399,7 +399,7 @@ If none of the above match: tell Claude *"I want to test for X"* (where X is the
 | `security-arsenal` | Payloads, bypass tables, wordlists, gf patterns | vendored |
 | `triage-validation` | 7-Question Gate · 4 pre-submission gates · never-submit list | original |
 
-### Reporting & Hygiene (4 skills · sorted alphabetically)
+### Reporting & Hygiene (4 skills)
 
 | Skill | What it covers | Coverage source |
 |---|---|---|
@@ -408,7 +408,7 @@ If none of the above match: tell Claude *"I want to test for X"* (where X is the
 | `redteam-report-template` ★ | Client-facing red-team deliverable — Subject / Observations / Description / Impact / Recommendation / PoC, MD + DOCX packaging | engagement-redacted |
 | `report-writing` | H1 / Bugcrowd / Intigriti / Immunefi templates · CVSS 3.1 + 4.0 | original |
 
-### Specialized (2 skills · sorted alphabetically)
+### Specialized (2 skills)
 
 | Skill | What it covers | Coverage source |
 |---|---|---|
