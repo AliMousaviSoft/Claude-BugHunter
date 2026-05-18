@@ -232,57 +232,57 @@ See [`docs/cbh-cli.md`](docs/cbh-cli.md) for the CLI reference. See the slash co
 ```
 Claude-BugHunter/
 ├── skills/                                  # 51 SKILL.md bundles
-│   ├── apk-redteam-pipeline/
-│   ├── bb-local-toolkit/
-│   ├── bb-methodology/
-│   ├── bug-bounty/
-│   ├── bugcrowd-reporting/
-│   ├── cloud-iam-deep/
-│   ├── enterprise-vpn-attack/
-│   ├── evidence-hygiene/
-│   ├── hunt-api-misconfig/
-│   ├── hunt-aspnet/
-│   ├── hunt-ato/
-│   ├── hunt-auth-bypass/
-│   ├── hunt-business-logic/
-│   ├── hunt-cache-poison/
-│   ├── hunt-cloud-misconfig/
-│   ├── hunt-csrf/
-│   ├── hunt-dispatch/
-│   ├── hunt-file-upload/
-│   ├── hunt-graphql/
-│   ├── hunt-http-smuggling/
-│   ├── hunt-idor/
-│   ├── hunt-llm-ai/
-│   ├── hunt-mfa-bypass/
-│   ├── hunt-misc/
-│   ├── hunt-ntlm-info/
-│   ├── hunt-oauth/
-│   ├── hunt-race-condition/
-│   ├── hunt-rce/
-│   ├── hunt-saml/
-│   ├── hunt-sharepoint/
-│   ├── hunt-sqli/
-│   ├── hunt-ssrf/
-│   ├── hunt-ssti/
-│   ├── hunt-subdomain/
-│   ├── hunt-xss/
-│   ├── hunt-xxe/
-│   ├── m365-entra-attack/
-│   ├── meme-coin-audit/
-│   ├── mid-engagement-ir-detection/
-│   ├── offensive-osint/
-│   ├── okta-attack/
-│   ├── osint-methodology/
-│   ├── redteam-mindset/
-│   ├── redteam-report-template/
-│   ├── report-writing/
-│   ├── security-arsenal/
-│   ├── supply-chain-attack-recon/
-│   ├── triage-validation/
-│   ├── vmware-vcenter-attack/
-│   ├── web2-recon/
-│   └── web3-audit/
+│   ├── apk-redteam-pipeline/                     # APK acquisition → jadx → secrets → Frida
+│   ├── bb-local-toolkit/                         # full bug-bounty workflow pipeline router
+│   ├── bb-methodology/                           # 5-phase non-linear hunting workflow (vendored)
+│   ├── bug-bounty/                               # master orchestrator (vendored)
+│   ├── bugcrowd-reporting/                       # VRT, OOS rebuttals, severity requests
+│   ├── cloud-iam-deep/                           # AWS/Azure/GCP IAM priv-esc chains
+│   ├── enterprise-vpn-attack/                    # Cisco/Fortinet/Citrix/PAN/Pulse SSL VPN
+│   ├── evidence-hygiene/                         # cookie/PII/HAR redaction discipline
+│   ├── hunt-api-misconfig/                       # mass assignment, JWT, prototype pollution, CORS
+│   ├── hunt-aspnet/                              # ASP.NET ViewState, machineKey, WebForms
+│   ├── hunt-ato/                                 # 9 account-takeover paths + chains
+│   ├── hunt-auth-bypass/                         # auth bypass — 4 disclosed reports
+│   ├── hunt-business-logic/                      # business logic flaws — 7 disclosed reports
+│   ├── hunt-cache-poison/                        # cache poisoning — 4 disclosed reports
+│   ├── hunt-cloud-misconfig/                     # S3, Lambda, RDS, IAM-in-JS, metadata SSRF
+│   ├── hunt-csrf/                                # CSRF — 10 disclosed reports
+│   ├── hunt-dispatch/                            # /hunt mode router (redteam vs WAPT)
+│   ├── hunt-file-upload/                         # webshell, SVG XSS, DOCX XXE, traversal
+│   ├── hunt-graphql/                             # GraphQL — 3 disclosed reports
+│   ├── hunt-http-smuggling/                      # CL.TE / TE.CL request smuggling
+│   ├── hunt-idor/                                # IDOR — 26 disclosed reports
+│   ├── hunt-llm-ai/                              # prompt injection, ASCII smuggling, ASI01-10
+│   ├── hunt-mfa-bypass/                          # 7 MFA/2FA bypass patterns
+│   ├── hunt-misc/                                # catch-all — 225 disclosed reports
+│   ├── hunt-ntlm-info/                           # NTLM Type-2 AD topology disclosure
+│   ├── hunt-oauth/                               # OAuth — 10 disclosed reports
+│   ├── hunt-race-condition/                      # race conditions — 3 disclosed reports
+│   ├── hunt-rce/                                 # RCE — 67 disclosed reports
+│   ├── hunt-saml/                                # SAML XSW1–XSW8 + SSO attacks
+│   ├── hunt-sharepoint/                          # SharePoint on-prem (ToolShell, anon SOAP)
+│   ├── hunt-sqli/                                # SQLi — 8 disclosed reports
+│   ├── hunt-ssrf/                                # SSRF — 9 disclosed reports
+│   ├── hunt-ssti/                                # SSTI: Jinja/Twig/FreeMarker/ERB/Spring
+│   ├── hunt-subdomain/                           # subdomain takeover — 11 disclosed reports
+│   ├── hunt-xss/                                 # XSS — 174 disclosed reports
+│   ├── hunt-xxe/                                 # XXE — 4 disclosed reports
+│   ├── m365-entra-attack/                        # M365/Entra full chain (AADSTS, CA, ROPC)
+│   ├── meme-coin-audit/                          # token rug-pull + SPL/Token-2022 audit
+│   ├── mid-engagement-ir-detection/              # detect SOC patches + attacker activity mid-test
+│   ├── offensive-osint/                          # 15-reference probe arsenal
+│   ├── okta-attack/                              # Okta IdP enum, factor flows, push fatigue
+│   ├── osint-methodology/                        # 5-stage recon + asset graph
+│   ├── redteam-mindset/                          # red-team operator discipline + DO NOT STOP
+│   ├── redteam-report-template/                  # client-facing deliverable format
+│   ├── report-writing/                           # H1/Bugcrowd/Intigriti templates (vendored)
+│   ├── security-arsenal/                         # payloads + bypass tables (vendored)
+│   ├── supply-chain-attack-recon/                # dep-confusion, GH Actions, SBOM mining
+│   ├── triage-validation/                        # 7-Question Gate + 4 validation gates (vendored)
+│   ├── vmware-vcenter-attack/                    # vCenter/Workspace ONE/Aria CVE chain
+│   ├── web2-recon/                               # subdomain enum, host discovery (vendored)
+│   └── web3-audit/                               # 10 DeFi bug classes (vendored)
 ├── commands/                                # 15 slash commands
 ├── scripts/
 │   ├── hunt.sh                              # engagement-folder scaffolder
