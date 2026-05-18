@@ -1,507 +1,226 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080" role="img" aria-label="claude-bughunter — bug bounty arsenal for Claude Code">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 920" width="1920" height="920" role="img" aria-label="Claude/BugHunter — bug-bounty + red-team skill bundle for Claude Code" font-family="ui-monospace, 'JetBrains Mono', 'IBM Plex Mono', 'SF Mono', Menlo, monospace">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0A0A0E"/>
-      <stop offset="100%" stop-color="#101018"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1A1612"/>
+      <stop offset="100%" stop-color="#0F0C09"/>
     </linearGradient>
-
-    <radialGradient id="logoGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#FF2D4F" stop-opacity="0.65"/>
-      <stop offset="100%" stop-color="#FF2D4F" stop-opacity="0"/>
-    </radialGradient>
-
-    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-      <path d="M40 0 H0 V40" fill="none" stroke="#1A1A26" stroke-width="0.5"/>
+    <pattern id="dots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="0.55" fill="#3A3024" opacity="0.45"/>
     </pattern>
-
-    <filter id="redGlow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="4" result="b"/>
-      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="0.8"/>
     </filter>
-
-    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="2" result="b"/>
-      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-
-    <!-- Corner brackets for the cards (red L-shapes, no full border) -->
-    <symbol id="cardCorners" viewBox="0 0 100 100" preserveAspectRatio="none">
-      <g stroke="#FF2D4F" stroke-width="1.6" fill="none">
-        <path d="M 0 8 L 0 0 L 8 0"/>
-        <path d="M 100 0 L 100 0"/>
-      </g>
-    </symbol>
-
-    <!-- Claude-style sunburst (red, small, for top-left mark) -->
-    <symbol id="sunburst" viewBox="-50 -50 100 100">
-      <circle r="44" fill="url(#logoGlow)"/>
-      <g fill="#FF2D4F" filter="url(#redGlow)">
-        <path d="M 0 -36 L 4 -8 L 0 -2 L -4 -8 Z"/>
-        <path d="M 0 36 L 4 8 L 0 2 L -4 8 Z"/>
-        <path d="M -36 0 L -8 -4 L -2 0 L -8 4 Z"/>
-        <path d="M 36 0 L 8 -4 L 2 0 L 8 4 Z"/>
-        <path d="M -25 -25 L -5 -2 L -2 -2 L -2 -5 Z"/>
-        <path d="M 25 -25 L 5 -2 L 2 -2 L 2 -5 Z"/>
-        <path d="M -25 25 L -5 2 L -2 2 L -2 5 Z"/>
-        <path d="M 25 25 L 5 2 L 2 2 L 2 5 Z"/>
-        <circle r="3"/>
-      </g>
-    </symbol>
   </defs>
-
-  <!-- ============================ BG ============================ -->
-  <rect width="1920" height="1080" fill="url(#bg)"/>
-  <rect width="1920" height="1080" fill="url(#grid)"/>
-
-  <!-- Soft glow behind the logo -->
-  <ellipse cx="140" cy="185" rx="200" ry="120" fill="url(#logoGlow)" opacity="0.4"/>
-
-  <!-- ============================ CORNER BRACKETS w/ plus marks ============================ -->
-  <g stroke="#FF2D4F" stroke-width="2" fill="none">
-    <!-- TL -->
-    <path d="M 40 30 L 20 30 L 20 50"/>
-    <path d="M 12 18 L 28 18 M 20 10 L 20 26"/>
-    <!-- TR -->
-    <path d="M 1880 30 L 1900 30 L 1900 50"/>
-    <path d="M 1892 18 L 1908 18 M 1900 10 L 1900 26"/>
-    <!-- BL -->
-    <path d="M 40 1050 L 20 1050 L 20 1030"/>
-    <path d="M 12 1062 L 28 1062 M 20 1054 L 20 1070"/>
-    <!-- BR -->
-    <path d="M 1880 1050 L 1900 1050 L 1900 1030"/>
-    <path d="M 1892 1062 L 1908 1062 M 1900 1054 L 1900 1070"/>
+  <rect width="1920" height="920" fill="url(#bg)"/>
+  <rect width="1920" height="920" fill="url(#dots)"/>
+  <g stroke="#E2725B" stroke-width="1.5" fill="none" stroke-linecap="square">
+    <path d="M 20 60 L 20 20 L 60 20"/>
+    <path d="M 1860 20 L 1900 20 L 1900 60"/>
+    <path d="M 20 860 L 20 900 L 60 900"/>
+    <path d="M 1860 900 L 1900 900 L 1900 860"/>
   </g>
-
-  <!-- ============================ HEADER MICROTEXT ============================ -->
-  <g font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="13" fill="#5A5A6A" letter-spacing="2">
-    <text x="60" y="58">▸ N 00°00'00"  ·  SECTOR-A</text>
-    <text x="760" y="58">·  BUILD:STABLE  ·  SHA:b48c833  ·  NO TELEMETRY  ·</text>
-    <text x="1860" y="58" text-anchor="end">SYS://HUNT.LIVE  ·  0xC0DE</text>
+  <g font-size="14" letter-spacing="1.5">
+    <text x="40" y="56" fill="#E2725B">▸</text>
+    <text x="58" y="56" fill="#E8E0D0" font-weight="600">CLAUDE SKILL</text>
+    <text x="190" y="56" fill="#6E695F">·  v1.0  ·  MIT  ·</text>
+    <text x="350" y="56" fill="#A89E8C">TRAINED ON 574+ DISCLOSED REPORTS  ·  91 CVEs INDEXED</text>
+    <text x="1880" y="56" text-anchor="end" fill="#A89E8C">github.com/elementalsouls/Claude-BugHunter</text>
   </g>
-
-  <!-- ============================ TITLE BLOCK ============================ -->
-  <!-- Sunburst mark -->
-  <use href="#sunburst" x="80" y="125" width="120" height="120"/>
-
-  <!-- Wordmark — single text, tspan flow so the slash is clean -->
-  <text y="220" font-size="108" font-weight="900"
-        font-family="ui-sans-serif, -apple-system, 'Segoe UI', Inter, sans-serif"
-        letter-spacing="-4">
-    <tspan x="240" fill="#FFFFFF">claude</tspan><tspan dx="20" fill="#FF2D4F" font-weight="300">/</tspan><tspan dx="20" fill="#FF2D4F" filter="url(#redGlow)">bughunter</tspan>
-  </text>
-
-  <!-- Underline under "bughunter" -->
-  <line x1="595" y1="238" x2="1180" y2="238" stroke="#FF2D4F" stroke-width="3"/>
-
-  <!-- Subtitle -->
-  <g font-family="ui-sans-serif, -apple-system, 'Segoe UI', Inter, sans-serif"
-     font-size="16" letter-spacing="5" fill="#8A8A9A">
-    <circle cx="252" cy="278" r="4.5" fill="#FF2D4F"/>
-    <text x="268" y="284" font-weight="600" fill="#FF2D4F">BUG  BOUNTY  ARSENAL</text>
-    <text x="610" y="284">·</text>
-    <text x="630" y="284">DISCLOSED-REPORT  TRADECRAFT</text>
-    <text x="1130" y="284">·</text>
-    <text x="1150" y="284">RED-TEAM  PIPELINE</text>
+  <g>
+    <polygon points="203.6,262.5 130.0,305.0 56.4,262.5 56.4,177.5 130.0,135.0 203.6,177.5" fill="none" stroke="#E2725B" stroke-width="1.5"/>
+    <line x1="130" y1="160.5" x2="130" y2="279.5" stroke="#A85541" stroke-width="1"/>
+    <line x1="70.5" y1="220" x2="189.5" y2="220" stroke="#A85541" stroke-width="1"/>
+    <line x1="87.5" y1="177.5" x2="172.5" y2="262.5" stroke="#A85541" stroke-width="0.8" opacity="0.7"/>
+    <line x1="172.5" y1="177.5" x2="87.5" y2="262.5" stroke="#A85541" stroke-width="0.8" opacity="0.7"/>
+    <circle cx="130" cy="220" r="3" fill="#E2725B"/>
+    <polygon points="130,177.5 125,198.8 135,198.8" fill="#E2725B"/>
   </g>
-
-  <!-- ============================ TOP-RIGHT INFO BLOCK ============================ -->
-  <g transform="translate(1430, 138)">
-    <!-- OPERATIONAL box -->
-    <rect x="0" y="0" width="390" height="48" fill="none" stroke="#FF2D4F" stroke-width="1.6"/>
-    <circle cx="22" cy="24" r="6" fill="#FF2D4F"/>
-    <text x="42" y="30" font-family="ui-sans-serif, -apple-system, 'Segoe UI', sans-serif"
-          font-size="18" letter-spacing="5" fill="#FF2D4F" font-weight="700">OPERATIONAL</text>
-
-    <g font-family="ui-monospace, 'SF Mono', monospace" font-size="14" letter-spacing="2.5">
-      <text x="0" y="80" fill="#5A5A6A">VERSION</text>
-      <text x="390" y="80" text-anchor="end" fill="#FFFFFF">v1.0  ·  MIT</text>
-
-      <text x="0" y="106" fill="#5A5A6A">AUTHOR</text>
-      <text x="390" y="106" text-anchor="end" fill="#FFFFFF">@elementalsouls</text>
-    </g>
-    <g font-family="ui-monospace, 'SF Mono', monospace" font-size="12" letter-spacing="1.5">
-      <text x="0" y="132" fill="#5A5A6A">REPO</text>
-      <text x="390" y="132" text-anchor="end" fill="#FFFFFF">github.com/elementalsouls/Claude-BugHunter</text>
-    </g>
+  <text x="130" y="335" text-anchor="middle" font-size="13" letter-spacing="2.5" fill="#6E695F">SKILL  ·  BH-01</text>
+  <g font-size="14" letter-spacing="2.5">
+    <line x1="250" y1="135" x2="275" y2="135" stroke="#E2725B" stroke-width="1.5"/>
+    <text x="288" y="139" fill="#E2725B" font-weight="700">▸ A CLAUDE SKILL</text>
+    <text x="460" y="139" fill="#6E695F">·  BUG-BOUNTY + RED-TEAM</text>
   </g>
-
-  <!-- ============================ SECTION HEADER ============================ -->
-  <g transform="translate(60, 380)">
-    <line x1="0" y1="-12" x2="0" y2="14" stroke="#FF2D4F" stroke-width="3"/>
-    <text x="14" y="6" font-family="ui-sans-serif, sans-serif" font-size="16"
-          letter-spacing="5" fill="#FF2D4F" font-weight="700">HUNT  ARSENAL</text>
-
-    <g font-family="ui-monospace, monospace" font-size="14" letter-spacing="3" fill="#5A5A6A">
-      <text x="260" y="6">// 51 SKILLS</text>
-      <text x="420" y="6">// 24 VULN CLASSES</text>
-      <text x="640" y="6">// 15 COMMANDS</text>
-      <text x="820" y="6">// 6 PHASES</text>
-    </g>
-
-    <text x="1800" y="6" text-anchor="end" font-family="ui-monospace, monospace" font-size="14"
-          letter-spacing="4" fill="#8A8A9A">0X01  ·  TRIAGE  ·  VALIDATE  ·  CHAIN  ·  REPORT</text>
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif">
+    <text x="250" y="232" font-size="108" font-weight="800" fill="#E8E0D0" letter-spacing="-2">Claude</text>
+    <text x="580" y="232" font-size="108" font-weight="200" fill="#6E695F">/</text>
+    <text x="630" y="232" font-size="108" font-weight="800" fill="#E2725B" letter-spacing="-2">BugHunter</text>
+    <line x1="630" y1="246" x2="1150" y2="246" stroke="#E2725B" stroke-width="2"/>
   </g>
-
-  <!-- thin divider below section header -->
-  <line x1="60" y1="404" x2="1860" y2="404" stroke="#1A1A26" stroke-width="1"/>
-
-  <!-- ============================ 4 CAPABILITY COLUMNS ============================ -->
-  <!-- Column dimensions: each 430 wide, gap 30. Start x=60. -->
-
-  <!-- ============ COLUMN [01] WEB APP ============ -->
-  <g transform="translate(60, 430)">
-    <text x="0" y="0" font-family="ui-sans-serif, sans-serif" font-size="15"
-          letter-spacing="4" fill="#8A8A9A" font-weight="600">[01]  WEB  APP</text>
-
-    <!-- Card 1 -->
-    <g transform="translate(0, 30)">
-      <!-- 4 corner brackets -->
-      <g stroke="#FF2D4F" stroke-width="1.5" fill="none">
-        <path d="M 0 12 L 0 0 L 12 0"/>
-        <path d="M 418 0 L 430 0 L 430 12"/>
-        <path d="M 0 88 L 0 100 L 12 100"/>
-        <path d="M 418 100 L 430 100 L 430 88"/>
-      </g>
-      <text x="18" y="38" font-family="ui-sans-serif, sans-serif" font-size="22"
-            font-weight="700" fill="#FFFFFF" letter-spacing="0.5">XSS · IDOR · SQLi</text>
-      <text x="412" y="32" text-anchor="end" font-family="ui-monospace, monospace"
-            font-size="12" letter-spacing="3" fill="#5A5A6A">HW-01</text>
-      <text x="18" y="62" font-family="ui-sans-serif, sans-serif" font-size="14"
-            fill="#8A8A9A">174 · 26 · 8 reports  ·  stored, reflected, DOM</text>
-      <text x="18" y="82" font-family="ui-sans-serif, sans-serif" font-size="13"
-            fill="#5A5A6A">hunt-xss · hunt-idor · hunt-sqli</text>
-    </g>
-
-    <!-- Card 2 -->
-    <g transform="translate(0, 150)">
-      <g stroke="#FF2D4F" stroke-width="1.5" fill="none">
-        <path d="M 0 12 L 0 0 L 12 0"/>
-        <path d="M 418 0 L 430 0 L 430 12"/>
-        <path d="M 0 88 L 0 100 L 12 100"/>
-        <path d="M 418 100 L 430 100 L 430 88"/>
-      </g>
-      <text x="18" y="38" font-family="ui-sans-serif, sans-serif" font-size="22"
-            font-weight="700" fill="#FFFFFF" letter-spacing="0.5">CSRF · file-upload · SSTI</text>
-      <text x="412" y="32" text-anchor="end" font-family="ui-monospace, monospace"
-            font-size="12" letter-spacing="3" fill="#5A5A6A">HW-02</text>
-      <text x="18" y="62" font-family="ui-sans-serif, sans-serif" font-size="14"
-            fill="#8A8A9A">10 reports  ·  10 upload-bypass · 5 template engines</text>
-      <text x="18" y="82" font-family="ui-sans-serif, sans-serif" font-size="13"
-            fill="#5A5A6A">hunt-csrf · hunt-file-upload · hunt-ssti</text>
-    </g>
-
-    <!-- Card 3 -->
-    <g transform="translate(0, 270)">
-      <g stroke="#FF2D4F" stroke-width="1.5" fill="none">
-        <path d="M 0 12 L 0 0 L 12 0"/>
-        <path d="M 418 0 L 430 0 L 430 12"/>
-        <path d="M 0 88 L 0 100 L 12 100"/>
-        <path d="M 418 100 L 430 100 L 430 88"/>
-      </g>
-      <text x="18" y="38" font-family="ui-sans-serif, sans-serif" font-size="22"
-            font-weight="700" fill="#FFFFFF" letter-spacing="0.5">ASP.NET · BizLogic · XXE</text>
-      <text x="412" y="32" text-anchor="end" font-family="ui-monospace, monospace"
-            font-size="12" letter-spacing="3" fill="#5A5A6A">HW-03</text>
-      <text x="18" y="62" font-family="ui-sans-serif, sans-serif" font-size="14"
-            fill="#8A8A9A">ViewState · machineKey · WCF · coupon · OOB</text>
-      <text x="18" y="82" font-family="ui-sans-serif, sans-serif" font-size="13"
-            fill="#5A5A6A">hunt-aspnet · hunt-business-logic · hunt-xxe</text>
-    </g>
+  <text x="250" y="285" font-size="18" fill="#A89E8C">Equips Claude with offensive security tradecraft  —  51 skills  ·  15 commands  ·  24 vuln classes.</text>
+  <g font-size="14" letter-spacing="1.5">
+    <text x="250" y="320" fill="#E2725B" font-weight="700">▸ FIELD-VALIDATED</text>
+    <text x="430" y="320" fill="#6E695F">:</text>
+    <text x="450" y="320" fill="#A89E8C">14+ practice ranges  +  authorized red-team &amp; bug-bounty engagements</text>
   </g>
-
-  <!-- ============ COLUMN [02] AUTH & IDENTITY ============ -->
-  <g transform="translate(520, 430)">
-    <text x="0" y="0" font-family="ui-sans-serif, sans-serif" font-size="15"
-          letter-spacing="4" fill="#8A8A9A" font-weight="600">[02]  AUTH  &amp;  IDENTITY</text>
-
-    <g transform="translate(0, 30)">
-      <g stroke="#FF2D4F" stroke-width="1.5" fill="none">
-        <path d="M 0 12 L 0 0 L 12 0"/>
-        <path d="M 418 0 L 430 0 L 430 12"/>
-        <path d="M 0 88 L 0 100 L 12 100"/>
-        <path d="M 418 100 L 430 100 L 430 88"/>
-      </g>
-      <text x="18" y="38" font-family="ui-sans-serif, sans-serif" font-size="22"
-            font-weight="700" fill="#FFFFFF" letter-spacing="0.5">OAuth · SAML · ATO</text>
-      <text x="412" y="32" text-anchor="end" font-family="ui-monospace, monospace"
-            font-size="12" letter-spacing="3" fill="#5A5A6A">AU-01</text>
-      <text x="18" y="62" font-family="ui-sans-serif, sans-serif" font-size="14"
-            fill="#8A8A9A">10 reports  ·  8 XSW patterns  ·  9 ATO paths</text>
-      <text x="18" y="82" font-family="ui-sans-serif, sans-serif" font-size="13"
-            fill="#5A5A6A">hunt-oauth · hunt-saml · hunt-ato</text>
-    </g>
-
-    <g transform="translate(0, 150)">
-      <g stroke="#FF2D4F" stroke-width="1.5" fill="none">
-        <path d="M 0 12 L 0 0 L 12 0"/>
-        <path d="M 418 0 L 430 0 L 430 12"/>
-        <path d="M 0 88 L 0 100 L 12 100"/>
-        <path d="M 418 100 L 430 100 L 430 88"/>
-      </g>
-      <text x="18" y="38" font-family="ui-sans-serif, sans-serif" font-size="22"
-            font-weight="700" fill="#FFFFFF" letter-spacing="0.5">M365 · Entra · Okta</text>
-      <text x="412" y="32" text-anchor="end" font-family="ui-monospace, monospace"
-            font-size="12" letter-spacing="3" fill="#5A5A6A">AU-02</text>
-      <text x="18" y="62" font-family="ui-sans-serif, sans-serif" font-size="14"
-            fill="#8A8A9A">AADSTS · CA-bypass · ROPC · push-fatigue · FastPass</text>
-      <text x="18" y="82" font-family="ui-sans-serif, sans-serif" font-size="13"
-            fill="#5A5A6A">m365-entra-attack · okta-attack</text>
-    </g>
-
-    <g transform="translate(0, 270)">
-      <g stroke="#FF2D4F" stroke-width="1.5" fill="none">
-        <path d="M 0 12 L 0 0 L 12 0"/>
-        <path d="M 418 0 L 430 0 L 430 12"/>
-        <path d="M 0 88 L 0 100 L 12 100"/>
-        <path d="M 418 100 L 430 100 L 430 88"/>
-      </g>
-      <text x="18" y="38" font-family="ui-sans-serif, sans-serif" font-size="22"
-            font-weight="700" fill="#FFFFFF" letter-spacing="0.5">MFA · auth-bypass · LLM</text>
-      <text x="412" y="32" text-anchor="end" font-family="ui-monospace, monospace"
-            font-size="12" letter-spacing="3" fill="#5A5A6A">AU-03</text>
-      <text x="18" y="62" font-family="ui-sans-serif, sans-serif" font-size="14"
-            fill="#8A8A9A">7 patterns  ·  OTP brute  ·  ASI 01–10  ·  prompt-inj</text>
-      <text x="18" y="82" font-family="ui-sans-serif, sans-serif" font-size="13"
-            fill="#5A5A6A">hunt-mfa-bypass · hunt-auth-bypass · hunt-llm-ai</text>
-    </g>
+  <g>
+    <rect x="1510" y="100" width="360" height="150" rx="2" fill="none" stroke="#4A4036" stroke-width="1.2"/>
+    <circle cx="1532" cy="122" r="4" fill="#E2725B"/>
+    <text x="1548" y="127" font-size="14" font-weight="700" letter-spacing="2" fill="#E8E0D0">SKILL  ·  LOADED</text>
+    <line x1="1528" y1="144" x2="1852" y2="144" stroke="#322C24" stroke-width="0.8"/>
+    <text x="1532" y="166" font-size="11" letter-spacing="1.8" fill="#6E695F">VERSION</text>
+    <text x="1848" y="166" text-anchor="end" font-size="12" fill="#E8E0D0">v1.0  ·  MIT</text>
+    <text x="1532" y="188" font-size="11" letter-spacing="1.8" fill="#6E695F">AUTHOR</text>
+    <text x="1848" y="188" text-anchor="end" font-size="12" fill="#E8E0D0">@elementalsouls</text>
+    <text x="1532" y="210" font-size="11" letter-spacing="1.8" fill="#6E695F">SOURCE</text>
+    <text x="1848" y="210" text-anchor="end" font-size="12" fill="#E8E0D0">~/.claude/skills/bughunter</text>
+    <text x="1532" y="232" font-size="11" letter-spacing="1.8" fill="#6E695F">PAIRS WITH</text>
+    <text x="1848" y="232" text-anchor="end" font-size="12" fill="#E8E0D0">Claude-OSINT</text>
   </g>
-
-  <!-- ============ COLUMN [03] API & INFRA ============ -->
-  <g transform="translate(980, 430)">
-    <text x="0" y="0" font-family="ui-sans-serif, sans-serif" font-size="15"
-          letter-spacing="4" fill="#8A8A9A" font-weight="600">[03]  API  &amp;  INFRA</text>
-
-    <g transform="translate(0, 30)">
-      <g stroke="#FF2D4F" stroke-width="1.5" fill="none">
-        <path d="M 0 12 L 0 0 L 12 0"/>
-        <path d="M 418 0 L 430 0 L 430 12"/>
-        <path d="M 0 88 L 0 100 L 12 100"/>
-        <path d="M 418 100 L 430 100 L 430 88"/>
-      </g>
-      <text x="18" y="38" font-family="ui-sans-serif, sans-serif" font-size="22"
-            font-weight="700" fill="#FFFFFF" letter-spacing="0.5">SSRF · RCE · GraphQL</text>
-      <text x="412" y="32" text-anchor="end" font-family="ui-monospace, monospace"
-            font-size="12" letter-spacing="3" fill="#5A5A6A">AP-01</text>
-      <text x="18" y="62" font-family="ui-sans-serif, sans-serif" font-size="14"
-            fill="#8A8A9A">9 · 67 · 3 reports  ·  11 IP-bypass · introspection</text>
-      <text x="18" y="82" font-family="ui-sans-serif, sans-serif" font-size="13"
-            fill="#5A5A6A">hunt-ssrf · hunt-rce · hunt-graphql</text>
-    </g>
-
-    <g transform="translate(0, 150)">
-      <g stroke="#FF2D4F" stroke-width="1.5" fill="none">
-        <path d="M 0 12 L 0 0 L 12 0"/>
-        <path d="M 418 0 L 430 0 L 430 12"/>
-        <path d="M 0 88 L 0 100 L 12 100"/>
-        <path d="M 418 100 L 430 100 L 430 88"/>
-      </g>
-      <text x="18" y="38" font-family="ui-sans-serif, sans-serif" font-size="22"
-            font-weight="700" fill="#FFFFFF" letter-spacing="0.5">Cloud IAM · Subdomain TO</text>
-      <text x="412" y="32" text-anchor="end" font-family="ui-monospace, monospace"
-            font-size="12" letter-spacing="3" fill="#5A5A6A">AP-02</text>
-      <text x="18" y="62" font-family="ui-sans-serif, sans-serif" font-size="14"
-            fill="#8A8A9A">24 AWS · 8 Azure · 6 GCP · 27 takeover fingerprints</text>
-      <text x="18" y="82" font-family="ui-sans-serif, sans-serif" font-size="13"
-            fill="#5A5A6A">cloud-iam-deep · hunt-subdomain</text>
-    </g>
-
-    <g transform="translate(0, 270)">
-      <g stroke="#FF2D4F" stroke-width="1.5" fill="none">
-        <path d="M 0 12 L 0 0 L 12 0"/>
-        <path d="M 418 0 L 430 0 L 430 12"/>
-        <path d="M 0 88 L 0 100 L 12 100"/>
-        <path d="M 418 100 L 430 100 L 430 88"/>
-      </g>
-      <text x="18" y="38" font-family="ui-sans-serif, sans-serif" font-size="22"
-            font-weight="700" fill="#FFFFFF" letter-spacing="0.5">VMware · VPN · SharePoint</text>
-      <text x="412" y="32" text-anchor="end" font-family="ui-monospace, monospace"
-            font-size="12" letter-spacing="3" fill="#5A5A6A">AP-03</text>
-      <text x="18" y="62" font-family="ui-sans-serif, sans-serif" font-size="14"
-            fill="#8A8A9A">vCenter · 7 SSL-VPN vendors · ToolShell · NTLM Type-2</text>
-      <text x="18" y="82" font-family="ui-sans-serif, sans-serif" font-size="13"
-            fill="#5A5A6A">vmware-vcenter · enterprise-vpn · hunt-sharepoint</text>
-    </g>
+  <g font-size="13" letter-spacing="1.8">
+    <text x="40" y="390" fill="#E2725B" font-weight="700">▸ INVOKE</text>
+    <text x="128" y="390" fill="#6E695F">15 SLASH COMMANDS  —  TYPE IN CLAUDE CODE</text>
   </g>
-
-  <!-- ============ COLUMN [04] ADVANCED & RED-TEAM ============ -->
-  <g transform="translate(1440, 430)">
-    <text x="0" y="0" font-family="ui-sans-serif, sans-serif" font-size="15"
-          letter-spacing="4" fill="#8A8A9A" font-weight="600">[04]  ADVANCED  &amp;  RED-TEAM</text>
-
-    <g transform="translate(0, 30)">
-      <g stroke="#FF2D4F" stroke-width="1.5" fill="none">
-        <path d="M 0 12 L 0 0 L 12 0"/>
-        <path d="M 418 0 L 430 0 L 430 12"/>
-        <path d="M 0 88 L 0 100 L 12 100"/>
-        <path d="M 418 100 L 430 100 L 430 88"/>
-      </g>
-      <text x="18" y="38" font-family="ui-sans-serif, sans-serif" font-size="22"
-            font-weight="700" fill="#FFFFFF" letter-spacing="0.5">Smuggling · Cache · Race</text>
-      <text x="412" y="32" text-anchor="end" font-family="ui-monospace, monospace"
-            font-size="12" letter-spacing="3" fill="#5A5A6A">AD-01</text>
-      <text x="18" y="62" font-family="ui-sans-serif, sans-serif" font-size="14"
-            fill="#8A8A9A">CL.TE · TE.CL · H2.CL  ·  CDN poison  ·  TOCTOU</text>
-      <text x="18" y="82" font-family="ui-sans-serif, sans-serif" font-size="13"
-            fill="#5A5A6A">hunt-http-smuggling · hunt-cache · hunt-race</text>
-    </g>
-
-    <g transform="translate(0, 150)">
-      <g stroke="#FF2D4F" stroke-width="1.5" fill="none">
-        <path d="M 0 12 L 0 0 L 12 0"/>
-        <path d="M 418 0 L 430 0 L 430 12"/>
-        <path d="M 0 88 L 0 100 L 12 100"/>
-        <path d="M 418 100 L 430 100 L 430 88"/>
-      </g>
-      <text x="18" y="38" font-family="ui-sans-serif, sans-serif" font-size="22"
-            font-weight="700" fill="#FFFFFF" letter-spacing="0.5">APK · Supply-chain · IR</text>
-      <text x="412" y="32" text-anchor="end" font-family="ui-monospace, monospace"
-            font-size="12" letter-spacing="3" fill="#5A5A6A">AD-02</text>
-      <text x="18" y="62" font-family="ui-sans-serif, sans-serif" font-size="14"
-            fill="#8A8A9A">jadx · Frida · dep-confusion · GH-Actions · baseline-shift</text>
-      <text x="18" y="82" font-family="ui-sans-serif, sans-serif" font-size="13"
-            fill="#5A5A6A">apk-redteam · supply-chain · mid-engagement-ir</text>
-    </g>
-
-    <g transform="translate(0, 270)">
-      <g stroke="#FF2D4F" stroke-width="1.5" fill="none">
-        <path d="M 0 12 L 0 0 L 12 0"/>
-        <path d="M 418 0 L 430 0 L 430 12"/>
-        <path d="M 0 88 L 0 100 L 12 100"/>
-        <path d="M 418 100 L 430 100 L 430 88"/>
-      </g>
-      <text x="18" y="38" font-family="ui-sans-serif, sans-serif" font-size="22"
-            font-weight="700" fill="#FFFFFF" letter-spacing="0.5">Web3 · DeFi · meme-coin</text>
-      <text x="412" y="32" text-anchor="end" font-family="ui-monospace, monospace"
-            font-size="12" letter-spacing="3" fill="#5A5A6A">AD-03</text>
-      <text x="18" y="62" font-family="ui-sans-serif, sans-serif" font-size="14"
-            fill="#8A8A9A">10 DeFi classes  ·  rug-pull  ·  honeypot  ·  LP-lock</text>
-      <text x="18" y="82" font-family="ui-sans-serif, sans-serif" font-size="13"
-            fill="#5A5A6A">web3-audit · meme-coin-audit</text>
-    </g>
+    <rect x="40.0" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
+    <text x="96.7" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/hunt</text>
+    <rect x="163.3" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
+    <text x="220.0" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/recon</text>
+    <rect x="286.7" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
+    <text x="343.3" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/scope</text>
+    <rect x="410.0" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
+    <text x="466.7" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/triage</text>
+    <rect x="533.3" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
+    <text x="590.0" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/validate</text>
+    <rect x="656.7" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
+    <text x="713.3" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/report</text>
+    <rect x="780.0" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
+    <text x="836.7" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/autopilot</text>
+    <rect x="903.3" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
+    <text x="960.0" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/chain</text>
+    <rect x="1026.7" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
+    <text x="1083.3" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/intel</text>
+    <rect x="1150.0" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
+    <text x="1206.7" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/pickup</text>
+    <rect x="1273.3" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
+    <text x="1330.0" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/surface</text>
+    <rect x="1396.7" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
+    <text x="1453.3" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/remember</text>
+    <rect x="1520.0" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
+    <text x="1576.7" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/memory-gc</text>
+    <rect x="1643.3" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
+    <text x="1700.0" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/token-scan</text>
+    <rect x="1766.7" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
+    <text x="1823.3" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/web3-audit</text>
+  <g font-size="13" letter-spacing="1.8">
+    <line x1="40" y1="488" x2="48" y2="488" stroke="#E2725B" stroke-width="3"/>
+    <text x="58" y="493" fill="#E2725B" font-weight="700">EQUIPS CLAUDE WITH</text>
+    <text x="280" y="493" fill="#6E695F">// 51 SKILLS</text>
+    <text x="430" y="493" fill="#6E695F">// 24 VULN CLASSES</text>
+    <text x="620" y="493" fill="#6E695F">// 91 CVEs (CISA-KEV)</text>
+    <text x="830" y="493" fill="#6E695F">// 6 PHASES</text>
+    <text x="1880" y="493" text-anchor="end" fill="#A89E8C">TRIAGE  ·  VALIDATE  ·  CHAIN  ·  REPORT</text>
   </g>
-
-  <!-- ============================ KILL CHAIN ============================ -->
-  <g transform="translate(60, 805)">
-    <text x="0" y="14" font-family="ui-sans-serif, sans-serif" font-size="13"
-          letter-spacing="4" fill="#5A5A6A" font-weight="700">KILL</text>
-    <text x="0" y="32" font-family="ui-sans-serif, sans-serif" font-size="13"
-          letter-spacing="4" fill="#5A5A6A" font-weight="700">CHAIN</text>
-
-    <!-- 6 phase boxes -->
-    <g font-family="ui-sans-serif, sans-serif">
-      <!-- 01 SCOPE -->
-      <g transform="translate(90, 0)">
-        <rect x="0" y="0" width="270" height="46" fill="none" stroke="#2A2A3A" stroke-width="1.2"/>
-        <text x="16" y="30" font-size="16" fill="#FF2D4F" font-weight="700" letter-spacing="2">01</text>
-        <text x="46" y="30" font-size="18" fill="#FFFFFF" font-weight="700" letter-spacing="2">SCOPE</text>
-        <text x="254" y="30" text-anchor="end" font-size="13" fill="#5A5A6A" letter-spacing="2">intake</text>
-      </g>
-      <text x="372" y="30" fill="#FF2D4F" font-size="20" font-weight="700">▸</text>
-
-      <!-- 02 RECON -->
-      <g transform="translate(394, 0)">
-        <rect x="0" y="0" width="270" height="46" fill="none" stroke="#2A2A3A" stroke-width="1.2"/>
-        <text x="16" y="30" font-size="16" fill="#FF2D4F" font-weight="700" letter-spacing="2">02</text>
-        <text x="46" y="30" font-size="18" fill="#FFFFFF" font-weight="700" letter-spacing="2">RECON</text>
-        <text x="254" y="30" text-anchor="end" font-size="13" fill="#5A5A6A" letter-spacing="2">passive</text>
-      </g>
-      <text x="676" y="30" fill="#FF2D4F" font-size="20" font-weight="700">▸</text>
-
-      <!-- 03 HUNT — highlighted as active -->
-      <g transform="translate(698, 0)">
-        <rect x="0" y="0" width="270" height="46" fill="none" stroke="#FF2D4F" stroke-width="2.2"/>
-        <text x="16" y="30" font-size="16" fill="#FF2D4F" font-weight="700" letter-spacing="2">03</text>
-        <text x="46" y="30" font-size="18" fill="#FF2D4F" font-weight="700" letter-spacing="2">HUNT</text>
-        <text x="254" y="30" text-anchor="end" font-size="13" fill="#FF2D4F" letter-spacing="2" font-weight="700">active</text>
-      </g>
-      <text x="980" y="30" fill="#FF2D4F" font-size="20" font-weight="700">▸</text>
-
-      <!-- 04 VALIDATE -->
-      <g transform="translate(1002, 0)">
-        <rect x="0" y="0" width="270" height="46" fill="none" stroke="#2A2A3A" stroke-width="1.2"/>
-        <text x="16" y="30" font-size="16" fill="#FF2D4F" font-weight="700" letter-spacing="2">04</text>
-        <text x="46" y="30" font-size="18" fill="#FFFFFF" font-weight="700" letter-spacing="2">VALIDATE</text>
-        <text x="254" y="30" text-anchor="end" font-size="13" fill="#5A5A6A" letter-spacing="2">triage</text>
-      </g>
-      <text x="1284" y="30" fill="#FF2D4F" font-size="20" font-weight="700">▸</text>
-
-      <!-- 05 CAPTURE -->
-      <g transform="translate(1306, 0)">
-        <rect x="0" y="0" width="240" height="46" fill="none" stroke="#2A2A3A" stroke-width="1.2"/>
-        <text x="16" y="30" font-size="16" fill="#FF2D4F" font-weight="700" letter-spacing="2">05</text>
-        <text x="46" y="30" font-size="18" fill="#FFFFFF" font-weight="700" letter-spacing="2">CAPTURE</text>
-        <text x="224" y="30" text-anchor="end" font-size="13" fill="#5A5A6A" letter-spacing="2">PoC</text>
-      </g>
-      <text x="1558" y="30" fill="#FF2D4F" font-size="20" font-weight="700">▸</text>
-
-      <!-- 06 REPORT -->
-      <g transform="translate(1580, 0)">
-        <rect x="0" y="0" width="240" height="46" fill="none" stroke="#2A2A3A" stroke-width="1.2"/>
-        <text x="16" y="30" font-size="16" fill="#FF2D4F" font-weight="700" letter-spacing="2">06</text>
-        <text x="46" y="30" font-size="18" fill="#FFFFFF" font-weight="700" letter-spacing="2">REPORT</text>
-        <text x="224" y="30" text-anchor="end" font-size="13" fill="#5A5A6A" letter-spacing="2">deliver</text>
-      </g>
-    </g>
+  <g font-size="13" letter-spacing="1.5">
+    <text x="40.0" y="524" fill="#6E695F">[01]  WEB APP</text>
+    <text x="504.0" y="524" fill="#6E695F">[02]  AUTH &amp; IDENTITY</text>
+    <text x="968.0" y="524" fill="#6E695F">[03]  API &amp; INFRA</text>
+    <text x="1432.0" y="524" fill="#6E695F">[04]  RED-TEAM &amp; WORKFLOW</text>
   </g>
-
-  <!-- ============================ BIG STATS ROW ============================ -->
-  <g transform="translate(60, 900)">
-    <!-- Thin red border around stats row w/ corner accents -->
-    <g stroke="#FF2D4F" stroke-width="1.4" fill="none" opacity="0.8">
-      <path d="M 0 16 L 0 0 L 16 0"/>
-      <path d="M 1784 0 L 1800 0 L 1800 16"/>
-      <path d="M 0 124 L 0 140 L 16 140"/>
-      <path d="M 1784 140 L 1800 140 L 1800 124"/>
-    </g>
-
-    <g font-family="ui-sans-serif, -apple-system, 'Segoe UI', Inter, sans-serif">
-      <!-- 51 SKILLS -->
-      <g transform="translate(80, 0)">
-        <text x="0" y="78" font-size="78" font-weight="900" fill="#FF2D4F" letter-spacing="-2">51</text>
-        <text x="0" y="115" font-size="14" letter-spacing="4" fill="#8A8A9A" font-weight="600">SKILLS</text>
-      </g>
-      <!-- 15 COMMANDS -->
-      <g transform="translate(360, 0)">
-        <text x="0" y="78" font-size="78" font-weight="900" fill="#FF2D4F" letter-spacing="-2">15</text>
-        <text x="0" y="115" font-size="14" letter-spacing="4" fill="#8A8A9A" font-weight="600">COMMANDS</text>
-      </g>
-      <!-- 24 VULN CLASSES -->
-      <g transform="translate(640, 0)">
-        <text x="0" y="78" font-size="78" font-weight="900" fill="#FF2D4F" letter-spacing="-2">24</text>
-        <text x="0" y="115" font-size="14" letter-spacing="4" fill="#8A8A9A" font-weight="600">VULN CLASSES</text>
-      </g>
-      <!-- 574+ REPORTS -->
-      <g transform="translate(920, 0)">
-        <text x="0" y="78" font-size="78" font-weight="900" fill="#FF2D4F" letter-spacing="-2">574+</text>
-        <text x="0" y="115" font-size="14" letter-spacing="4" fill="#8A8A9A" font-weight="600">H1 REPORTS</text>
-      </g>
-      <!-- 10 DOMAINS -->
-      <g transform="translate(1280, 0)">
-        <text x="0" y="78" font-size="78" font-weight="900" fill="#FF2D4F" letter-spacing="-2">10</text>
-        <text x="0" y="115" font-size="14" letter-spacing="4" fill="#8A8A9A" font-weight="600">DOMAINS</text>
-      </g>
-      <!-- 33K+ LINES -->
-      <g transform="translate(1530, 0)">
-        <text x="0" y="78" font-size="78" font-weight="900" fill="#FF2D4F" letter-spacing="-2">33K+</text>
-        <text x="0" y="115" font-size="14" letter-spacing="4" fill="#8A8A9A" font-weight="600">LINES</text>
-      </g>
-    </g>
+    <rect x="40.0" y="536" width="448.0" height="64" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
+    <text x="54.0" y="560" font-size="14" font-weight="700" fill="#E8E0D0">XSS  ·  IDOR  ·  SQLi  ·  XXE</text>
+    <text x="474.0" y="560" text-anchor="end" font-size="11" letter-spacing="1.5" fill="#6E695F">8 SKILLS</text>
+    <text x="54.0" y="582" font-size="11" fill="#A89E8C">174 · 26 · 8 · 4 reports  ·  stored, reflected, DOM</text>
+    <rect x="504.0" y="536" width="448.0" height="64" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
+    <text x="518.0" y="560" font-size="14" font-weight="700" fill="#E8E0D0">OAuth  ·  SAML  ·  ATO</text>
+    <text x="938.0" y="560" text-anchor="end" font-size="11" letter-spacing="1.5" fill="#6E695F">3 SKILLS</text>
+    <text x="518.0" y="582" font-size="11" fill="#A89E8C">10 reports  ·  8 XSW patterns  ·  9 ATO paths</text>
+    <rect x="968.0" y="536" width="448.0" height="64" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
+    <text x="982.0" y="560" font-size="14" font-weight="700" fill="#E8E0D0">SSRF  ·  RCE  ·  GraphQL  ·  API-misconfig</text>
+    <text x="1402.0" y="560" text-anchor="end" font-size="11" letter-spacing="1.5" fill="#6E695F">4 SKILLS</text>
+    <text x="982.0" y="582" font-size="11" fill="#A89E8C">9  ·  67  ·  3 reports  ·  11 IP-bypass  ·  introspection</text>
+    <rect x="1432.0" y="536" width="448.0" height="64" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
+    <text x="1446.0" y="560" font-size="14" font-weight="700" fill="#E8E0D0">redteam-mindset  ·  mid-engagement IR</text>
+    <text x="1866.0" y="560" text-anchor="end" font-size="11" letter-spacing="1.5" fill="#6E695F">2 SKILLS</text>
+    <text x="1446.0" y="582" font-size="11" fill="#A89E8C">offense vs WAPT  ·  SOC-patch baseline detection</text>
+    <rect x="40.0" y="606" width="448.0" height="64" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
+    <text x="54.0" y="630" font-size="14" font-weight="700" fill="#E8E0D0">CSRF  ·  file-upload  ·  SSTI  ·  ASP.NET</text>
+    <text x="474.0" y="630" text-anchor="end" font-size="11" letter-spacing="1.5" fill="#6E695F">4 SKILLS</text>
+    <text x="54.0" y="652" font-size="11" fill="#A89E8C">10 upload-bypass  ·  5 engines  ·  ViewState  ·  WCF</text>
+    <rect x="504.0" y="606" width="448.0" height="64" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
+    <text x="518.0" y="630" font-size="14" font-weight="700" fill="#E8E0D0">M365  ·  Entra  ·  Okta  ·  cloud-IAM</text>
+    <text x="938.0" y="630" text-anchor="end" font-size="11" letter-spacing="1.5" fill="#6E695F">3 SKILLS</text>
+    <text x="518.0" y="652" font-size="11" fill="#A89E8C">AADSTS  ·  CA-bypass  ·  push-fatigue  ·  24 AWS patterns</text>
+    <rect x="968.0" y="606" width="448.0" height="64" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
+    <text x="982.0" y="630" font-size="14" font-weight="700" fill="#E8E0D0">Cloud  ·  Subdomain TO  ·  NTLM</text>
+    <text x="1402.0" y="630" text-anchor="end" font-size="11" letter-spacing="1.5" fill="#6E695F">3 SKILLS</text>
+    <text x="982.0" y="652" font-size="11" fill="#A89E8C">27 takeover fingerprints  ·  Type-2 disclosure</text>
+    <rect x="1432.0" y="606" width="448.0" height="64" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
+    <text x="1446.0" y="630" font-size="14" font-weight="700" fill="#E8E0D0">APK red-team  ·  supply-chain recon</text>
+    <text x="1866.0" y="630" text-anchor="end" font-size="11" letter-spacing="1.5" fill="#6E695F">2 SKILLS</text>
+    <text x="1446.0" y="652" font-size="11" fill="#A89E8C">jadx  ·  Frida  ·  dep-confusion  ·  GH-Actions injection</text>
+    <rect x="40.0" y="676" width="448.0" height="64" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
+    <text x="54.0" y="700" font-size="14" font-weight="700" fill="#E8E0D0">Business logic  ·  race  ·  cache  ·  smuggling</text>
+    <text x="474.0" y="700" text-anchor="end" font-size="11" letter-spacing="1.5" fill="#6E695F">4 SKILLS</text>
+    <text x="54.0" y="722" font-size="11" fill="#A89E8C">TOCTOU  ·  double-spend  ·  CL.TE  ·  TE.CL  ·  H2.CL</text>
+    <rect x="504.0" y="676" width="448.0" height="64" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
+    <text x="518.0" y="700" font-size="14" font-weight="700" fill="#E8E0D0">MFA-bypass  ·  auth-bypass  ·  LLM/AI</text>
+    <text x="938.0" y="700" text-anchor="end" font-size="11" letter-spacing="1.5" fill="#6E695F">3 SKILLS</text>
+    <text x="518.0" y="722" font-size="11" fill="#A89E8C">7 patterns  ·  OTP brute  ·  prompt-inj  ·  ASI 01–10</text>
+    <rect x="968.0" y="676" width="448.0" height="64" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
+    <text x="982.0" y="700" font-size="14" font-weight="700" fill="#E8E0D0">VMware  ·  enterprise-VPN  ·  SharePoint</text>
+    <text x="1402.0" y="700" text-anchor="end" font-size="11" letter-spacing="1.5" fill="#6E695F">3 SKILLS</text>
+    <text x="982.0" y="722" font-size="11" fill="#A89E8C">vCenter CVE-chain  ·  7 SSL-VPN vendors  ·  ToolShell</text>
+    <rect x="1432.0" y="676" width="448.0" height="64" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
+    <text x="1446.0" y="700" font-size="14" font-weight="700" fill="#E8E0D0">web3-audit  ·  meme-coin  ·  workflow</text>
+    <text x="1866.0" y="700" text-anchor="end" font-size="11" letter-spacing="1.5" fill="#6E695F">7 SKILLS</text>
+    <text x="1446.0" y="722" font-size="11" fill="#A89E8C">10 DeFi classes  ·  rug-pull  ·  5 workflow skills</text>
+  <g font-size="13" letter-spacing="1.8">
+    <line x1="40" y1="752" x2="48" y2="752" stroke="#E2725B" stroke-width="3"/>
+    <text x="58" y="757" fill="#E2725B" font-weight="700">7-QUESTION GATE</text>
+    <text x="260" y="757" fill="#6E695F">the gate that separates productive researchers from N/A noise</text>
   </g>
-
-  <!-- ============================ BOTTOM STRIP ============================ -->
-  <g font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-size="13" letter-spacing="3" transform="translate(0, 1062)">
-    <text x="60" y="0" fill="#5A5A6A">▸ METHODOLOGY  +  ARSENAL</text>
-
-    <g transform="translate(720, 0)">
-      <text x="0" y="0" fill="#FF2D4F" font-weight="700">BUNDLED</text>
-      <text x="116" y="0" fill="#5A5A6A">·</text>
-      <text x="136" y="0" fill="#C5C5D5">PRODUCTION-READY</text>
-      <text x="354" y="0" fill="#5A5A6A">·</text>
-      <text x="374" y="0" fill="#C5C5D5">OFFENSIVE</text>
-      <text x="500" y="0" fill="#5A5A6A">·</text>
-      <text x="520" y="0" fill="#C5C5D5">DOCUMENTED</text>
-    </g>
-
-    <text x="1860" y="0" text-anchor="end" fill="#FF2D4F" letter-spacing="6" font-weight="700">SHIP IT ◀</text>
+    <rect x="40.0" y="768" width="448.0" height="52" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
+    <circle cx="58.0" cy="787" r="3" fill="#E2725B"/>
+    <text x="70.0" y="791" font-size="14" font-weight="700" letter-spacing="1.5" fill="#E8E0D0">PASS</text>
+    <text x="70.0" y="810" font-size="11" fill="#6E695F">ship to triage</text>
+    <rect x="504.0" y="768" width="448.0" height="52" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
+    <circle cx="522.0" cy="787" r="3" fill="#E2725B"/>
+    <text x="534.0" y="791" font-size="14" font-weight="700" letter-spacing="1.5" fill="#E8E0D0">DOWNGRADE</text>
+    <text x="534.0" y="810" font-size="11" fill="#6E695F">severity revised, still submit</text>
+    <rect x="968.0" y="768" width="448.0" height="52" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
+    <circle cx="986.0" cy="787" r="3" fill="#E2725B"/>
+    <text x="998.0" y="791" font-size="14" font-weight="700" letter-spacing="1.5" fill="#E8E0D0">KILL</text>
+    <text x="998.0" y="810" font-size="11" fill="#6E695F">stop, file as N/A locally</text>
+    <rect x="1432.0" y="768" width="448.0" height="52" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
+    <circle cx="1450.0" cy="787" r="3" fill="#E2725B"/>
+    <text x="1462.0" y="791" font-size="14" font-weight="700" letter-spacing="1.5" fill="#E8E0D0">CHAIN REQUIRED</text>
+    <text x="1462.0" y="810" font-size="11" fill="#6E695F">return to hunt with a pivot</text>
+  <text x="40" y="846" font-size="11" letter-spacing="2" fill="#6E695F">SKILL</text>
+  <text x="40" y="860" font-size="11" letter-spacing="2" fill="#6E695F">FLOW</text>
+    <rect x="120.0" y="834" width="278.3" height="34" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
+    <text x="134.0" y="859" font-size="13" fill="#6E695F">01</text>
+    <text x="158.0" y="859" font-size="14" font-weight="700" letter-spacing="1.5" fill="#A89E8C">SCOPE</text>
+    <text x="384.3" y="859" text-anchor="end" font-size="11" fill="#6E695F">intake</text>
+    <text x="407.3" y="859" text-anchor="middle" font-size="14" fill="#E2725B">▸</text>
+    <rect x="416.3" y="834" width="278.3" height="34" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
+    <text x="430.3" y="859" font-size="13" fill="#6E695F">02</text>
+    <text x="454.3" y="859" font-size="14" font-weight="700" letter-spacing="1.5" fill="#A89E8C">RECON</text>
+    <text x="680.7" y="859" text-anchor="end" font-size="11" fill="#6E695F">passive</text>
+    <text x="703.7" y="859" text-anchor="middle" font-size="14" fill="#E2725B">▸</text>
+    <rect x="712.7" y="834" width="278.3" height="34" rx="2" fill="none" stroke="#4A4036" stroke-width="1.6"/>
+    <text x="726.7" y="859" font-size="13" fill="#6E695F">03</text>
+    <text x="750.7" y="859" font-size="14" font-weight="700" letter-spacing="1.5" fill="#E8E0D0">HUNT</text>
+    <text x="977.0" y="859" text-anchor="end" font-size="11" fill="#E2725B">active</text>
+    <text x="1000.0" y="859" text-anchor="middle" font-size="14" fill="#E2725B">▸</text>
+    <rect x="1009.0" y="834" width="278.3" height="34" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
+    <text x="1023.0" y="859" font-size="13" fill="#6E695F">04</text>
+    <text x="1047.0" y="859" font-size="14" font-weight="700" letter-spacing="1.5" fill="#A89E8C">VALIDATE</text>
+    <text x="1273.3" y="859" text-anchor="end" font-size="11" fill="#6E695F">7Q gate</text>
+    <text x="1296.3" y="859" text-anchor="middle" font-size="14" fill="#E2725B">▸</text>
+    <rect x="1305.3" y="834" width="278.3" height="34" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
+    <text x="1319.3" y="859" font-size="13" fill="#6E695F">05</text>
+    <text x="1343.3" y="859" font-size="14" font-weight="700" letter-spacing="1.5" fill="#A89E8C">CAPTURE</text>
+    <text x="1569.7" y="859" text-anchor="end" font-size="11" fill="#6E695F">PoC</text>
+    <text x="1592.7" y="859" text-anchor="middle" font-size="14" fill="#E2725B">▸</text>
+    <rect x="1601.7" y="834" width="278.3" height="34" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
+    <text x="1615.7" y="859" font-size="13" fill="#6E695F">06</text>
+    <text x="1639.7" y="859" font-size="14" font-weight="700" letter-spacing="1.5" fill="#A89E8C">REPORT</text>
+    <text x="1866.0" y="859" text-anchor="end" font-size="11" fill="#6E695F">deliver</text>
+  <g font-size="12" letter-spacing="1.5">
+    <text x="40" y="896" fill="#E2725B" font-weight="700">▸ INTEGRATIONS</text>
+    <text x="178" y="896" fill="#A89E8C">Burp MCP  ·  subfinder  ·  dnsx  ·  httpx  ·  katana  ·  nuclei  ·  CISA-KEV index</text>
+    <text x="1540" y="896" fill="#E2725B" font-weight="700">▸ INVOKE</text>
+    <text x="1630" y="896" fill="#E8E0D0">claude /hunt &lt;target&gt;</text>
+    <text x="1880" y="896" text-anchor="end" fill="#E2725B" font-weight="700">SHIP IT</text>
   </g>
 </svg>
