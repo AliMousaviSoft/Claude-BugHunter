@@ -9,7 +9,7 @@
 # Use this script only when you want to pull the LATEST upstream content
 # (newer hunt-* patterns, updated VRT mappings, etc.) into your
 # ~/.claude/. It clones shuvonsec/claude-bug-bounty into
-# ~/Research/community-skills/ and runs its installer.
+# ~/security-research/community-skills/ and runs its installer.
 #
 # Note: this updates ~/.claude/ but does NOT update the bundled snapshot
 # in this repo's skills/ — to refresh that, copy from ~/.claude/skills/
@@ -21,7 +21,7 @@
 
 set -e
 
-COMMUNITY_DIR="$HOME/Research/community-skills"
+COMMUNITY_DIR="$HOME/security-research/community-skills"
 mkdir -p "$COMMUNITY_DIR"
 
 # === shuvonsec/claude-bug-bounty (foundation) ===

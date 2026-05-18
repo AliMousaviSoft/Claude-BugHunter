@@ -81,7 +81,7 @@ This skill is a **lean operational index**. Most concrete data (wordlists, regex
 
 1. Read this SKILL.md to anchor on principles (§0-5), scoring rubrics (§20-21), attack-path templates (§39), and the references index below.
 2. For task-specific data, **read only the reference file(s) you need** — do NOT pull all 15. Each reference is self-contained.
-3. Use the `bug-bounty` skill for the local toolkit at `~/Research/bug-bounty-resources/` and `osint-methodology` for the planning framework.
+3. Use the `bug-bounty` skill for the local toolkit at `~/security-research/bug-bounty-resources/` and `osint-methodology` for the planning framework.
 
 **Loading rules of thumb:**
 - Single-class question (e.g., "what's the regex for AWS keys?") → load `secret-patterns.md` only.

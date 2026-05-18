@@ -28,8 +28,8 @@ All three modes are first-class supported. The skills + CLI work identically acr
 ## Step 1 — Clone this repo
 
 ```bash
-mkdir -p ~/Research
-cd ~/Research
+mkdir -p ~/security-research
+cd ~/security-research
 git clone https://github.com/elementalsouls/Claude-BugHunter.git
 cd Claude-BugHunter
 ```
@@ -80,14 +80,14 @@ chmod +x scripts/install-community-skills.sh
 ./scripts/install-community-skills.sh
 ```
 
-This clones `shuvonsec/claude-bug-bounty` into `~/Research/community-skills/` and runs its installer. Useful when you want fresher hunt patterns; not needed for first-time setup.
+This clones `shuvonsec/claude-bug-bounty` into `~/security-research/community-skills/` and runs its installer. Useful when you want fresher hunt patterns; not needed for first-time setup.
 
 ## Step 5 — (Optional) Set up the skill regenerator
 
 If you want to regenerate `hunt-*` per-class skills from fresh disclosed HackerOne reports periodically:
 
 ```bash
-cd ~/Research
+cd ~/security-research
 git clone https://github.com/shuvonsec/public-skills-builder.git
 cd public-skills-builder
 

@@ -518,7 +518,7 @@ You need these BEFORE the install will work. Check each one:
 Copy-paste these three commands into your terminal:
 
 ```bash
-mkdir -p ~/Research && cd ~/Research
+mkdir -p ~/security-research && cd ~/security-research
 git clone https://github.com/elementalsouls/Claude-BugHunter.git
 cd Claude-BugHunter && ./scripts/install.sh
 ```

@@ -40,7 +40,7 @@ Open your terminal. Copy-paste this entire block:
 
 ```bash
 # 1. Get the bundle
-mkdir -p ~/Research && cd ~/Research
+mkdir -p ~/security-research && cd ~/security-research
 git clone https://github.com/elementalsouls/Claude-BugHunter.git
 cd Claude-BugHunter
 

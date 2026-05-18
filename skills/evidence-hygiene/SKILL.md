@@ -337,7 +337,7 @@ Most platforms' confidentiality applies to BOTH unresolved and resolved issues. 
 
 ### 8.4 Audit your local artifacts
 
-Quarterly, sweep your `~/Research/` and `~/Downloads/` for stale HARs / screenshots from old engagements. Either move them to a properly-encrypted archive or delete them. Bug-bounty engagement artifacts are sensitive — they accumulate fast and become a liability.
+Quarterly, sweep your `~/security-research/` and `~/Downloads/` for stale HARs / screenshots from old engagements. Either move them to a properly-encrypted archive or delete them. Bug-bounty engagement artifacts are sensitive — they accumulate fast and become a liability.
 
 ---
 
