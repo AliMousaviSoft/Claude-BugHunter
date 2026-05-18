@@ -231,47 +231,68 @@ See [`docs/cbh-cli.md`](docs/cbh-cli.md) for the CLI reference. See the slash co
 
 ```
 Claude-BugHunter/
-├── skills/                                # 51 SKILL.md bundles
-│   ├── bug-bounty/SKILL.md                # master orchestrator (vendored)
-│   ├── bb-methodology/SKILL.md            # 5-phase workflow + mindset (vendored)
-│   ├── bb-local-toolkit/SKILL.md          # full pipeline router
-│   ├── redteam-mindset/SKILL.md           # red-team operator discipline
-│   ├── mid-engagement-ir-detection/SKILL.md   # detect SOC patches + attacker activity mid-test
-│   ├── osint-methodology/SKILL.md         # 5-stage recon + asset graph
-│   ├── offensive-osint/                   # 15-reference probe arsenal
-│   │   ├── SKILL.md
-│   │   ├── references/                    # progressive-disclosure modules
-│   │   └── scripts/secret_scan.py
-│   ├── supply-chain-attack-recon/SKILL.md # dep-confusion, GH Actions, SBOM mining
-│   ├── triage-validation/SKILL.md         # 7-Question Gate (vendored)
-│   ├── report-writing/SKILL.md            # H1/Bugcrowd/Intigriti templates (vendored)
-│   ├── bugcrowd-reporting/SKILL.md        # VRT, OOS rebuttals, severity requests
-│   ├── redteam-report-template/SKILL.md   # client-facing deliverable format
-│   ├── evidence-hygiene/SKILL.md          # cookie/PII/HAR redaction
-│   ├── security-arsenal/SKILL.md          # payloads + bypass tables (vendored)
-│   ├── web2-recon/SKILL.md                # subdomain enum, host discovery (vendored)
-│   ├── web3-audit/SKILL.md                # 10 DeFi bug classes (vendored)
-│   ├── meme-coin-audit/SKILL.md           # token rug-pull detection (vendored)
-│   ├── m365-entra-attack/SKILL.md         # M365/Entra ID full chain (AADSTS, CA bypass, ROPC)
-│   ├── okta-attack/SKILL.md               # Okta-as-IdP enumeration + factor flows
-│   ├── cloud-iam-deep/SKILL.md            # AWS/Azure/GCP IAM priv-esc
-│   ├── vmware-vcenter-attack/SKILL.md     # vCenter/Workspace ONE/Aria CVE chain
-│   ├── enterprise-vpn-attack/SKILL.md     # Cisco/Fortinet/Citrix/PAN/Pulse SSL VPN
-│   ├── apk-redteam-pipeline/SKILL.md      # APK acquisition → jadx → secrets → Frida
-│   ├── hunt-dispatch/SKILL.md             # /hunt mode router (redteam vs WAPT)
-│   ├── hunt-sharepoint/SKILL.md           # SharePoint on-prem (ToolShell chain, anon SOAP)
-│   ├── hunt-aspnet/SKILL.md               # ASP.NET ViewState, machineKey, WebForms
-│   ├── hunt-ntlm-info/SKILL.md            # NTLM Type-2 AD topology disclosure
-│   └── hunt-*/SKILL.md                    # 24 per-class web hunt skills
-├── commands/                              # 15 slash commands
+├── skills/                                  # 51 SKILL.md bundles
+│   ├── apk-redteam-pipeline/
+│   ├── bb-local-toolkit/
+│   ├── bb-methodology/
+│   ├── bug-bounty/
+│   ├── bugcrowd-reporting/
+│   ├── cloud-iam-deep/
+│   ├── enterprise-vpn-attack/
+│   ├── evidence-hygiene/
+│   ├── hunt-api-misconfig/
+│   ├── hunt-aspnet/
+│   ├── hunt-ato/
+│   ├── hunt-auth-bypass/
+│   ├── hunt-business-logic/
+│   ├── hunt-cache-poison/
+│   ├── hunt-cloud-misconfig/
+│   ├── hunt-csrf/
+│   ├── hunt-dispatch/
+│   ├── hunt-file-upload/
+│   ├── hunt-graphql/
+│   ├── hunt-http-smuggling/
+│   ├── hunt-idor/
+│   ├── hunt-llm-ai/
+│   ├── hunt-mfa-bypass/
+│   ├── hunt-misc/
+│   ├── hunt-ntlm-info/
+│   ├── hunt-oauth/
+│   ├── hunt-race-condition/
+│   ├── hunt-rce/
+│   ├── hunt-saml/
+│   ├── hunt-sharepoint/
+│   ├── hunt-sqli/
+│   ├── hunt-ssrf/
+│   ├── hunt-ssti/
+│   ├── hunt-subdomain/
+│   ├── hunt-xss/
+│   ├── hunt-xxe/
+│   ├── m365-entra-attack/
+│   ├── meme-coin-audit/
+│   ├── mid-engagement-ir-detection/
+│   ├── offensive-osint/
+│   ├── okta-attack/
+│   ├── osint-methodology/
+│   ├── redteam-mindset/
+│   ├── redteam-report-template/
+│   ├── report-writing/
+│   ├── security-arsenal/
+│   ├── supply-chain-attack-recon/
+│   ├── triage-validation/
+│   ├── vmware-vcenter-attack/
+│   ├── web2-recon/
+│   └── web3-audit/
+├── commands/                                # 15 slash commands
 ├── scripts/
-│   ├── hunt.sh                            # engagement-folder scaffolder
-│   ├── install.sh                         # single-step installer
-│   └── install-community-skills.sh        # optional: refresh upstream
-├── docs/                                  # architecture, credits
-├── assets/banner.svg
-├── INSTALL.md · USAGE.md · CONTRIBUTING.md · SECURITY.md
-└── LICENSE
+│   ├── hunt.sh                              # engagement-folder scaffolder
+│   ├── install.sh                           # single-step installer
+│   ├── install-community-skills.sh          # optional: refresh vendored upstream
+│   ├── cbh.py                               # terminal-native CLI runner
+│   └── refresh-cve-index.py                 # CISA KEV refresh against in-scope vendors
+├── docs/                                    # architecture · credits · CLI reference · CVE coverage · pattern libraries · verification labs
+├── assets/                                  # banner + architecture / capability-map / engagement-flow SVGs
+└── README.md · INSTALL.md · USAGE.md · CONTRIBUTING.md · SECURITY.md · LICENSE
 ```
 
 Drop the contents of `skills/` into `~/.claude/skills/` and Claude auto-triggers on relevant phrases. The `install.sh` script does this plus copies commands to `~/.claude/commands/` and wires `hunt.sh` into your shell rc.
