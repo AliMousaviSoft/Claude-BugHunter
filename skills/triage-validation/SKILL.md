@@ -256,7 +256,7 @@ Before labelling any finding **Critical** or **High** anywhere in your notes or 
 5. **Has the program rejected this severity class before?**
    — Many programs cap "info disclosure with no concrete impact" at Low/Info regardless of the data type. Read the program scope.
 
-**Lesson from a May-2026 authorized engagement:** JWT `alg:none` was initially labelled **Critical** based on the signature-bypass primitive being confirmed at the audience-validation layer. Subsequent testing showed the issuer-trust check still rejected unsigned tokens — the full ATO chain did not complete. Finding had to be retracted. If the Pre-Severity Gate had been run on the original draft, Q1 would have killed the Critical label before submission.
+**Lesson from an authorized engagement:** JWT `alg:none` was initially labelled **Critical** based on the signature-bypass primitive being confirmed at the audience-validation layer. Subsequent testing showed the issuer-trust check still rejected unsigned tokens — the full ATO chain did not complete. Finding had to be retracted. If the Pre-Severity Gate had been run on the original draft, Q1 would have killed the Critical label before submission.
 
 ---
 
@@ -313,7 +313,7 @@ When a previously-claimed finding fails reproduction — **never silently drop i
 ## Operator Notes (Claude-BugHunter)
 
 > Engagement-derived additions to the vendored foundation. Wisdom from real
-> May-2026 paid engagements + Phase 2 verification across this repo's 31+
+> authorized engagements + Phase 2 verification across this repo's 31+
 > skill-area live tests. The upstream methodology covers the WHAT; this
 > layer covers the WHEN-IT-ACTUALLY-WORKS and the FAILURE-MODES.
 
@@ -330,7 +330,7 @@ Without the 7Q gate, expect 10-20% submission validity loss across an engagement
 
 ### Pre-Severity Gate before reporting Critical
 
-A May-2026 SharePoint engagement nearly submitted a Critical when the chain didn't actually complete end-to-end — a primitive that read auth state was conflated with a primitive that mutated it. The Pre-Severity Gate (run all 7 questions specifically against the **Critical claim**, not the generic "is this a bug" claim) would have caught it.
+A authorized SharePoint engagement nearly submitted a Critical when the chain didn't actually complete end-to-end — a primitive that read auth state was conflated with a primitive that mutated it. The Pre-Severity Gate (run all 7 questions specifically against the **Critical claim**, not the generic "is this a bug" claim) would have caught it.
 
 Process: write your draft Critical title. Take each of the 7 questions and answer them with the Critical claim substituted for "the bug." If Q6 (impact beyond technically possible) returns "I have a primitive that should let me do X, but I haven't demonstrated X end-to-end on a test account," downgrade. Critical means impact-demonstrated, not impact-inferable.
 
