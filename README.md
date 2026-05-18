@@ -280,133 +280,170 @@ Drop the contents of `skills/` into `~/.claude/skills/` and Claude auto-triggers
 
 ## Skill Index
 
-51 skills across 10 capability domains. Each row maps a capability to the skill that codifies it.
+51 skills across 11 capability domains + 15 slash commands. **Skills auto-load by keyword** — you don't invoke them by name; describe what you're testing in plain English and the matching skill loads.
 
-### Web Application Hunting
+### Quick lookup — find a skill by what you're seeing
 
-| Capability | H1 reports | Skill |
-|---|---|---|
-| Reflected · Stored · DOM · blind XSS · CSP bypass | 174 | `hunt-xss` |
-| IDOR / broken object-level authorization · cross-tenant access | 26 | `hunt-idor` |
-| SQL injection (classic, blind, time-based) · NoSQL injection | 8 | `hunt-sqli` |
-| XML external entity (in-band, OOB, XXE-via-DOCX) | 4 | `hunt-xxe` |
-| Cross-site request forgery (chain-required) | 10 | `hunt-csrf` |
-| File upload bypass (10 techniques: double-ext, magic-bytes, polyglot, ZIP slip) | curated | `hunt-file-upload` |
-| Server-side template injection (Jinja2, Twig, Freemarker, ERB, Spring) | curated | `hunt-ssti` |
-| **ASP.NET ViewState · machineKey · WebForms · WCF · request-validator bypass** | curated | `hunt-aspnet` |
+The fastest way to land on the right skill. If you see the pattern in the left column, the right column is the skill that loads.
 
-### Authentication & Identity
-
-| Capability | H1 reports | Skill |
-|---|---|---|
-| OAuth 2.0 / OIDC flaws · open-redirect chain · state-parameter abuse | 10 | `hunt-oauth` |
-| SAML / SSO attacks · XML signature wrapping · comment injection | curated | `hunt-saml` |
-| Account takeover taxonomy — 9 distinct paths + chains | curated | `hunt-ato` |
-| MFA / 2FA bypass — 7 patterns (OTP brute, race, recovery dump, factor downgrade) | curated | `hunt-mfa-bypass` |
-| Broken authentication / access control | 4 | `hunt-auth-bypass` |
-
-### API & Infrastructure
-
-| Capability | H1 reports | Skill |
-|---|---|---|
-| SSRF + 11 IP-bypass techniques · cloud metadata exfil | 9 | `hunt-ssrf` |
-| RCE — crown-jewel chains, deserialization, code injection | 67 | `hunt-rce` |
-| GraphQL — introspection, alias batching, depth, node() IDOR | 3 | `hunt-graphql` |
-| API misconfig — mass assignment, JWT attacks, prototype pollution, CORS | curated | `hunt-api-misconfig` |
-| Cloud / K8s misconfig — public S3, Lambda URLs, kubelet 10250, Docker 2375 | curated | `hunt-cloud-misconfig` |
-| Subdomain takeover — 27+ provider fingerprints + chain to ATO | 11 | `hunt-subdomain` |
-
-### Advanced & Concurrency
-
-| Capability | H1 reports | Skill |
-|---|---|---|
-| Race conditions / TOCTOU — double-spend, MFA-bypass-via-race | 3 | `hunt-race-condition` |
-| Web cache poisoning · cache deception · CDN exploitation | 4 | `hunt-cache-poison` |
-| HTTP request smuggling (CL.TE, TE.CL, H2.CL, H2.TE) | curated | `hunt-http-smuggling` |
-| Business logic flaws (coupon abuse, balance manipulation) | 7 | `hunt-business-logic` |
-| LLM / agentic AI — prompt injection, ASCII smuggling, ASI01-ASI10 | curated | `hunt-llm-ai` |
-| Misc — catch-all for less-common classes | 225 | `hunt-misc` |
-
-### Enterprise Identity & Cloud Attack ★ new
-
-| Capability | Source | Skill |
-|---|---|---|
-| **M365 / Entra ID — AADSTS codes, user enum, Smart Lockout math, CA bypass, ROPC, SAML SSO browser flow** | engagement_2026_05 (external red-team) | `m365-entra-attack` |
-| **Okta-as-IdP — tenant discovery, user enum vectors, factor enumeration, push-fatigue, FastPass abuse, OIDC redirect_uri tampering** | original | `okta-attack` |
-| **Cloud IAM priv-esc — AWS (24+), Azure (8+), GCP (6+) patterns · STS chaining · IMDS · K8s SA tokens · confused-deputy** | original | `cloud-iam-deep` |
-
-### Infrastructure & Appliance Attack ★ new
-
-| Capability | Source | Skill |
-|---|---|---|
-| **VMware vSphere / vCenter / Workspace ONE / Aria CVE chain (CVE-2021-21972 → CVE-2024-37085)** | original | `vmware-vcenter-attack` |
-| **Enterprise SSL VPN — Cisco ASA/AnyConnect · Fortinet · Citrix NetScaler · Palo Alto · Pulse/Ivanti · SonicWall · F5** | engagement_2026_05 (external red-team) | `enterprise-vpn-attack` |
-| **SharePoint on-prem (2013-SE) — ToolShell precondition chain (CVE-2025-53770), SOAP auth bypass, anon FormDigest, SafeControl enum** | engagement_2026_05 | `hunt-sharepoint` |
-| **NTLM/Negotiate anonymous Type-2 disclosure — AV_PAIRS leakage, internal DNS forest, default WIN-XXX hostnames** | engagement_2026_05 | `hunt-ntlm-info` |
-
-### Red Team Tradecraft ★ new
-
-| Capability | Source | Skill |
-|---|---|---|
-| **Red-team operator discipline — mindset corrections separating offensive from defensive WAPT** | engagement_2026_05 (external red-team) | `redteam-mindset` |
-| **Mid-engagement IR detection — SOC patches mid-test, external attacker activity, baseline-shift detection** | engagement_2026_05 (external red-team) | `mid-engagement-ir-detection` |
-| **Android APK red-team pipeline — Play Store + apkpure acquisition, jadx decompile, secret/JWT/Firebase grep, Frida templates** | engagement_2026_05 (external red-team) | `apk-redteam-pipeline` |
-| **Supply-chain recon — dep-confusion, GH Actions injection, SBOM mining, container registry exposure, internal-package leakage** | original | `supply-chain-attack-recon` |
-
-### Recon & OSINT
-
-| Capability | Skill |
+| When you see this on the target… | Skill that loads |
 |---|---|
-| 15-reference probe arsenal: subdomain enum, identity fabric, secret patterns, sector recon | `offensive-osint` |
-| 5-stage recon pipeline · 29-type asset graph · severity rubric · time budgeting | `osint-methodology` |
-| Subdomain enumeration · host discovery · URL crawling | `web2-recon` |
-| Full pipeline router for local cloned bug-bounty repos | `bb-local-toolkit` |
+| Reflected user input echoed back in HTML / JS context | `hunt-xss` |
+| User-controlled value in a database query response | `hunt-sqli` |
+| Numeric ID in URL or body (`/users/42`, `?invoice_id=12345`) | `hunt-idor` |
+| URL parameter accepting URLs (`?url=`, `?next=`, `?redirect=`, `?callback=`) | `hunt-ssrf` |
+| File upload form / `/avatar`, `/attachment`, `/import` endpoint | `hunt-file-upload` |
+| GraphQL endpoint (`/graphql`, `/v1/graphql`, GraphiQL playground) | `hunt-graphql` |
+| ASP.NET `__VIEWSTATE` field in form / WebForms / `.aspx` paths | `hunt-aspnet` |
+| Cisco WebVPN cookie + `/+CSCOE+/logon.html` redirect | `enterprise-vpn-attack` |
+| Microsoft `login.microsoftonline.com` SAML redirect | `m365-entra-attack` |
+| Okta tenant subdomain (`*.okta.com`, `*.oktapreview.com`) | `okta-attack` |
+| Login form with no rate-limit on credential check | `hunt-auth-bypass` + `hunt-ato` |
+| OTP / 2FA flow with retry button | `hunt-mfa-bypass` |
+| JWT token in cookie / Authorization header | `hunt-api-misconfig` (JWT attacks inside) |
+| Public S3 bucket / Lambda URL / kubelet :10250 / Docker :2375 | `hunt-cloud-misconfig` |
+| SharePoint farm path (`/_layouts/15/`, `/_vti_bin/`) | `hunt-sharepoint` |
+| `/api/users/{id}` PUT / DELETE on a SaaS REST API | `hunt-idor` + `hunt-api-misconfig` |
 
-### Workflow & Validation
+If none of the above match: tell Claude *"I want to test for X"* (where X is the bug class) and the relevant `hunt-*` loads.
 
-| Capability | Skill |
-|---|---|
-| Master orchestrator · pulls in other skills as needed | `bug-bounty` |
-| 5-phase non-linear workflow + critical-thinking framework | `bb-methodology` |
-| **`/hunt` two-track dispatcher — Red Team vs WAPT mode, fingerprints target, loads platform skills** ★ | `hunt-dispatch` |
-| 7-Question Gate · 4 pre-submission gates · never-submit list | `triage-validation` |
-| Payloads, bypass tables, wordlists, gf patterns | `security-arsenal` |
+---
 
-### Reporting & Hygiene
+### Web Application Hunting (8 skills · sorted alphabetically)
 
-| Capability | Skill |
-|---|---|
-| H1 / Bugcrowd / Intigriti / Immunefi templates · CVSS 3.1 + 4.0 | `report-writing` |
-| Bugcrowd VRT category fallback · severity-request paragraph · OOS rebuttals · chained-finding patterns | `bugcrowd-reporting` |
-| **Client-facing red-team deliverable — Subject / Observations / Description / Impact / Recommendation / PoC, MD + DOCX packaging** ★ | `redteam-report-template` |
-| Cookie redaction · PII black-bar · HAR sanitization · screenshot hygiene | `evidence-hygiene` |
+| Skill | What it covers | Coverage source |
+|---|---|---|
+| `hunt-aspnet` | **ASP.NET ViewState · machineKey · WebForms · WCF · request-validator bypass** | engagement-redacted |
+| `hunt-csrf` | Cross-site request forgery (chain-required impact) | 10 H1 reports |
+| `hunt-file-upload` | File upload bypass — 10 techniques (double-ext, magic-bytes, polyglot, ZIP slip, SVG XSS) | curated |
+| `hunt-idor` | IDOR / broken object-level authorization · cross-tenant access | 26 H1 reports |
+| `hunt-sqli` | SQL injection (classic, blind, time-based) · NoSQL injection | 8 H1 reports |
+| `hunt-ssti` | Server-side template injection (Jinja2, Twig, Freemarker, ERB, Spring) | curated |
+| `hunt-xss` | Reflected · Stored · DOM · blind XSS · CSP bypass | 174 H1 reports |
+| `hunt-xxe` | XML external entity (in-band, OOB, XXE-via-DOCX) | 4 H1 reports |
 
-### Specialized
+### Authentication & Identity (5 skills · sorted alphabetically)
 
-| Capability | Skill |
-|---|---|
-| Smart-contract audit · 10 DeFi bug classes · Foundry PoC template | `web3-audit` |
-| Token rug-pull detection · honeypot · LP lock bypass | `meme-coin-audit` |
+| Skill | What it covers | Coverage source |
+|---|---|---|
+| `hunt-ato` | Account takeover taxonomy — 9 distinct paths + chains | curated |
+| `hunt-auth-bypass` | Broken authentication / access control | 4 H1 reports |
+| `hunt-mfa-bypass` | MFA / 2FA bypass — 7 patterns (OTP brute, race, recovery dump, factor downgrade) | curated |
+| `hunt-oauth` | OAuth 2.0 / OIDC flaws · open-redirect chain · state-parameter abuse | 10 H1 reports |
+| `hunt-saml` | SAML / SSO attacks · XML signature wrapping · comment injection | curated |
+
+### API & Infrastructure (6 skills · sorted alphabetically)
+
+| Skill | What it covers | Coverage source |
+|---|---|---|
+| `hunt-api-misconfig` | API misconfig — mass assignment, JWT attacks, prototype pollution, CORS | curated |
+| `hunt-cloud-misconfig` | Cloud / K8s misconfig — public S3, Lambda URLs, kubelet :10250, Docker :2375 | curated |
+| `hunt-graphql` | GraphQL — introspection, alias batching, depth abuse, node() IDOR | 3 H1 reports |
+| `hunt-rce` | RCE — crown-jewel chains, deserialization, code injection | 67 H1 reports |
+| `hunt-ssrf` | SSRF + 11 IP-bypass techniques · cloud metadata exfil | 9 H1 reports |
+| `hunt-subdomain` | Subdomain takeover — 27+ provider fingerprints + chain to ATO | 11 H1 reports |
+
+### Advanced & Concurrency (6 skills · sorted alphabetically)
+
+| Skill | What it covers | Coverage source |
+|---|---|---|
+| `hunt-business-logic` | Business logic flaws — coupon abuse, balance manipulation, state-machine reversal | 7 H1 reports |
+| `hunt-cache-poison` | Web cache poisoning · cache deception · CDN exploitation | 4 H1 reports |
+| `hunt-http-smuggling` | HTTP request smuggling (CL.TE, TE.CL, H2.CL, H2.TE) | curated |
+| `hunt-llm-ai` | LLM / agentic AI — prompt injection, ASCII smuggling, ASI01–ASI10 | curated |
+| `hunt-misc` | Catch-all for less-common classes (clickjacking, open-redirect, XS-leaks, etc.) | 225 H1 reports |
+| `hunt-race-condition` | Race conditions / TOCTOU — double-spend, MFA-bypass-via-race | 3 H1 reports |
+
+### Enterprise Identity & Cloud Attack ★ (3 skills · sorted alphabetically)
+
+| Skill | What it covers | Coverage source |
+|---|---|---|
+| `cloud-iam-deep` | Cloud IAM priv-esc — AWS (24+), Azure (8+), GCP (6+) patterns · STS chaining · IMDS · K8s SA tokens · confused-deputy | original |
+| `m365-entra-attack` | M365 / Entra ID — AADSTS codes, user enum, Smart Lockout math, CA bypass, ROPC, SAML SSO browser flow | engagement-redacted |
+| `okta-attack` | Okta-as-IdP — tenant discovery, user enum vectors, factor enumeration, push-fatigue, FastPass abuse, OIDC redirect_uri tampering | original |
+
+### Infrastructure & Appliance Attack ★ (4 skills · sorted alphabetically)
+
+| Skill | What it covers | Coverage source |
+|---|---|---|
+| `enterprise-vpn-attack` | Enterprise SSL VPN — Cisco ASA/AnyConnect · Fortinet · Citrix NetScaler · Palo Alto · Pulse/Ivanti · SonicWall · F5 | engagement-redacted |
+| `hunt-ntlm-info` | NTLM/Negotiate anonymous Type-2 disclosure — AV_PAIRS leakage, internal DNS forest, default WIN-XXX hostnames | engagement-redacted |
+| `hunt-sharepoint` | SharePoint on-prem (2013–SE) — ToolShell precondition chain (CVE-2025-53770), SOAP auth bypass, anon FormDigest, SafeControl enum | engagement-redacted |
+| `vmware-vcenter-attack` | VMware vSphere / vCenter / Workspace ONE / Aria CVE chain (CVE-2021-21972 → CVE-2024-37085) | original |
+
+### Red Team Tradecraft ★ (4 skills · sorted alphabetically)
+
+| Skill | What it covers | Coverage source |
+|---|---|---|
+| `apk-redteam-pipeline` | Android APK red-team pipeline — Play Store + apkpure acquisition, jadx decompile, secret/JWT/Firebase grep, Frida templates | engagement-redacted |
+| `mid-engagement-ir-detection` | Mid-engagement IR detection — SOC patches mid-test, external attacker activity, baseline-shift detection | engagement-redacted |
+| `redteam-mindset` | Red-team operator discipline — mindset corrections separating offensive from defensive WAPT, "DO NOT STOP" primary directive | engagement-redacted |
+| `supply-chain-attack-recon` | Supply-chain recon — dep-confusion, GH Actions injection, SBOM mining, container registry exposure, internal-package leakage | original |
+
+### Recon & OSINT (4 skills · sorted alphabetically)
+
+| Skill | What it covers | Coverage source |
+|---|---|---|
+| `bb-local-toolkit` | Full pipeline router for local cloned bug-bounty repos | original |
+| `offensive-osint` | 15-reference probe arsenal — subdomain enum, identity fabric, secret patterns, sector recon | original |
+| `osint-methodology` | 5-stage recon pipeline · 29-type asset graph · severity rubric · time budgeting | original |
+| `web2-recon` | Subdomain enumeration · host discovery · URL crawling | original |
+
+### Workflow & Validation (5 skills · sorted alphabetically)
+
+| Skill | What it covers | Coverage source |
+|---|---|---|
+| `bb-methodology` | 5-phase non-linear workflow + critical-thinking framework | vendored |
+| `bug-bounty` | Master orchestrator — pulls in other skills as needed | vendored |
+| `hunt-dispatch` ★ | `/hunt` two-track dispatcher — Red Team vs WAPT mode, fingerprints target, loads platform skills | original |
+| `security-arsenal` | Payloads, bypass tables, wordlists, gf patterns | vendored |
+| `triage-validation` | 7-Question Gate · 4 pre-submission gates · never-submit list | original |
+
+### Reporting & Hygiene (4 skills · sorted alphabetically)
+
+| Skill | What it covers | Coverage source |
+|---|---|---|
+| `bugcrowd-reporting` | Bugcrowd VRT category fallback · severity-request paragraph · OOS rebuttals · chained-finding patterns | original |
+| `evidence-hygiene` | Cookie redaction · PII black-bar · HAR sanitization · screenshot hygiene | original |
+| `redteam-report-template` ★ | Client-facing red-team deliverable — Subject / Observations / Description / Impact / Recommendation / PoC, MD + DOCX packaging | engagement-redacted |
+| `report-writing` | H1 / Bugcrowd / Intigriti / Immunefi templates · CVSS 3.1 + 4.0 | original |
+
+### Specialized (2 skills · sorted alphabetically)
+
+| Skill | What it covers | Coverage source |
+|---|---|---|
+| `meme-coin-audit` | Token rug-pull detection · honeypot · LP lock bypass | original |
+| `web3-audit` | Smart-contract audit · 10 DeFi bug classes · Foundry PoC template | original |
+
+---
 
 ### Slash Commands (15)
 
-| Command | Purpose |
+You type these directly into Claude Code. They route to the right skills automatically.
+
+| Command | What it does |
 |---|---|
-| `/hunt <target>` | Start hunting on a target — loads scope, picks attack surface |
-| `/recon <target>` | Run full recon pipeline — subfinder · dnsx · httpx · katana · nuclei |
-| `/scope <asset>` | Check if an asset is in scope before hunting |
-| `/triage` | Quick 7-Question Gate (faster than `/validate`) |
-| `/validate` | Full 7-Question Gate + 4-gate checklist |
-| `/report` | Write submission-ready report — H1/Bugcrowd/Intigriti/Immunefi |
 | `/autopilot` | Autonomous hunt loop with configurable checkpoints |
 | `/chain` | Build A→B→C exploit chain for higher payouts |
+| `/hunt <target>` | Start hunting on a target — loads scope, picks attack surface |
 | `/intel <target>` | On-demand CVE / disclosed-report intel |
-| `/pickup <target>` | Resume previous hunt — shows history + suggestions |
-| `/surface <target>` | Ranked attack surface from recon + memory |
-| `/remember` | Log finding or pattern to hunt memory |
 | `/memory-gc` | Inspect / rotate hunt-memory JSONL files |
+| `/pickup <target>` | Resume previous hunt — shows history + suggestions |
+| `/recon <target>` | Run full recon pipeline — subfinder · dnsx · httpx · katana · nuclei |
+| `/remember` | Log finding or pattern to hunt memory |
+| `/report` | Write submission-ready report — H1/Bugcrowd/Intigriti/Immunefi |
+| `/scope <asset>` | Check if an asset is in scope before hunting |
+| `/surface <target>` | Ranked attack surface from recon + memory |
 | `/token-scan` | Meme-coin / token security scan |
+| `/triage` | Quick 7-Question Gate (faster than `/validate`) |
+| `/validate` | Full 7-Question Gate + 4-gate checklist |
 | `/web3-audit <contract>` | Smart-contract 10-class checklist |
+
+**Reading the columns:**
+- **Skill** — the exact identifier (matches the folder name in `~/.claude/skills/`)
+- **What it covers** — one-line summary; full content is in the skill's `SKILL.md`
+- **Coverage source** — where the patterns came from: an H1 report count (curated from public disclosures), `curated` (hand-assembled from research), `original` (author-written), `vendored` (upstream community skill), or `engagement-redacted` (derived from a paid external red-team engagement)
+- **★** marks a skill that's newer and worth flagging for established hunters who may not have its specific coverage yet
 
 ---
 
