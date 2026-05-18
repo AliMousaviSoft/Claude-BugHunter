@@ -27,25 +27,65 @@
     <text x="1880" y="56" text-anchor="end" fill="#A89E8C">github.com/elementalsouls/Claude-BugHunter</text>
   </g>
   <g>
-    <polygon points="203.6,262.5 130.0,305.0 56.4,262.5 56.4,177.5 130.0,135.0 203.6,177.5" fill="none" stroke="#E2725B" stroke-width="1.5"/>
-    <line x1="130" y1="160.5" x2="130" y2="279.5" stroke="#A85541" stroke-width="1"/>
-    <line x1="70.5" y1="220" x2="189.5" y2="220" stroke="#A85541" stroke-width="1"/>
-    <line x1="87.5" y1="177.5" x2="172.5" y2="262.5" stroke="#A85541" stroke-width="0.8" opacity="0.7"/>
-    <line x1="172.5" y1="177.5" x2="87.5" y2="262.5" stroke="#A85541" stroke-width="0.8" opacity="0.7"/>
-    <circle cx="130" cy="220" r="3" fill="#E2725B"/>
-    <polygon points="130,177.5 125,198.8 135,198.8" fill="#E2725B"/>
+    <!-- Outer hex frame (skill seal) -->
+    <polygon points="203.6,262.5 130.0,305.0 56.4,262.5 56.4,177.5 130.0,135.0 203.6,177.5"
+             fill="none" stroke="#E2725B" stroke-width="1.5"/>
+    <!-- Inner hex (double-frame for tactical feel) -->
+    <polygon points="194.5,257.5 130,289 65.5,257.5 65.5,182.5 130,151 194.5,182.5"
+             fill="none" stroke="#E2725B" stroke-width="0.5" opacity="0.4"/>
+
+    <!-- Corner ticks at the six hex vertices -->
+    <g stroke="#E2725B" stroke-width="1.2" stroke-linecap="round">
+      <line x1="130"   y1="135"   x2="130"   y2="128"/>
+      <line x1="130"   y1="305"   x2="130"   y2="312"/>
+      <line x1="203.6" y1="177.5" x2="209"   y2="174"/>
+      <line x1="203.6" y1="262.5" x2="209"   y2="266"/>
+      <line x1="56.4"  y1="177.5" x2="51"    y2="174"/>
+      <line x1="56.4"  y1="262.5" x2="51"    y2="266"/>
+    </g>
+
+    <!-- ===== CLAUDE SUNBURST — 8 rays (the recognizable Claude mark) ===== -->
+    <g fill="#E2725B">
+      <!-- 4 cardinal rays (longer, primary) -->
+      <polygon points="130,165 134,214 130,220 126,214"/>   <!-- N -->
+      <polygon points="130,275 134,226 130,220 126,226"/>   <!-- S -->
+      <polygon points="75,220 124,224 130,220 124,216"/>    <!-- W -->
+      <polygon points="185,220 136,224 130,220 136,216"/>   <!-- E -->
+      <!-- 4 diagonal rays (shorter, secondary diamonds) -->
+      <polygon points="155,193 144,208 130,220 141,205"/>   <!-- NE -->
+      <polygon points="105,193 116,208 130,220 119,205"/>   <!-- NW -->
+      <polygon points="155,247 144,232 130,220 141,235"/>   <!-- SE -->
+      <polygon points="105,247 116,232 130,220 119,235"/>   <!-- SW -->
+    </g>
+
+    <!-- Bright glowing core (active hunt indicator) -->
+    <circle cx="130" cy="220" r="4" fill="#FFB591"/>
+    <circle cx="130" cy="220" r="2" fill="#FFE4D1"/>
+
+    <!-- Locked-target reticle past the NE ray tip (offensive marker) -->
+    <line x1="148" y1="200" x2="163" y2="184" stroke="#E2725B" stroke-width="0.5" opacity="0.55" stroke-dasharray="1 2"/>
+    <g stroke="#E2725B" stroke-width="0.8" fill="none">
+      <circle cx="170" cy="178" r="4.5"/>
+      <line x1="170" y1="171" x2="170" y2="174"/>
+      <line x1="170" y1="182" x2="170" y2="185"/>
+      <line x1="163" y1="178" x2="166" y2="178"/>
+      <line x1="174" y1="178" x2="177" y2="178"/>
+    </g>
+
+    <!-- One ambient scanned-target dot (low priority, far SW) -->
+    <circle cx="82" cy="268" r="1.5" fill="#E2725B" opacity="0.5"/>
   </g>
   <text x="130" y="335" text-anchor="middle" font-size="13" letter-spacing="2.5" fill="#6E695F">SKILL  ·  BH-01</text>
   <g font-size="14" letter-spacing="2.5">
     <line x1="250" y1="135" x2="275" y2="135" stroke="#E2725B" stroke-width="1.5"/>
     <text x="288" y="139" fill="#E2725B" font-weight="700">▸ A CLAUDE SKILL</text>
-    <text x="460" y="139" fill="#6E695F">·  BUG-BOUNTY + RED-TEAM</text>
+    <text x="460" y="139" fill="#6E695F">·  BUG-HUNTING + RED-TEAM</text>
   </g>
   <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif">
-    <text x="250" y="232" font-size="108" font-weight="800" fill="#E8E0D0" letter-spacing="-2">Claude</text>
-    <text x="580" y="232" font-size="108" font-weight="200" fill="#6E695F">/</text>
-    <text x="630" y="232" font-size="108" font-weight="800" fill="#E2725B" letter-spacing="-2">BugHunter</text>
-    <line x1="630" y1="246" x2="1150" y2="246" stroke="#E2725B" stroke-width="2"/>
+    <text y="232" font-size="108" font-weight="800" letter-spacing="-2">
+      <tspan x="250" fill="#E8E0D0">Claude</tspan><tspan dx="30" fill="#6E695F" font-weight="200">/</tspan><tspan dx="30" fill="#E2725B">BugHunter</tspan>
+    </text>
+    <line x1="700" y1="246" x2="1440" y2="246" stroke="#E2725B" stroke-width="2"/>
   </g>
   <text x="250" y="285" font-size="18" fill="#A89E8C">Equips Claude with offensive security tradecraft  —  51 skills  ·  15 commands  ·  24 vuln classes.</text>
   <g font-size="14" letter-spacing="1.5">
