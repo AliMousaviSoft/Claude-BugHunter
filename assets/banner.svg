@@ -22,12 +22,6 @@
   </defs>
   <rect width="1920" height="800" fill="url(#bg)"/>
   <rect width="1920" height="800" fill="url(#grid)"/>
-  <g stroke="#FF2D4F" stroke-width="1.5" fill="none" stroke-linecap="square" opacity="0.95">
-    <path d="M 30 70 L 30 30 L 70 30"/>
-    <path d="M 1850 30 L 1890 30 L 1890 70"/>
-    <path d="M 30 730 L 30 770 L 70 770"/>
-    <path d="M 1850 770 L 1890 770 L 1890 730"/>
-  </g>
   <g font-size="12" letter-spacing="2.5" fill="#5A5A6A">
     <text x="60" y="62"><tspan fill="#FF2D4F">▸</tspan>  N 00°00'00"  ·  SECTOR-A  ·  BUILD:STABLE  ·  NO TELEMETRY</text>
     <text x="1860" y="62" text-anchor="end" fill="#9A9AA8">github.com/elementalsouls/Claude-BugHunter</text>
