@@ -1,266 +1,78 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 920" width="1920" height="920" role="img" aria-label="Claude/BugHunter — bug-bounty + red-team skill bundle for Claude Code" font-family="ui-monospace, 'JetBrains Mono', 'IBM Plex Mono', 'SF Mono', Menlo, monospace">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 720" width="1920" height="720" role="img" aria-label="Claude/BugHunter — bug-bounty + red-team skill bundle for Claude Code" font-family="ui-monospace, 'JetBrains Mono', 'IBM Plex Mono', 'SF Mono', Menlo, monospace">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#1A1612"/>
-      <stop offset="100%" stop-color="#0F0C09"/>
+      <stop offset="0%" stop-color="#0A0A0E"/>
+      <stop offset="100%" stop-color="#13131A"/>
     </linearGradient>
-    <pattern id="dots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-      <circle cx="1" cy="1" r="0.55" fill="#3A3024" opacity="0.45"/>
+    <pattern id="grid" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M 60 0 H 0 V 60" fill="none" stroke="#1A1A22" stroke-width="0.6" opacity="0.45"/>
     </pattern>
-    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="0.8"/>
+    <radialGradient id="iconGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF2D4F" stop-opacity="0.85"/>
+      <stop offset="60%" stop-color="#FF2D4F" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#FF2D4F" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="titleGlow" x="-10%" y="-50%" width="120%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
   </defs>
-  <rect width="1920" height="920" fill="url(#bg)"/>
-  <rect width="1920" height="920" fill="url(#dots)"/>
-  <g stroke="#E2725B" stroke-width="1.5" fill="none" stroke-linecap="square">
-    <path d="M 20 60 L 20 20 L 60 20"/>
-    <path d="M 1860 20 L 1900 20 L 1900 60"/>
-    <path d="M 20 860 L 20 900 L 60 900"/>
-    <path d="M 1860 900 L 1900 900 L 1900 860"/>
+  <rect width="1920" height="720" fill="url(#bg)"/>
+  <rect width="1920" height="720" fill="url(#grid)"/>
+  <g stroke="#FF2D4F" stroke-width="1.5" fill="none" stroke-linecap="square" opacity="0.95">
+    <path d="M 30 70 L 30 30 L 70 30"/>
+    <path d="M 1850 30 L 1890 30 L 1890 70"/>
+    <path d="M 30 650 L 30 690 L 70 690"/>
+    <path d="M 1850 690 L 1890 690 L 1890 650"/>
   </g>
-  <g font-size="14" letter-spacing="1.5">
-    <text x="40" y="56" fill="#E2725B">▸</text>
-    <text x="58" y="56" fill="#E8E0D0" font-weight="600">CLAUDE SKILL</text>
-    <text x="190" y="56" fill="#6E695F">·  v1.0  ·  MIT  ·</text>
-    <text x="350" y="56" fill="#A89E8C">TRAINED ON 574+ DISCLOSED REPORTS  ·  91 CVEs INDEXED</text>
-    <text x="1880" y="56" text-anchor="end" fill="#A89E8C">github.com/elementalsouls/Claude-BugHunter</text>
+  <g font-size="12" letter-spacing="2.5" fill="#5A5A6A">
+    <text x="60" y="62"><tspan fill="#FF2D4F">▸</tspan>  N 00°00'00"  ·  SECTOR-A  ·  BUILD:STABLE  ·  NO TELEMETRY</text>
+    <text x="1860" y="62" text-anchor="end" fill="#9A9AA8">github.com/elementalsouls/Claude-BugHunter</text>
   </g>
+  <circle cx="150" cy="230" r="110" fill="url(#iconGlow)"/>
+  <polygon points="150.0,174.0 159.9,220.1 206.0,230.0 159.9,239.9 150.0,286.0 140.1,239.9 94.0,230.0 140.1,220.1" fill="#FF2D4F" filter="url(#titleGlow)"/>
+  <circle cx="150" cy="230" r="4" fill="#FFFFFF"/>
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif">
+    <text x="280" y="260" font-size="128" font-weight="800" letter-spacing="-3" fill="#FFFFFF">claude<tspan dx="20" font-weight="200" fill="#5A5A6A">/</tspan><tspan dx="20" fill="#FF2D4F" filter="url(#titleGlow)">bughunter</tspan></text>
+    <line x1="720" y1="278" x2="1300" y2="278" stroke="#FF2D4F" stroke-width="2.5" opacity="0.85"/>
+  </g>
+  <text x="284" y="318" font-size="14" letter-spacing="3" font-weight="700">
+    <tspan fill="#FF2D4F" dx="0">●</tspan><tspan fill="#E8E8EC" dx="8">BUG BOUNTY ARSENAL</tspan>
+    <tspan fill="#5A5A6A" dx="14"> · </tspan><tspan fill="#FF2D4F" dx="14">●</tspan><tspan fill="#E8E8EC" dx="8">DISCLOSED-REPORT TRADECRAFT</tspan>
+    <tspan fill="#5A5A6A" dx="14"> · </tspan><tspan fill="#FF2D4F" dx="14">●</tspan><tspan fill="#E8E8EC" dx="8">RED-TEAM PIPELINE</tspan>
+  </text>
+  <text x="284" y="372" font-size="17" fill="#9A9AA8" letter-spacing="0.3">A self-contained Claude Code skill bundle for bug bounty, pentest, and external red-team work — 6-phase workflow, 27 hunt modules, 91 CISA-KEV CVEs indexed.</text>
   <g>
-    <!-- Outer hex frame (skill seal) -->
-    <polygon points="203.6,262.5 130.0,305.0 56.4,262.5 56.4,177.5 130.0,135.0 203.6,177.5"
-             fill="none" stroke="#E2725B" stroke-width="1.5"/>
-    <!-- Inner hex (double-frame for tactical feel) -->
-    <polygon points="194.5,257.5 130,289 65.5,257.5 65.5,182.5 130,151 194.5,182.5"
-             fill="none" stroke="#E2725B" stroke-width="0.5" opacity="0.4"/>
-
-    <!-- Corner ticks at the six hex vertices -->
-    <g stroke="#E2725B" stroke-width="1.2" stroke-linecap="round">
-      <line x1="130"   y1="135"   x2="130"   y2="128"/>
-      <line x1="130"   y1="305"   x2="130"   y2="312"/>
-      <line x1="203.6" y1="177.5" x2="209"   y2="174"/>
-      <line x1="203.6" y1="262.5" x2="209"   y2="266"/>
-      <line x1="56.4"  y1="177.5" x2="51"    y2="174"/>
-      <line x1="56.4"  y1="262.5" x2="51"    y2="266"/>
-    </g>
-
-    <!-- ===== CLAUDE SUNBURST — 8 rays (the recognizable Claude mark) ===== -->
-    <g fill="#E2725B">
-      <!-- 4 cardinal rays (longer, primary) -->
-      <polygon points="130,165 134,214 130,220 126,214"/>   <!-- N -->
-      <polygon points="130,275 134,226 130,220 126,226"/>   <!-- S -->
-      <polygon points="75,220 124,224 130,220 124,216"/>    <!-- W -->
-      <polygon points="185,220 136,224 130,220 136,216"/>   <!-- E -->
-      <!-- 4 diagonal rays (shorter, secondary diamonds) -->
-      <polygon points="155,193 144,208 130,220 141,205"/>   <!-- NE -->
-      <polygon points="105,193 116,208 130,220 119,205"/>   <!-- NW -->
-      <polygon points="155,247 144,232 130,220 141,235"/>   <!-- SE -->
-      <polygon points="105,247 116,232 130,220 119,235"/>   <!-- SW -->
-    </g>
-
-    <!-- Bright glowing core (active hunt indicator) -->
-    <circle cx="130" cy="220" r="4" fill="#FFB591"/>
-    <circle cx="130" cy="220" r="2" fill="#FFE4D1"/>
-
-    <!-- Locked-target reticle past the NE ray tip (offensive marker) -->
-    <line x1="148" y1="200" x2="163" y2="184" stroke="#E2725B" stroke-width="0.5" opacity="0.55" stroke-dasharray="1 2"/>
-    <g stroke="#E2725B" stroke-width="0.8" fill="none">
-      <circle cx="170" cy="178" r="4.5"/>
-      <line x1="170" y1="171" x2="170" y2="174"/>
-      <line x1="170" y1="182" x2="170" y2="185"/>
-      <line x1="163" y1="178" x2="166" y2="178"/>
-      <line x1="174" y1="178" x2="177" y2="178"/>
-    </g>
-
-    <!-- One ambient scanned-target dot (low priority, far SW) -->
-    <circle cx="82" cy="268" r="1.5" fill="#E2725B" opacity="0.5"/>
+    <rect x="1480" y="100" width="380" height="140" rx="2" fill="none" stroke="#FF2D4F" stroke-width="1.2"/>
+    <circle cx="1502" cy="122" r="4" fill="#FF2D4F" filter="url(#titleGlow)"/>
+    <text x="1518" y="127" font-size="13" font-weight="700" letter-spacing="2.5" fill="#FF2D4F">OPERATIONAL</text>
+    <line x1="1498" y1="144" x2="1842" y2="144" stroke="#2D2D3A" stroke-width="0.8"/>
+    <text x="1502" y="166" font-size="11" letter-spacing="2" fill="#5A5A6A">VERSION</text>
+    <text x="1838" y="166" text-anchor="end" font-size="12" fill="#E8E8EC">v1.0  ·  MIT</text>
+    <text x="1502" y="186" font-size="11" letter-spacing="2" fill="#5A5A6A">AUTHOR</text>
+    <text x="1838" y="186" text-anchor="end" font-size="12" fill="#E8E8EC">@elementalsouls</text>
+    <text x="1502" y="206" font-size="11" letter-spacing="2" fill="#5A5A6A">STATUS</text>
+    <text x="1838" y="206" text-anchor="end" font-size="12" fill="#E8E8EC">PRODUCTION-READY</text>
+    <text x="1502" y="226" font-size="11" letter-spacing="2" fill="#5A5A6A">UPDATED</text>
+    <text x="1838" y="226" text-anchor="end" font-size="12" fill="#E8E8EC">2026-05</text>
   </g>
-  <text x="130" y="335" text-anchor="middle" font-size="13" letter-spacing="2.5" fill="#6E695F">SKILL  ·  BH-01</text>
-  <g font-size="14" letter-spacing="2.5">
-    <line x1="250" y1="135" x2="275" y2="135" stroke="#E2725B" stroke-width="1.5"/>
-    <text x="288" y="139" fill="#E2725B" font-weight="700">▸ A CLAUDE SKILL</text>
-    <text x="460" y="139" fill="#6E695F">·  BUG-HUNTING + RED-TEAM</text>
-  </g>
-  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif">
-    <text y="232" font-size="108" font-weight="800" letter-spacing="-2">
-      <tspan x="250" fill="#E8E0D0">Claude</tspan><tspan dx="10" fill="#6E695F" font-weight="200">/</tspan><tspan dx="10" fill="#E2725B">BugHunter</tspan>
-    </text>
-    <line x1="660" y1="246" x2="1400" y2="246" stroke="#E2725B" stroke-width="2"/>
-  </g>
-  <text x="250" y="285" font-size="18" fill="#A89E8C">Equips Claude with offensive security tradecraft  —  51 skills  ·  15 commands  ·  24 vuln classes.</text>
-  <g font-size="14" letter-spacing="1.5">
-    <text x="250" y="320" fill="#E2725B" font-weight="700">▸ FIELD-VALIDATED</text>
-    <text x="430" y="320" fill="#6E695F">:</text>
-    <text x="450" y="320" fill="#A89E8C">14+ practice ranges  +  authorized red-team &amp; bug-bounty engagements</text>
-  </g>
-  <g>
-    <rect x="1510" y="100" width="360" height="150" rx="2" fill="none" stroke="#4A4036" stroke-width="1.2"/>
-    <circle cx="1532" cy="122" r="4" fill="#E2725B"/>
-    <text x="1548" y="127" font-size="14" font-weight="700" letter-spacing="2" fill="#E8E0D0">SKILL  ·  LOADED</text>
-    <line x1="1528" y1="144" x2="1852" y2="144" stroke="#322C24" stroke-width="0.8"/>
-    <text x="1532" y="166" font-size="11" letter-spacing="1.8" fill="#6E695F">VERSION</text>
-    <text x="1848" y="166" text-anchor="end" font-size="12" fill="#E8E0D0">v1.0  ·  MIT</text>
-    <text x="1532" y="188" font-size="11" letter-spacing="1.8" fill="#6E695F">AUTHOR</text>
-    <text x="1848" y="188" text-anchor="end" font-size="12" fill="#E8E0D0">@elementalsouls</text>
-    <text x="1532" y="210" font-size="11" letter-spacing="1.8" fill="#6E695F">SOURCE</text>
-    <text x="1848" y="210" text-anchor="end" font-size="12" fill="#E8E0D0">~/.claude/skills/bughunter</text>
-    <text x="1532" y="232" font-size="11" letter-spacing="1.8" fill="#6E695F">PAIRS WITH</text>
-    <text x="1848" y="232" text-anchor="end" font-size="12" fill="#E8E0D0">Claude-OSINT</text>
-  </g>
-  <g font-size="13" letter-spacing="1.8">
-    <text x="40" y="390" fill="#E2725B" font-weight="700">▸ INVOKE</text>
-    <text x="128" y="390" fill="#6E695F">15 SLASH COMMANDS  —  TYPE IN CLAUDE CODE</text>
-  </g>
-    <rect x="40.0" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
-    <text x="96.7" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/hunt</text>
-    <rect x="163.3" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
-    <text x="220.0" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/recon</text>
-    <rect x="286.7" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
-    <text x="343.3" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/scope</text>
-    <rect x="410.0" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
-    <text x="466.7" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/triage</text>
-    <rect x="533.3" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
-    <text x="590.0" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/validate</text>
-    <rect x="656.7" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
-    <text x="713.3" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/report</text>
-    <rect x="780.0" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
-    <text x="836.7" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/autopilot</text>
-    <rect x="903.3" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
-    <text x="960.0" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/chain</text>
-    <rect x="1026.7" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
-    <text x="1083.3" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/intel</text>
-    <rect x="1150.0" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
-    <text x="1206.7" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/pickup</text>
-    <rect x="1273.3" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
-    <text x="1330.0" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/surface</text>
-    <rect x="1396.7" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
-    <text x="1453.3" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/remember</text>
-    <rect x="1520.0" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
-    <text x="1576.7" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/memory-gc</text>
-    <rect x="1643.3" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
-    <text x="1700.0" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/token-scan</text>
-    <rect x="1766.7" y="408" width="113.3" height="36" rx="3" fill="none" stroke="#4A4036" stroke-width="1"/>
-    <text x="1823.3" y="431.0" text-anchor="middle" font-size="13" fill="#E8E0D0">/web3-audit</text>
-  <g font-size="13" letter-spacing="1.8">
-    <line x1="40" y1="488" x2="48" y2="488" stroke="#E2725B" stroke-width="3"/>
-    <text x="58" y="493" fill="#E2725B" font-weight="700">EQUIPS CLAUDE WITH</text>
-    <text x="280" y="493" fill="#6E695F">// 51 SKILLS</text>
-    <text x="430" y="493" fill="#6E695F">// 24 VULN CLASSES</text>
-    <text x="620" y="493" fill="#6E695F">// 91 CVEs (CISA-KEV)</text>
-    <text x="830" y="493" fill="#6E695F">// 6 PHASES</text>
-    <text x="1880" y="493" text-anchor="end" fill="#A89E8C">TRIAGE  ·  VALIDATE  ·  CHAIN  ·  REPORT</text>
-  </g>
-  <g font-size="13" letter-spacing="1.5">
-    <text x="40.0" y="524" fill="#6E695F">[01]  WEB APP</text>
-    <text x="504.0" y="524" fill="#6E695F">[02]  AUTH &amp; IDENTITY</text>
-    <text x="968.0" y="524" fill="#6E695F">[03]  API &amp; INFRA</text>
-    <text x="1432.0" y="524" fill="#6E695F">[04]  RED-TEAM &amp; WORKFLOW</text>
-  </g>
-    <rect x="40.0" y="536" width="448.0" height="64" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
-    <text x="54.0" y="560" font-size="14" font-weight="700" fill="#E8E0D0">XSS  ·  IDOR  ·  SQLi  ·  XXE</text>
-    <text x="474.0" y="560" text-anchor="end" font-size="11" letter-spacing="1.5" fill="#6E695F">8 SKILLS</text>
-    <text x="54.0" y="582" font-size="11" fill="#A89E8C">174 · 26 · 8 · 4 reports  ·  stored, reflected, DOM</text>
-    <rect x="504.0" y="536" width="448.0" height="64" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
-    <text x="518.0" y="560" font-size="14" font-weight="700" fill="#E8E0D0">OAuth  ·  SAML  ·  ATO</text>
-    <text x="938.0" y="560" text-anchor="end" font-size="11" letter-spacing="1.5" fill="#6E695F">3 SKILLS</text>
-    <text x="518.0" y="582" font-size="11" fill="#A89E8C">10 reports  ·  8 XSW patterns  ·  9 ATO paths</text>
-    <rect x="968.0" y="536" width="448.0" height="64" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
-    <text x="982.0" y="560" font-size="14" font-weight="700" fill="#E8E0D0">SSRF  ·  RCE  ·  GraphQL  ·  API-misconfig</text>
-    <text x="1402.0" y="560" text-anchor="end" font-size="11" letter-spacing="1.5" fill="#6E695F">4 SKILLS</text>
-    <text x="982.0" y="582" font-size="11" fill="#A89E8C">9  ·  67  ·  3 reports  ·  11 IP-bypass  ·  introspection</text>
-    <rect x="1432.0" y="536" width="448.0" height="64" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
-    <text x="1446.0" y="560" font-size="14" font-weight="700" fill="#E8E0D0">redteam-mindset  ·  mid-engagement IR</text>
-    <text x="1866.0" y="560" text-anchor="end" font-size="11" letter-spacing="1.5" fill="#6E695F">2 SKILLS</text>
-    <text x="1446.0" y="582" font-size="11" fill="#A89E8C">offense vs WAPT  ·  SOC-patch baseline detection</text>
-    <rect x="40.0" y="606" width="448.0" height="64" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
-    <text x="54.0" y="630" font-size="14" font-weight="700" fill="#E8E0D0">CSRF  ·  file-upload  ·  SSTI  ·  ASP.NET</text>
-    <text x="474.0" y="630" text-anchor="end" font-size="11" letter-spacing="1.5" fill="#6E695F">4 SKILLS</text>
-    <text x="54.0" y="652" font-size="11" fill="#A89E8C">10 upload-bypass  ·  5 engines  ·  ViewState  ·  WCF</text>
-    <rect x="504.0" y="606" width="448.0" height="64" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
-    <text x="518.0" y="630" font-size="14" font-weight="700" fill="#E8E0D0">M365  ·  Entra  ·  Okta  ·  cloud-IAM</text>
-    <text x="938.0" y="630" text-anchor="end" font-size="11" letter-spacing="1.5" fill="#6E695F">3 SKILLS</text>
-    <text x="518.0" y="652" font-size="11" fill="#A89E8C">AADSTS  ·  CA-bypass  ·  push-fatigue  ·  24 AWS patterns</text>
-    <rect x="968.0" y="606" width="448.0" height="64" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
-    <text x="982.0" y="630" font-size="14" font-weight="700" fill="#E8E0D0">Cloud  ·  Subdomain TO  ·  NTLM</text>
-    <text x="1402.0" y="630" text-anchor="end" font-size="11" letter-spacing="1.5" fill="#6E695F">3 SKILLS</text>
-    <text x="982.0" y="652" font-size="11" fill="#A89E8C">27 takeover fingerprints  ·  Type-2 disclosure</text>
-    <rect x="1432.0" y="606" width="448.0" height="64" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
-    <text x="1446.0" y="630" font-size="14" font-weight="700" fill="#E8E0D0">APK red-team  ·  supply-chain recon</text>
-    <text x="1866.0" y="630" text-anchor="end" font-size="11" letter-spacing="1.5" fill="#6E695F">2 SKILLS</text>
-    <text x="1446.0" y="652" font-size="11" fill="#A89E8C">jadx  ·  Frida  ·  dep-confusion  ·  GH-Actions injection</text>
-    <rect x="40.0" y="676" width="448.0" height="64" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
-    <text x="54.0" y="700" font-size="14" font-weight="700" fill="#E8E0D0">Business logic  ·  race  ·  cache  ·  smuggling</text>
-    <text x="474.0" y="700" text-anchor="end" font-size="11" letter-spacing="1.5" fill="#6E695F">4 SKILLS</text>
-    <text x="54.0" y="722" font-size="11" fill="#A89E8C">TOCTOU  ·  double-spend  ·  CL.TE  ·  TE.CL  ·  H2.CL</text>
-    <rect x="504.0" y="676" width="448.0" height="64" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
-    <text x="518.0" y="700" font-size="14" font-weight="700" fill="#E8E0D0">MFA-bypass  ·  auth-bypass  ·  LLM/AI</text>
-    <text x="938.0" y="700" text-anchor="end" font-size="11" letter-spacing="1.5" fill="#6E695F">3 SKILLS</text>
-    <text x="518.0" y="722" font-size="11" fill="#A89E8C">7 patterns  ·  OTP brute  ·  prompt-inj  ·  ASI 01–10</text>
-    <rect x="968.0" y="676" width="448.0" height="64" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
-    <text x="982.0" y="700" font-size="14" font-weight="700" fill="#E8E0D0">VMware  ·  enterprise-VPN  ·  SharePoint</text>
-    <text x="1402.0" y="700" text-anchor="end" font-size="11" letter-spacing="1.5" fill="#6E695F">3 SKILLS</text>
-    <text x="982.0" y="722" font-size="11" fill="#A89E8C">vCenter CVE-chain  ·  7 SSL-VPN vendors  ·  ToolShell</text>
-    <rect x="1432.0" y="676" width="448.0" height="64" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
-    <text x="1446.0" y="700" font-size="14" font-weight="700" fill="#E8E0D0">web3-audit  ·  meme-coin  ·  workflow</text>
-    <text x="1866.0" y="700" text-anchor="end" font-size="11" letter-spacing="1.5" fill="#6E695F">7 SKILLS</text>
-    <text x="1446.0" y="722" font-size="11" fill="#A89E8C">10 DeFi classes  ·  rug-pull  ·  5 workflow skills</text>
-  <g font-size="13" letter-spacing="1.8">
-    <line x1="40" y1="752" x2="48" y2="752" stroke="#E2725B" stroke-width="3"/>
-    <text x="58" y="757" fill="#E2725B" font-weight="700">7-QUESTION GATE</text>
-    <text x="260" y="757" fill="#6E695F">the gate that separates productive researchers from N/A noise</text>
-  </g>
-    <rect x="40.0" y="768" width="448.0" height="52" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
-    <circle cx="58.0" cy="787" r="3" fill="#E2725B"/>
-    <text x="70.0" y="791" font-size="14" font-weight="700" letter-spacing="1.5" fill="#E8E0D0">PASS</text>
-    <text x="70.0" y="810" font-size="11" fill="#6E695F">ship to triage</text>
-    <rect x="504.0" y="768" width="448.0" height="52" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
-    <circle cx="522.0" cy="787" r="3" fill="#E2725B"/>
-    <text x="534.0" y="791" font-size="14" font-weight="700" letter-spacing="1.5" fill="#E8E0D0">DOWNGRADE</text>
-    <text x="534.0" y="810" font-size="11" fill="#6E695F">severity revised, still submit</text>
-    <rect x="968.0" y="768" width="448.0" height="52" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
-    <circle cx="986.0" cy="787" r="3" fill="#E2725B"/>
-    <text x="998.0" y="791" font-size="14" font-weight="700" letter-spacing="1.5" fill="#E8E0D0">KILL</text>
-    <text x="998.0" y="810" font-size="11" fill="#6E695F">stop, file as N/A locally</text>
-    <rect x="1432.0" y="768" width="448.0" height="52" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
-    <circle cx="1450.0" cy="787" r="3" fill="#E2725B"/>
-    <text x="1462.0" y="791" font-size="14" font-weight="700" letter-spacing="1.5" fill="#E8E0D0">CHAIN REQUIRED</text>
-    <text x="1462.0" y="810" font-size="11" fill="#6E695F">return to hunt with a pivot</text>
-  <text x="40" y="846" font-size="11" letter-spacing="2" fill="#6E695F">SKILL</text>
-  <text x="40" y="860" font-size="11" letter-spacing="2" fill="#6E695F">FLOW</text>
-    <rect x="120.0" y="834" width="278.3" height="34" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
-    <text x="134.0" y="859" font-size="13" fill="#6E695F">01</text>
-    <text x="158.0" y="859" font-size="14" font-weight="700" letter-spacing="1.5" fill="#A89E8C">SCOPE</text>
-    <text x="384.3" y="859" text-anchor="end" font-size="11" fill="#6E695F">intake</text>
-    <text x="407.3" y="859" text-anchor="middle" font-size="14" fill="#E2725B">▸</text>
-    <rect x="416.3" y="834" width="278.3" height="34" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
-    <text x="430.3" y="859" font-size="13" fill="#6E695F">02</text>
-    <text x="454.3" y="859" font-size="14" font-weight="700" letter-spacing="1.5" fill="#A89E8C">RECON</text>
-    <text x="680.7" y="859" text-anchor="end" font-size="11" fill="#6E695F">passive</text>
-    <text x="703.7" y="859" text-anchor="middle" font-size="14" fill="#E2725B">▸</text>
-    <rect x="712.7" y="834" width="278.3" height="34" rx="2" fill="none" stroke="#4A4036" stroke-width="1.6"/>
-    <text x="726.7" y="859" font-size="13" fill="#6E695F">03</text>
-    <text x="750.7" y="859" font-size="14" font-weight="700" letter-spacing="1.5" fill="#E8E0D0">HUNT</text>
-    <text x="977.0" y="859" text-anchor="end" font-size="11" fill="#E2725B">active</text>
-    <text x="1000.0" y="859" text-anchor="middle" font-size="14" fill="#E2725B">▸</text>
-    <rect x="1009.0" y="834" width="278.3" height="34" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
-    <text x="1023.0" y="859" font-size="13" fill="#6E695F">04</text>
-    <text x="1047.0" y="859" font-size="14" font-weight="700" letter-spacing="1.5" fill="#A89E8C">VALIDATE</text>
-    <text x="1273.3" y="859" text-anchor="end" font-size="11" fill="#6E695F">7Q gate</text>
-    <text x="1296.3" y="859" text-anchor="middle" font-size="14" fill="#E2725B">▸</text>
-    <rect x="1305.3" y="834" width="278.3" height="34" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
-    <text x="1319.3" y="859" font-size="13" fill="#6E695F">05</text>
-    <text x="1343.3" y="859" font-size="14" font-weight="700" letter-spacing="1.5" fill="#A89E8C">CAPTURE</text>
-    <text x="1569.7" y="859" text-anchor="end" font-size="11" fill="#6E695F">PoC</text>
-    <text x="1592.7" y="859" text-anchor="middle" font-size="14" fill="#E2725B">▸</text>
-    <rect x="1601.7" y="834" width="278.3" height="34" rx="2" fill="none" stroke="#322C24" stroke-width="1"/>
-    <text x="1615.7" y="859" font-size="13" fill="#6E695F">06</text>
-    <text x="1639.7" y="859" font-size="14" font-weight="700" letter-spacing="1.5" fill="#A89E8C">REPORT</text>
-    <text x="1866.0" y="859" text-anchor="end" font-size="11" fill="#6E695F">deliver</text>
-  <g font-size="12" letter-spacing="1.5">
-    <text x="40" y="896" fill="#E2725B" font-weight="700">▸ INTEGRATIONS</text>
-    <text x="178" y="896" fill="#A89E8C">Burp MCP  ·  subfinder  ·  dnsx  ·  httpx  ·  katana  ·  nuclei  ·  CISA-KEV index</text>
-    <text x="1540" y="896" fill="#E2725B" font-weight="700">▸ INVOKE</text>
-    <text x="1630" y="896" fill="#E8E0D0">claude /hunt &lt;target&gt;</text>
-    <text x="1880" y="896" text-anchor="end" fill="#E2725B" font-weight="700">SHIP IT</text>
+  <line x1="60" y1="440" x2="1860" y2="440" stroke="#2D2D3A" stroke-width="1"/>
+  <line x1="930" y1="440" x2="990" y2="440" stroke="#FF2D4F" stroke-width="2"/>
+    <text x="210" y="540" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="56" font-weight="800" fill="#FF2D4F" letter-spacing="-1">51</text>
+    <text x="210" y="580" text-anchor="middle" font-size="12" letter-spacing="3" fill="#9A9AA8" font-weight="600">SKILLS</text>
+    <text x="510" y="540" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="56" font-weight="800" fill="#FF2D4F" letter-spacing="-1">15</text>
+    <text x="510" y="580" text-anchor="middle" font-size="12" letter-spacing="3" fill="#9A9AA8" font-weight="600">COMMANDS</text>
+    <text x="810" y="540" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="56" font-weight="800" fill="#FF2D4F" letter-spacing="-1">27</text>
+    <text x="810" y="580" text-anchor="middle" font-size="12" letter-spacing="3" fill="#9A9AA8" font-weight="600">HUNT MODULES</text>
+    <text x="1110" y="540" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="56" font-weight="800" fill="#FF2D4F" letter-spacing="-1">574+</text>
+    <text x="1110" y="580" text-anchor="middle" font-size="12" letter-spacing="3" fill="#9A9AA8" font-weight="600">H1 REPORTS</text>
+    <text x="1410" y="540" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="56" font-weight="800" fill="#FF2D4F" letter-spacing="-1">91</text>
+    <text x="1410" y="580" text-anchor="middle" font-size="12" letter-spacing="3" fill="#9A9AA8" font-weight="600">CVEs INDEXED</text>
+    <text x="1710" y="540" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="56" font-weight="800" fill="#FF2D4F" letter-spacing="-1">MIT</text>
+    <text x="1710" y="580" text-anchor="middle" font-size="12" letter-spacing="3" fill="#9A9AA8" font-weight="600">LICENSE</text>
+  <line x1="60" y1="648" x2="1860" y2="648" stroke="#1F1F28" stroke-width="1"/>
+  <g font-size="12" letter-spacing="2.5" fill="#9A9AA8">
+    <text x="60" y="670"><tspan fill="#FF2D4F">▸</tspan>  METHODOLOGY  +  ARSENAL  ·  BUNDLED  ·  OFFENSIVE  ·  DOCUMENTED</text>
+    <text x="1860" y="670" text-anchor="end" fill="#FF2D4F" font-weight="700">SHIP IT</text>
   </g>
 </svg>
