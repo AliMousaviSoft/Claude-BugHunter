@@ -33,44 +33,38 @@
     <text x="1860" y="62" text-anchor="end" fill="#9A9AA8">github.com/elementalsouls/Claude-BugHunter</text>
   </g>
   <circle cx="150" cy="230" r="105" fill="url(#iconGlow)"/>
-  <g stroke="#FF2D4F" stroke-width="3.5" stroke-linecap="round" filter="url(#softGlow)">
-    <line x1="150.0" y1="214.0" x2="150.0" y2="174.0"/>
-    <line x1="158.0" y1="216.1" x2="178.0" y2="181.5"/>
-    <line x1="163.9" y1="222.0" x2="198.5" y2="202.0"/>
-    <line x1="166.0" y1="230.0" x2="206.0" y2="230.0"/>
-    <line x1="163.9" y1="238.0" x2="198.5" y2="258.0"/>
-    <line x1="158.0" y1="243.9" x2="178.0" y2="278.5"/>
-    <line x1="150.0" y1="246.0" x2="150.0" y2="286.0"/>
-    <line x1="142.0" y1="243.9" x2="122.0" y2="278.5"/>
-    <line x1="136.1" y1="238.0" x2="101.5" y2="258.0"/>
-    <line x1="134.0" y1="230.0" x2="94.0" y2="230.0"/>
-    <line x1="136.1" y1="222.0" x2="101.5" y2="202.0"/>
-    <line x1="142.0" y1="216.1" x2="122.0" y2="181.5"/>
+  <g stroke="#FF2D4F" stroke-width="3.8" stroke-linecap="round" filter="url(#softGlow)">
+    <line x1="150.0" y1="212.0" x2="150.0" y2="172.0"/>
+    <line x1="162.7" y1="217.3" x2="191.0" y2="189.0"/>
+    <line x1="168.0" y1="230.0" x2="208.0" y2="230.0"/>
+    <line x1="162.7" y1="242.7" x2="191.0" y2="271.0"/>
+    <line x1="150.0" y1="248.0" x2="150.0" y2="288.0"/>
+    <line x1="137.3" y1="242.7" x2="109.0" y2="271.0"/>
+    <line x1="132.0" y1="230.0" x2="92.0" y2="230.0"/>
+    <line x1="137.3" y1="217.3" x2="109.0" y2="189.0"/>
   </g>
-  <circle cx="150" cy="230" r="4" fill="#FFFFFF"/>
+  <circle cx="150" cy="230" r="3.5" fill="#FFFFFF"/>
   <g font-family="-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif">
     <text x="280" y="260" font-size="128" font-weight="800" letter-spacing="-3" fill="#FFFFFF">claude<tspan dx="20" font-weight="200" fill="#5A5A6A">/</tspan><tspan dx="20" fill="#FF2D4F" filter="url(#softGlow)">bughunter</tspan></text>
     <line x1="720" y1="278" x2="1300" y2="278" stroke="#FF2D4F" stroke-width="2.5" opacity="0.85"/>
   </g>
   <text x="284" y="318" font-size="14" letter-spacing="3" font-weight="700">
-    <tspan fill="#FF2D4F" dx="0">●</tspan><tspan fill="#E8E8EC" dx="8">BUG BOUNTY ARSENAL</tspan>
-    <tspan fill="#5A5A6A" dx="14"> · </tspan><tspan fill="#FF2D4F" dx="14">●</tspan><tspan fill="#E8E8EC" dx="8">DISCLOSED-REPORT TRADECRAFT</tspan>
-    <tspan fill="#5A5A6A" dx="14"> · </tspan><tspan fill="#FF2D4F" dx="14">●</tspan><tspan fill="#E8E8EC" dx="8">RED-TEAM PIPELINE</tspan>
+    <tspan fill="#FF2D4F" dx="0">●</tspan><tspan fill="#E8E8EC" dx="8">BUG HUNTING ARSENAL</tspan>
+    <tspan fill="#5A5A6A" dx="14"> · </tspan><tspan fill="#FF2D4F" dx="14">●</tspan><tspan fill="#E8E8EC" dx="8">RED TEAM PIPELINE</tspan>
+    <tspan fill="#5A5A6A" dx="14"> · </tspan><tspan fill="#FF2D4F" dx="14">●</tspan><tspan fill="#E8E8EC" dx="8">DISCLOSED REPORT TRADECRAFT</tspan>
   </text>
-  <text x="284" y="372" font-size="17" fill="#9A9AA8" letter-spacing="0.3">A self-contained Claude Code skill bundle for bug bounty, pentest, and external red-team work — 6-phase workflow, 27 hunt modules, 91 CISA-KEV CVEs indexed.</text>
+  <text x="284" y="372" font-size="17" fill="#9A9AA8" letter-spacing="0.3">A self-contained Claude Code skill bundle for bug hunting — 6-phase workflow, 27 hunt modules, 91 CISA-KEV CVEs indexed.</text>
   <g>
-    <rect x="1480" y="100" width="380" height="140" rx="2" fill="none" stroke="#FF2D4F" stroke-width="1.2"/>
+    <rect x="1480" y="100" width="380" height="120" rx="2" fill="none" stroke="#FF2D4F" stroke-width="1.2"/>
     <circle cx="1502" cy="122" r="4" fill="#FF2D4F"/>
     <text x="1518" y="127" font-size="13" font-weight="700" letter-spacing="2.5" fill="#FF2D4F">OPERATIONAL</text>
     <line x1="1498" y1="144" x2="1842" y2="144" stroke="#2D2D3A" stroke-width="0.8"/>
-    <text x="1502" y="166" font-size="11" letter-spacing="2" fill="#5A5A6A">VERSION</text>
-    <text x="1838" y="166" text-anchor="end" font-size="12" fill="#E8E8EC">v1.0  ·  MIT</text>
-    <text x="1502" y="186" font-size="11" letter-spacing="2" fill="#5A5A6A">AUTHOR</text>
-    <text x="1838" y="186" text-anchor="end" font-size="12" fill="#E8E8EC">@elementalsouls</text>
-    <text x="1502" y="206" font-size="11" letter-spacing="2" fill="#5A5A6A">STATUS</text>
-    <text x="1838" y="206" text-anchor="end" font-size="12" fill="#E8E8EC">PRODUCTION-READY</text>
-    <text x="1502" y="226" font-size="11" letter-spacing="2" fill="#5A5A6A">UPDATED</text>
-    <text x="1838" y="226" text-anchor="end" font-size="12" fill="#E8E8EC">2026-05</text>
+    <text x="1502" y="168" font-size="11" letter-spacing="2" fill="#5A5A6A">VERSION</text>
+    <text x="1838" y="168" text-anchor="end" font-size="12" fill="#E8E8EC">v1.0  ·  MIT</text>
+    <text x="1502" y="188" font-size="11" letter-spacing="2" fill="#5A5A6A">AUTHOR</text>
+    <text x="1838" y="188" text-anchor="end" font-size="12" fill="#E8E8EC">@elementalsouls</text>
+    <text x="1502" y="208" font-size="11" letter-spacing="2" fill="#5A5A6A">UPDATED</text>
+    <text x="1838" y="208" text-anchor="end" font-size="12" fill="#E8E8EC">2026-05</text>
   </g>
   <text x="60" y="408" font-size="11" letter-spacing="3" fill="#5A5A6A" font-weight="700">▸ WHAT MAKES IT WORK</text>
     <text x="60.0" y="443" font-size="13" fill="#FF2D4F" font-weight="700">▸</text>
@@ -109,14 +103,14 @@
     <circle cx="78" cy="676" r="4" fill="#B81E37" opacity="0.65"/>
     <circle cx="92" cy="676" r="4" fill="#5A5A6A" opacity="0.65"/>
     <circle cx="106" cy="676" r="4" fill="#5A5A6A" opacity="0.65"/>
-    <text x="130" y="680" font-size="11" letter-spacing="1.8" fill="#5A5A6A">~/security-research/Claude-BugHunter  —  zsh</text>
+    <text x="130" y="680" font-size="11" letter-spacing="1.8" fill="#5A5A6A">claude code session  ·  ~/security-research/Targets/example.com</text>
     <line x1="60" y1="690" x2="1860" y2="690" stroke="#1F1F28" stroke-width="0.8"/>
-    <text x="84" y="710" font-size="13"><tspan fill="#FF2D4F" font-weight="700">$</tspan><tspan fill="#E8E8EC" dx="8">claude /hunt &lt;target&gt;</tspan></text>
-    <text x="600" y="710" font-size="12" fill="#7A7A88" font-style="italic"># loads target context + recon scaffolding</text>
-    <text x="84" y="728" font-size="13"><tspan fill="#FF2D4F" font-weight="700">$</tspan><tspan fill="#E8E8EC" dx="8">claude /triage</tspan></text>
-    <text x="600" y="728" font-size="12" fill="#7A7A88" font-style="italic"># runs 7-Question Gate on current finding</text>
-    <text x="84" y="746" font-size="13"><tspan fill="#FF2D4F" font-weight="700">$</tspan><tspan fill="#E8E8EC" dx="8">claude /report</tspan></text>
-    <text x="600" y="746" font-size="12" fill="#7A7A88" font-style="italic"># drafts H1 / Bugcrowd / Intigriti body</text>
+    <text x="84" y="710" font-size="13"><tspan fill="#FF2D4F" font-weight="700">&gt;</tspan><tspan fill="#E8E8EC" dx="8">/hunt example.com</tspan></text>
+    <text x="600" y="710" font-size="12" fill="#7A7A88" font-style="italic"># loads recon + arsenal for target</text>
+    <text x="84" y="728" font-size="13"><tspan fill="#FF2D4F" font-weight="700">&gt;</tspan><tspan fill="#E8E8EC" dx="8">"test the OAuth flow for token leak"</tspan></text>
+    <text x="600" y="728" font-size="12" fill="#7A7A88" font-style="italic"># auto-triggers hunt-oauth + hunt-ato</text>
+    <text x="84" y="746" font-size="13"><tspan fill="#FF2D4F" font-weight="700">&gt;</tspan><tspan fill="#E8E8EC" dx="8">/triage</tspan></text>
+    <text x="600" y="746" font-size="12" fill="#7A7A88" font-style="italic"># 7-Question Gate before any report draft</text>
   <g font-size="11" letter-spacing="2.5" fill="#9A9AA8">
     <text x="60" y="778"><tspan fill="#FF2D4F">▸</tspan>  METHODOLOGY  +  ARSENAL  ·  BUNDLED  ·  OFFENSIVE  ·  DOCUMENTED</text>
     <text x="1860" y="778" text-anchor="end" fill="#FF2D4F" font-weight="700">SHIP IT</text>
