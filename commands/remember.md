@@ -1,4 +1,5 @@
 ---
+name: remember
 description: Log current finding or successful pattern to hunt memory. Auto-fills from /validate output if available. Usage: /remember
 ---
 

@@ -1,4 +1,5 @@
 ---
+name: pickup
 description: Pick up a previous hunt on a target — shows hunt history, untested endpoints, and memory-informed suggestions. Usage: /pickup target.com
 ---
 
