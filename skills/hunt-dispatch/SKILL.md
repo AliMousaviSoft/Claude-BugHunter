@@ -100,10 +100,9 @@ hunt-xss             hunt-sqli            hunt-ssrf            hunt-idor
 hunt-csrf            hunt-xxe             hunt-rce             hunt-graphql
 hunt-oauth           hunt-saml            hunt-mfa-bypass      hunt-auth-bypass
 hunt-ato             hunt-file-upload     hunt-business-logic  hunt-race-condition
-hunt-race-condition  hunt-llm-ai          hunt-api-misconfig   hunt-ssti
-hunt-cache-poison hunt-cache-poison    hunt-http-smuggling  hunt-subdomain
-hunt-subdomain  hunt-cloud-misconfig  hunt-misc       hunt-aspnet
-hunt-sharepoint      hunt-ntlm-info
+hunt-llm-ai          hunt-api-misconfig   hunt-ssti            hunt-cache-poison
+hunt-http-smuggling  hunt-subdomain       hunt-cloud-misconfig hunt-misc
+hunt-aspnet          hunt-sharepoint      hunt-ntlm-info
 ```
 
 report format: `report-writing` (`bugcrowd-reporting` if the target is on bugcrowd).
