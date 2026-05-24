@@ -1,4 +1,5 @@
 ---
+name: surface
 description: Show ranked attack surface for a target based on recon output + hunt memory. Invokes recon-ranker agent. Usage: /surface target.com
 ---
 
