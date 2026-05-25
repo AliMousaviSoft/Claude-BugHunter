@@ -134,9 +134,9 @@ loaded for wapt ({blackbox|greybox}): {N} skills
   authz:      hunt-idor, hunt-auth-bypass, hunt-ato
   auth:       hunt-oauth, hunt-saml, hunt-mfa-bypass
   api:        hunt-graphql, hunt-api-misconfig
-  logic:      hunt-business-logic, hunt-race-condition, hunt-race-condition
-  infra:      hunt-http-smuggling, hunt-cache-poison, hunt-cache-poison
-  recon:      hunt-subdomain, hunt-subdomain
+  logic:      hunt-business-logic, hunt-race-condition
+  infra:      hunt-http-smuggling, hunt-cache-poison
+  recon:      hunt-subdomain
   cloud:      hunt-cloud-misconfig
   ai:         hunt-llm-ai
   stack:      hunt-aspnet, hunt-sharepoint, hunt-ntlm-info
