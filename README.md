@@ -134,14 +134,6 @@ graph TB
     CLI -.routes into.-> REPORT
 ```
 
-**How to read the map:**
-- **Boxes** are skills (auto-load by keyword) or skill clusters
-- **Solid arrows** = standard engagement progression (scope → recon → hunt → validate → report)
-- **Dotted arrows** = layered concerns (red-team mindset overlays the hunt phase; the CLI/slash layer routes into every phase)
-- **Numbers in parens** = how many skills are in that group
-
-If you're new and want to see what attacks the bundle teaches: focus on the **Hunt** (web) and **Platform Attack** (enterprise perimeter) groups. If you're already a hunter and want to know what's new vs your own workflow: look at **Red Team Tradecraft** and **Validation & Discipline** — those are the operator-discipline layer that most checklists skip.
-
 ---
 
 ## Engagement Flow
