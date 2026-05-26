@@ -1,4 +1,5 @@
 ---
+name: intel
 description: On-demand intelligence fetch for a target — CVEs, disclosed reports, new features. Wraps learn.py + hunt memory context. Usage: /intel target.com
 ---
 

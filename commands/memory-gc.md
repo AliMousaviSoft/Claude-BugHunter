@@ -1,4 +1,5 @@
 ---
+name: memory-gc
 description: Inspect or rotate hunt-memory JSONL files (audit.jsonl, patterns.jsonl, journal.jsonl). Caps file size and keeps N rotated backups so memory does not grow unbounded.
 ---
 

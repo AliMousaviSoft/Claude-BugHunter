@@ -1,4 +1,5 @@
 ---
+name: autopilot
 description: Run autonomous hunt loop on a target — scope check → recon → rank surface → hunt → validate → report with configurable checkpoints. Usage: /autopilot target.com [--paranoid|--normal|--yolo]
 ---
 
