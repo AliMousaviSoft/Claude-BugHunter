@@ -45,10 +45,13 @@ This project ships offensive-security tradecraft. In addition to the above:
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior — or misuse of
-the community as described above — may be reported to the maintainer at
-**sachin.lucideus@gmail.com**. All complaints will be reviewed and investigated
-promptly and fairly. The maintainer is obligated to respect the privacy and
-security of the reporter.
+the community as described above — may be reported **privately** to the maintainer
+via the repository's **Security tab → "Report a vulnerability"**
+([GitHub private reporting](https://github.com/elementalsouls/Claude-BugHunter/security/advisories/new)),
+or by contacting the maintainer through their GitHub profile
+([@elementalsouls](https://github.com/elementalsouls)). All complaints will be
+reviewed and investigated promptly and fairly. The maintainer is obligated to
+respect the privacy and security of the reporter.
 
 Maintainers who do not follow or enforce this Code of Conduct in good faith may
 face temporary or permanent repercussions as determined by the project's leadership.
