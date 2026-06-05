@@ -6,6 +6,17 @@
 
 Built by **[Sachin Sharma](https://www.linkedin.com/in/sachinsharma8080/)** — Bug Hunting & GenAI Security Research.
 
+<p align="center">
+  <sub>SPONSORED BY</sub>
+  <br/>
+  <a href="https://www.atlascloud.ai/console/coding-plan">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="assets/sponsors/atlas-cloud-dark.svg">
+      <img alt="Atlas Cloud" src="assets/sponsors/atlas-cloud-light.svg" height="36">
+    </picture>
+  </a>
+</p>
+
 ---
 
 ## What is this?
@@ -694,6 +705,23 @@ The 24 per-class `hunt-*` skills address gap-zero (*"what should I look for in w
 - [ ] Refresh enterprise-VPN CVE matrix quarterly to track 2026 advisories
 - [ ] Update architecture SVG to include the 7-skill enterprise-platform layer
 - [ ] CHANGELOG.md and CODE_OF_CONDUCT.md (matching Claude-OSINT layout)
+
+---
+
+## Sponsors
+
+<p align="center">
+  <a href="https://www.atlascloud.ai/console/coding-plan">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="assets/sponsors/atlas-cloud-dark.svg">
+      <img alt="Atlas Cloud" src="assets/sponsors/atlas-cloud-light.svg" height="48">
+    </picture>
+  </a>
+</p>
+
+**[Atlas Cloud](https://www.atlascloud.ai/console/coding-plan)** is a full-modal AI inference platform that gives developers a single AI API to access video generation, image generation, and LLM APIs. Instead of managing multiple vendor integrations, you connect once and get unified access to 300+ curated models across all modalities.
+
+Check out Atlas Cloud's new coding plan promotion for more budget-friendly API access: **<https://www.atlascloud.ai/console/coding-plan>**
 
 ---
 
