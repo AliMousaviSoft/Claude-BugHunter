@@ -14,7 +14,7 @@ All **71 skills** in the bundle, grouped by domain. Each auto-loads when your pr
 
 | Skill | What it does | Reports |
 |---|---|---|
-| `hunt-api-misconfig` | Hunt API security misconfiguration — mass assignment, JWT attacks, prototype pollution, CORS, HTTP verb tampering. | — |
+| `hunt-api-misconfig` | Hunt API security misconfiguration — mass assignment, JWT attacks, prototype pollution, HTTP verb tampering. | — |
 | `hunt-aspnet` | Hunt ASP.NET-specific surface — ViewState deserialization (signed-only vs encrypted), machineKey recovery, dual-parser MAC-bypass anti-pattern, request-validator bypass, trace.axd/elmah.axd disclosure, load-balanced ViewState cross-node… | 1 |
 | `hunt-ato` | Hunt account takeover taxonomy — 9 distinct paths to ATO, plus chains. | — |
 | `hunt-auth-bypass` | Hunting skill for auth bypass vulnerabilities. | 12 |
