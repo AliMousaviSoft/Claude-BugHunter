@@ -54,11 +54,11 @@
     <text x="1518" y="127" font-size="13" font-weight="700" letter-spacing="2.5" fill="#FF2D4F">OPERATIONAL</text>
     <line x1="1498" y1="144" x2="1842" y2="144" stroke="#2D2D3A" stroke-width="0.8"/>
     <text x="1502" y="168" font-size="11" letter-spacing="2" fill="#5A5A6A">VERSION</text>
-    <text x="1838" y="168" text-anchor="end" font-size="12" fill="#E8E8EC">v2.0  ·  MIT</text>
+    <text x="1838" y="168" text-anchor="end" font-size="12" fill="#E8E8EC">v2.1  ·  MIT</text>
     <text x="1502" y="188" font-size="11" letter-spacing="2" fill="#5A5A6A">AUTHOR</text>
     <text x="1838" y="188" text-anchor="end" font-size="12" fill="#E8E8EC">Sachin Sharma</text>
     <text x="1502" y="208" font-size="11" letter-spacing="2" fill="#5A5A6A">UPDATED</text>
-    <text x="1838" y="208" text-anchor="end" font-size="12" fill="#E8E8EC">2026-05</text>
+    <text x="1838" y="208" text-anchor="end" font-size="12" fill="#E8E8EC">2026-06</text>
   </g>
   <text x="60" y="408" font-size="11" letter-spacing="3" fill="#5A5A6A" font-weight="700">▸ WHAT MAKES IT WORK</text>
     <text x="60.0" y="443" font-size="13" fill="#FF2D4F" font-weight="700">▸</text>
