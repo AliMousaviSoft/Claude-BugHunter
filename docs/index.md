@@ -22,9 +22,9 @@ platform CVE chains, and the hygiene, and it stays in scope.
 
 ## What you get
 
-- **51+ skills** across recon, 28 web-app vuln classes, enterprise platform attack,
-  red-team tradecraft, and reporting — all **auto-loading by topic**, no invocation
-  by name.
+- **71 skills** across recon, 48 web-app vuln-class + framework skills, enterprise
+  platform attack, red-team tradecraft, and reporting — all **auto-loading by topic**,
+  no invocation by name.
 - **681 disclosed-report patterns** curated from public HackerOne reports.
 - **Enterprise attack matrices** — M365/Entra, Okta, SharePoint, vCenter, SSL-VPN,
   Android APK, supply-chain — with current 2024–2026 CVE chains.

@@ -4,15 +4,15 @@ The Claude-BugHunter bundle maps to a 6-phase workflow that supports both bug hu
 
 ## Primary view — phase-by-phase architecture
 
-51 skills mapped to 6 phases, with a 27-skill `hunt-*` sub-stack, a 7-skill enterprise-platform attack layer, integration layer, and usage decision tree. This is the main reference for "which skill do I use when?".
+71 skills mapped to 6 phases, with a 48-skill `hunt-*` sub-stack, a 7-skill enterprise-platform attack layer, integration layer, and usage decision tree. This is the main reference for "which skill do I use when?".
 
 ![architecture overview](../assets/architecture-overview.svg)
 
-The "Source" column in the per-phase tables below tags each skill: **`original`** = author's work in this repo, `vendored` = from [shuvonsec/claude-bug-bounty](https://github.com/shuvonsec/claude-bug-bounty) (MIT). 43 of 51 skills are original; 8 are vendored.
+The "Source" column in the per-phase tables below tags each skill: **`original`** = author's work in this repo, `community` = community-contributed (v3), `vendored` = from [shuvonsec/claude-bug-bounty](https://github.com/shuvonsec/claude-bug-bounty) (MIT). Of 71 skills: 43 original, 20 community (v3), 8 vendored.
 
 ## Alternate view — 3-layer capability stack
 
-The same 51 skills, regrouped by **role in an engagement** rather than by phase. Methodology + Recon (bottom) feeds the Hunt Arsenal (middle), which produces findings that flow up through Ship It (top) to a paid submission or client deliverable.
+The same 71 skills, regrouped by **role in an engagement** rather than by phase. Methodology + Recon (bottom) feeds the Hunt Arsenal (middle), which produces findings that flow up through Ship It (top) to a paid submission or client deliverable.
 
 ![capability map](../assets/capability-map.svg)
 
@@ -54,33 +54,43 @@ The 6-phase workflow expanded into a pipeline showing per-phase active skills, t
 
 | Skill | Source | Purpose |
 |---|---|---|
-| **27 `hunt-*` skills** | original | One per vuln class, curated from disclosed H1 reports — auto-trigger by topic |
+| **48 `hunt-*` skills** | original + community | Per vuln class / framework, curated from disclosed H1 reports + v3 community expansion — auto-trigger by topic |
 | `security-arsenal` | vendored | Payload library (XSS / SSRF / SQLi / SSTI / etc.) |
 | `web3-audit` | vendored | Smart-contract audit (10 bug classes, Foundry PoC) |
 | `meme-coin-audit` | vendored | Token rug-pull detection |
 
-### Per-class hunt skills (27)
+### Per-class hunt skills (48)
 
 ```
-hunt-rce          (67 reports)    hunt-business-logic  (7)
-hunt-sqli         (8)             hunt-race-condition  (3)
-hunt-xss          (174)           hunt-cache-poison    (4)
-hunt-ssrf         (9)             hunt-http-smuggling
-hunt-xxe          (4)             hunt-ssti
-hunt-idor         (26)            hunt-file-upload
-hunt-csrf         (10)            hunt-auth-bypass     (4)
-hunt-oauth        (10)            hunt-api-misconfig
-hunt-graphql      (3)             hunt-cloud-misconfig
-hunt-saml                         hunt-subdomain       (11)
-hunt-ato                          hunt-llm-ai
-hunt-mfa-bypass                   hunt-misc            (225)
-hunt-aspnet                       hunt-sharepoint
-hunt-ntlm-info
+hunt-api-misconfig                      hunt-mfa-bypass
+hunt-aspnet           (1)               hunt-misc             (225)
+hunt-ato                                hunt-nextjs           (19)
+hunt-auth-bypass      (12)              hunt-nodejs           (24)
+hunt-brute-force      (33)              hunt-nosqli           (14)
+hunt-business-logic   (12)              hunt-ntlm-info        (1)
+hunt-cache-poison     (10)              hunt-oauth            (19)
+hunt-cicd             (18)              hunt-open-redirect    (28)
+hunt-cloud-misconfig                    hunt-race-condition   (12)
+hunt-cors             (19)              hunt-rce              (67)
+hunt-csrf             (15)              hunt-saml
+hunt-deserialization  (22)              hunt-session          (18)
+hunt-dom              (17)              hunt-sharepoint       (1)
+hunt-file-upload                        hunt-source-leak      (31)
+hunt-graphql          (12)              hunt-springboot       (16)
+hunt-grpc             (6)               hunt-sqli             (12)
+hunt-host-header      (16)              hunt-ssrf             (15)
+hunt-http-smuggling                     hunt-ssti
+hunt-idor             (26)              hunt-subdomain        (15)
+hunt-k8s              (13)              hunt-tls-network      (9)
+hunt-laravel          (14)              hunt-websocket        (11)
+hunt-ldap             (8)               hunt-xss              (174)
+hunt-lfi              (31)              hunt-xxe              (10)
+hunt-llm-ai
 ```
 
 Plus alternates: `hunt-cache-poison`, `hunt-race-condition`, `hunt-subdomain`. Plus the meta-router `hunt-dispatch` (used internally by the `/hunt` slash command — not user-invoked).
 
-**Total disclosed reports curated**: 574+ (plus enterprise CVE catalogues that aren't measured in H1-report counts)
+**Total disclosed reports curated**: 681 (plus enterprise CVE catalogues that aren't measured in H1-report counts)
 
 **How auto-triggering works**: just describe what you're testing — e.g., *"I see a `?url=` parameter on this endpoint"* — and Claude loads only `hunt-ssrf`. You don't invoke them by name.
 
