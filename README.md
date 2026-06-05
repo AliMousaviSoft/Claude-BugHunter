@@ -261,7 +261,7 @@ See [`docs/cbh-cli.md`](docs/cbh-cli.md) for the CLI reference. See the slash co
 
 ```
 Claude-BugHunter/
-├── skills/                                  # 51 SKILL.md bundles
+├── skills/                                  # 71 SKILL.md bundles
 │   ├── apk-redteam-pipeline/                     # APK acquisition → jadx → secrets → Frida
 │   ├── bb-local-toolkit/                         # full bug-bounty workflow pipeline router
 │   ├── bb-methodology/                           # 5-phase non-linear hunting workflow (vendored)
@@ -270,32 +270,52 @@ Claude-BugHunter/
 │   ├── cloud-iam-deep/                           # AWS/Azure/GCP IAM priv-esc chains
 │   ├── enterprise-vpn-attack/                    # Cisco/Fortinet/Citrix/PAN/Pulse SSL VPN
 │   ├── evidence-hygiene/                         # cookie/PII/HAR redaction discipline
-│   ├── hunt-api-misconfig/                       # mass assignment, JWT, prototype pollution, CORS
+│   ├── hunt-api-misconfig/                       # mass assignment, JWT, prototype pollution
 │   ├── hunt-aspnet/                              # ASP.NET ViewState, machineKey, WebForms
 │   ├── hunt-ato/                                 # 9 account-takeover paths + chains
-│   ├── hunt-auth-bypass/                         # auth bypass — 4 disclosed reports
+│   ├── hunt-auth-bypass/                         # auth bypass + function-level authz
+│   ├── hunt-brute-force/                         # login / OTP brute force, credential stuffing
 │   ├── hunt-business-logic/                      # business logic flaws — 7 disclosed reports
 │   ├── hunt-cache-poison/                        # cache poisoning — 4 disclosed reports
+│   ├── hunt-cicd/                                # CI/CD — GH Actions injection, Jenkins RCE, runner tokens
 │   ├── hunt-cloud-misconfig/                     # S3, Lambda, RDS, IAM-in-JS, metadata SSRF
+│   ├── hunt-cors/                                # CORS — reflect-origin + creds, null origin, regex
 │   ├── hunt-csrf/                                # CSRF — 10 disclosed reports
+│   ├── hunt-deserialization/                     # Java/PHP/.NET/pickle gadget chains, Log4Shell
 │   ├── hunt-dispatch/                            # /hunt mode router (redteam vs WAPT)
+│   ├── hunt-dom/                                 # DOM clobbering, postMessage, client-side proto pollution
 │   ├── hunt-file-upload/                         # webshell, SVG XSS, DOCX XXE, traversal
 │   ├── hunt-graphql/                             # GraphQL — 3 disclosed reports
+│   ├── hunt-grpc/                                # gRPC reflection enum, missing auth, CVE-2023-44487
+│   ├── hunt-host-header/                         # host header injection — reset poisoning → ATO, SSRF
 │   ├── hunt-http-smuggling/                      # CL.TE / TE.CL request smuggling
 │   ├── hunt-idor/                                # IDOR — 26 disclosed reports
+│   ├── hunt-k8s/                                 # Kubernetes/Docker — anon API, kubelet, etcd, docker.sock
+│   ├── hunt-laravel/                             # Laravel — Ignition RCE, debug leak, APP_KEY
+│   ├── hunt-ldap/                                # LDAP / XPath injection, AD exfil
+│   ├── hunt-lfi/                                 # LFI/RFI/path traversal, PHP wrappers, log poisoning
 │   ├── hunt-llm-ai/                              # prompt injection, ASCII smuggling, ASI01-10
 │   ├── hunt-mfa-bypass/                          # 7 MFA/2FA bypass patterns
 │   ├── hunt-misc/                                # catch-all — 225 disclosed reports
+│   ├── hunt-nextjs/                              # Next.js — Server Actions, middleware bypass, image SSRF
+│   ├── hunt-nodejs/                              # Node.js — prototype-pollution → RCE, EJS/Pug SSTI
+│   ├── hunt-nosqli/                              # NoSQL injection — Mongo operators, Redis-via-SSRF
 │   ├── hunt-ntlm-info/                           # NTLM Type-2 AD topology disclosure
 │   ├── hunt-oauth/                               # OAuth — 10 disclosed reports
+│   ├── hunt-open-redirect/                       # open redirect → OAuth token-theft chain
 │   ├── hunt-race-condition/                      # race conditions — 3 disclosed reports
 │   ├── hunt-rce/                                 # RCE — 67 disclosed reports
 │   ├── hunt-saml/                                # SAML XSW1–XSW8 + SSO attacks
+│   ├── hunt-session/                             # session fixation, low-entropy, missing invalidation
 │   ├── hunt-sharepoint/                          # SharePoint on-prem (ToolShell, anon SOAP)
+│   ├── hunt-source-leak/                         # JS source maps, .git, .DS_Store, exposed Swagger
+│   ├── hunt-springboot/                          # Spring Boot — Actuator, SpEL, Spring4Shell, H2, Jolokia
 │   ├── hunt-sqli/                                # SQLi — 8 disclosed reports
 │   ├── hunt-ssrf/                                # SSRF — 9 disclosed reports
 │   ├── hunt-ssti/                                # SSTI: Jinja/Twig/FreeMarker/ERB/Spring
 │   ├── hunt-subdomain/                           # subdomain takeover — 11 disclosed reports
+│   ├── hunt-tls-network/                         # TLS/DNS — HSTS, weak ciphers, AXFR, SPF/DMARC
+│   ├── hunt-websocket/                           # CSWSH, missing auth, message tampering
 │   ├── hunt-xss/                                 # XSS — 174 disclosed reports
 │   ├── hunt-xxe/                                 # XXE — 4 disclosed reports
 │   ├── m365-entra-attack/                        # M365/Entra full chain (AADSTS, CA, ROPC)
@@ -362,39 +382,64 @@ If none of the above match: tell Claude *"I want to test for X"* (where X is the
 
 ---
 
-### Web Application Hunting (8 skills)
+### Web Application Hunting (13 skills)
 
 | Skill | What it covers | Coverage source |
 |---|---|---|
 | `hunt-aspnet` | **ASP.NET ViewState · machineKey · WebForms · WCF · request-validator bypass** | authorized-engagement |
 | `hunt-csrf` | Cross-site request forgery (chain-required impact) | 10 H1 reports |
+| `hunt-dom` | Client-side DOM — DOM clobbering, postMessage abuse, client-side prototype pollution, CSS exfil | community v3 |
 | `hunt-file-upload` | File upload bypass — 10 techniques (double-ext, magic-bytes, polyglot, ZIP slip, SVG XSS) | curated |
+| `hunt-host-header` | Host header injection — reset-poisoning → ATO, routing-based SSRF, OAuth redirect poisoning | community v3 |
 | `hunt-idor` | IDOR / broken object-level authorization · cross-tenant access | 26 H1 reports |
+| `hunt-lfi` | LFI / RFI / path traversal — `/etc/passwd`, PHP wrappers, log poisoning, phar | community v3 |
+| `hunt-nosqli` | NoSQL injection — Mongo operator injection (`$where`, `$ne`, `$regex`), Redis-via-SSRF | community v3 |
+| `hunt-open-redirect` | Open redirect — bypass table, chained to OAuth token theft → ATO | community v3 |
 | `hunt-sqli` | SQL injection (classic, blind, time-based) · NoSQL injection | 8 H1 reports |
 | `hunt-ssti` | Server-side template injection (Jinja2, Twig, Freemarker, ERB, Spring) | curated |
 | `hunt-xss` | Reflected · Stored · DOM · blind XSS · CSP bypass | 174 H1 reports |
 | `hunt-xxe` | XML external entity (in-band, OOB, XXE-via-DOCX) | 4 H1 reports |
 
-### Authentication & Identity (5 skills)
+### Authentication & Identity (7 skills)
 
 | Skill | What it covers | Coverage source |
 |---|---|---|
 | `hunt-ato` | Account takeover taxonomy — 9 distinct paths + chains | curated |
-| `hunt-auth-bypass` | Broken authentication / access control | 4 H1 reports |
+| `hunt-auth-bypass` | Broken authentication / access control · function-level authz | 4 H1 reports |
+| `hunt-brute-force` | Missing/weak rate limiting — login + OTP/2FA brute force (10^6), credential stuffing | community v3 |
 | `hunt-mfa-bypass` | MFA / 2FA bypass — 7 patterns (OTP brute, race, recovery dump, factor downgrade) | curated |
 | `hunt-oauth` | OAuth 2.0 / OIDC flaws · open-redirect chain · state-parameter abuse | 10 H1 reports |
 | `hunt-saml` | SAML / SSO attacks · XML signature wrapping · comment injection | curated |
+| `hunt-session` | Session management — fixation, low-entropy prediction, missing invalidation, JWT | community v3 |
 
-### API & Infrastructure (6 skills)
+### API & Infrastructure (15 skills)
 
 | Skill | What it covers | Coverage source |
 |---|---|---|
-| `hunt-api-misconfig` | API misconfig — mass assignment, JWT attacks, prototype pollution, CORS | curated |
-| `hunt-cloud-misconfig` | Cloud / K8s misconfig — public S3, Lambda URLs, kubelet :10250, Docker :2375 | curated |
+| `hunt-api-misconfig` | API misconfig — mass assignment, JWT attacks, prototype pollution | curated |
+| `hunt-cicd` | CI/CD pipelines — GH Actions `pull_request_target` injection, Jenkins RCE, runner tokens, Terraform state | community v3 |
+| `hunt-cloud-misconfig` | Cloud misconfig — public S3, Lambda URLs, GCS/Blob, IMDS-via-SSRF | curated |
+| `hunt-cors` | CORS misconfig — reflect-any-origin + credentials, null origin, subdomain-regex bypass | community v3 |
+| `hunt-deserialization` | Insecure deserialization — Java (ysoserial), PHP (phpggc), .NET, Python pickle, Log4Shell | community v3 |
+| `hunt-grpc` | gRPC — server-reflection enumeration, missing auth, CVE-2023-44487 | community v3 |
 | `hunt-graphql` | GraphQL — introspection, alias batching, depth abuse, node() IDOR | 3 H1 reports |
+| `hunt-k8s` | Kubernetes / Docker — anon API, kubelet :10250 exec, etcd :2379, docker.sock, SA-token abuse | community v3 |
+| `hunt-ldap` | LDAP / XPath injection — auth bypass, AD data exfiltration | community v3 |
 | `hunt-rce` | RCE — crown-jewel chains, deserialization, code injection | 67 H1 reports |
+| `hunt-source-leak` | Source / artifact leakage — JS source maps, `.git`, `.DS_Store`, exposed Swagger | community v3 |
 | `hunt-ssrf` | SSRF + 11 IP-bypass techniques · cloud metadata exfil | 9 H1 reports |
 | `hunt-subdomain` | Subdomain takeover — 27+ provider fingerprints + chain to ATO | 11 H1 reports |
+| `hunt-tls-network` | TLS / DNS misconfig — missing HSTS, weak ciphers, AXFR, SPF/DMARC/CAA | community v3 |
+| `hunt-websocket` | WebSocket — CSWSH, missing auth, message tampering, socket.io | community v3 |
+
+### Framework-Specific (4 skills)
+
+| Skill | What it covers | Coverage source |
+|---|---|---|
+| `hunt-laravel` | Laravel — debug-mode leak, Ignition RCE, Telescope/Horizon, `APP_KEY` abuse | community v3 |
+| `hunt-nextjs` | Next.js — Server Actions execution, middleware auth bypass, image SSRF, RSC, CVE-2024-34351 | community v3 |
+| `hunt-nodejs` | Node.js — prototype-pollution → RCE, `child_process`/`eval` injection, EJS/Pug/Handlebars SSTI | community v3 |
+| `hunt-springboot` | Spring Boot — Actuator (heapdump/env), SpEL, Spring4Shell, H2 console, Jolokia | community v3 |
 
 ### Advanced & Concurrency (6 skills)
 
@@ -562,7 +607,7 @@ Installing Claude-BugHunter bundle from /Users/you/Research/Claude-BugHunter
 Skills →  /Users/you/.claude/skills
   ✓ Installed skill: apk-redteam-pipeline
   ✓ Installed skill: bb-methodology
-  ... (one line per skill — 51 total) ...
+  ... (one line per skill — 71 total) ...
 
 Commands →  /Users/you/.claude/commands
   ✓ Installed command: /autopilot
@@ -590,9 +635,9 @@ Restart your terminal (or `source ~/.zshrc`) so the `hunt` shell command is avai
 hunt
 # Expected: prints "Usage: hunt <target-name>" + default base path
 
-# Count the installed skills (should be 51)
+# Count the installed skills (should be 71)
 ls ~/.claude/skills/ | wc -l
-# Expected: 51
+# Expected: 71
 
 # Spot-check a few skills loaded
 ls ~/.claude/skills/ | grep -E '^(hunt-xss|hunt-rce|m365-entra-attack|triage-validation)$'
