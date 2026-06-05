@@ -36,6 +36,33 @@ All triggered automatically by topic — describe what you're testing in plain E
 
 ---
 
+## Quickstart
+
+```bash
+git clone https://github.com/elementalsouls/Claude-BugHunter.git
+cd Claude-BugHunter
+bash scripts/install.sh        # copies skills + commands into ~/.claude/
+```
+
+That's it. Open Claude Code and describe what you're testing in plain English — the right skill loads automatically, no invocation by name:
+
+```text
+> Testing acme.com — an in-scope HackerOne target. Run recon and rank the surface.
+
+  ⟳ loading skills: web2-recon, offensive-osint, bb-methodology …
+  → subdomain enum (subfinder + crt.sh) … 47 hosts
+  → live hosts (httpx) … 12 · tech fingerprint … 6 distinct stacks
+  → ranked surface: api.acme.com (GraphQL, introspection ON)  ← start here
+                    auth.acme.com (OAuth, SSO)               ← hunt-oauth
+  Next: want me to probe the GraphQL introspection + OAuth redirect_uri?
+```
+
+→ Full [Installation guide](INSTALL.md) · [Usage guide](USAGE.md) · [searchable skill catalog](docs/skills.md).
+
+> The block above is an illustrative transcript. To record a real demo of your own session: `asciinema rec demo.cast` → upload to [asciinema.org](https://asciinema.org) and drop the badge here.
+
+---
+
 ## Scope — what this bundle is for, and what it isn't
 
 This bundle covers the **external attack surface** — anything reachable from the internet without first compromising an internal endpoint.
