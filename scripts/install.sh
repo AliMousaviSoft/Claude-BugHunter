@@ -18,6 +18,10 @@ REPO_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 SKILLS_DEST="$HOME/.claude/skills"
 COMMANDS_DEST="$HOME/.claude/commands"
 SCRIPTS_DEST="$HOME/.claude/scripts"
+# Backups go OUTSIDE the skills/commands dirs — anything left inside them is
+# loaded by Claude Code as a (duplicate) skill/command. One timestamped folder
+# per run, created lazily only if something is actually backed up.
+BACKUP_DEST="$HOME/.claude/install-backups/$(date +%Y%m%d-%H%M%S)"
 
 mkdir -p "$SKILLS_DEST" "$COMMANDS_DEST" "$SCRIPTS_DEST"
 
@@ -29,9 +33,9 @@ echo "Skills →  $SKILLS_DEST"
 for skill_dir in "$REPO_DIR/skills"/*/; do
   skill_name="$(basename "$skill_dir")"
   if [ -d "$SKILLS_DEST/$skill_name" ] && [ ! -L "$SKILLS_DEST/$skill_name" ]; then
-    backup_name="${skill_name}.backup-$(date +%Y%m%d-%H%M%S)"
-    mv "$SKILLS_DEST/$skill_name" "$SKILLS_DEST/$backup_name"
-    echo "  ↺ Backed up existing $skill_name → $backup_name"
+    mkdir -p "$BACKUP_DEST/skills"
+    mv "$SKILLS_DEST/$skill_name" "$BACKUP_DEST/skills/$skill_name"
+    echo "  ↺ Backed up existing $skill_name → $BACKUP_DEST/skills/"
   fi
   cp -r "$skill_dir" "$SKILLS_DEST/$skill_name"
   echo "  ✓ Installed skill: $skill_name"
@@ -46,9 +50,9 @@ if [ -d "$REPO_DIR/commands" ]; then
     [ -e "$cmd_file" ] || continue
     cmd_name="$(basename "$cmd_file")"
     if [ -f "$COMMANDS_DEST/$cmd_name" ] && [ ! -L "$COMMANDS_DEST/$cmd_name" ]; then
-      backup_name="${cmd_name%.md}.backup-$(date +%Y%m%d-%H%M%S).md"
-      mv "$COMMANDS_DEST/$cmd_name" "$COMMANDS_DEST/$backup_name"
-      echo "  ↺ Backed up existing $cmd_name → $backup_name"
+      mkdir -p "$BACKUP_DEST/commands"
+      mv "$COMMANDS_DEST/$cmd_name" "$BACKUP_DEST/commands/$cmd_name"
+      echo "  ↺ Backed up existing $cmd_name → $BACKUP_DEST/commands/"
     fi
     cp "$cmd_file" "$COMMANDS_DEST/$cmd_name"
     echo "  ✓ Installed command: /${cmd_name%.md}"
