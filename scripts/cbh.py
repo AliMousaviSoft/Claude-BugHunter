@@ -235,7 +235,9 @@ def cmd_recon(args: argparse.Namespace) -> int:
     out_dir = REPO_ROOT / "recon" / target
     resolved = out_dir.resolve()
     safe = (REPO_ROOT / "recon").resolve()
-    if not str(resolved).startswith(str(safe)):
+    # Real containment check — `startswith` is bypassable by a sibling that
+    # shares the prefix (e.g. recon-evil vs recon), so test ancestry properly.
+    if resolved != safe and safe not in resolved.parents:
         print(f"[error] invalid target: {target}", file=sys.stderr); return 1
     out_dir = resolved
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -675,9 +677,10 @@ def cmd_report(args: argparse.Namespace) -> int:
     md = parse_finding_metadata(finding_path.read_text(encoding="utf-8"))
     draft = render_report(md, args.platform)
     if args.out:
-        out_path = Path(args.out)
-        out_path = out_path.resolve()
-        if not str(out_path).startswith(str(Path.cwd().resolve())):
+        out_path = Path(args.out).resolve()
+        cwd = Path.cwd().resolve()
+        # Ancestry check, not str.startswith (which a `<cwd>-evil` sibling bypasses).
+        if cwd not in out_path.parents:
             print("[error] --out path must be within cwd", file=sys.stderr); return 1
         out_path.write_text(draft)
         section(f"report — {args.platform}")

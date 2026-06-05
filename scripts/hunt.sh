@@ -52,33 +52,33 @@ hunt() {
 This folder is the working directory for a single bug-bounty engagement.
 Files in this folder:
 
-- \`scope.md\` — parsed scope, OOS list, focus areas, bounty bands
-- \`findings/\` — one markdown file per finding draft (naming: \`finding-<NN>-<short-name>.md\`)
-- \`submissions.txt\` — submission IDs tracker (used for chain cross-references)
-- \`evidence/\` — screenshots, HARs, raw transcripts (gitignored — never share)
-- \`notes.md\` — running notes, leads, dead ends, hypotheses
+- `scope.md` — parsed scope, OOS list, focus areas, bounty bands
+- `findings/` — one markdown file per finding draft (naming: `finding-<NN>-<short-name>.md`)
+- `submissions.txt` — submission IDs tracker (used for chain cross-references)
+- `evidence/` — screenshots, HARs, raw transcripts (gitignored — never share)
+- `notes.md` — running notes, leads, dead ends, hypotheses
 
 ## Workflow
 
-1. **Plan** — fill in \`scope.md\` from the program page. Use the \`bb-methodology\`
-   and \`osint-methodology\` skills. Note Focus Areas and Bounty bands.
+1. **Plan** — fill in `scope.md` from the program page. Use the `bb-methodology`
+   and `osint-methodology` skills. Note Focus Areas and Bounty bands.
 
-2. **Recon** — \`offensive-osint\`, \`web2-recon\`, and \`bb-local-toolkit\` for
+2. **Recon** — `offensive-osint`, `web2-recon`, and `bb-local-toolkit` for
    discovery. Pipe Burp through every browser session for proxy history.
 
-3. **Hunt** — \`web2-vuln-classes\` (or per-class \`hunt-*\` skills if installed)
-   plus \`security-arsenal\` for payloads.
+3. **Hunt** — `web2-vuln-classes` (or per-class `hunt-*` skills if installed)
+   plus `security-arsenal` for payloads.
 
-4. **Validate** — run \`/triage\` on every lead BEFORE drafting a report.
-   Apply the 7-Question Gate from \`triage-validation\`.
+4. **Validate** — run `/triage` on every lead BEFORE drafting a report.
+   Apply the 7-Question Gate from `triage-validation`.
 
-5. **Capture evidence** — \`evidence-hygiene\` BEFORE any screenshot.
+5. **Capture evidence** — `evidence-hygiene` BEFORE any screenshot.
    Cookies / PII / HARs all redacted per protocol.
 
-6. **Report** — \`report-writing\` for the body template. \`bugcrowd-reporting\`
+6. **Report** — `report-writing` for the body template. `bugcrowd-reporting`
    if filing on Bugcrowd (VRT search, severity request, OOS rebuttals).
 
-7. **Track** — append every submitted finding's UUID to \`submissions.txt\`
+7. **Track** — append every submitted finding's UUID to `submissions.txt`
    so chained reports can cross-reference each other.
 
 ## Engagement-specific rules
@@ -86,16 +86,16 @@ Files in this folder:
 - All testing on accounts I own.
 - Stop immediately on encountering other-user PII; document and report.
 - No public disclosure until program explicitly approves.
-- Test-account email: \`<your-bugcrowdninja-alias>@bugcrowdninja.com\`
+- Test-account email: `<your-bugcrowdninja-alias>@bugcrowdninja.com`
 - Burp proxy capturing through all browser sessions for this target.
 
 ## Useful commands during the engagement
 
-- \`/scope <asset>\` — verify a specific asset is in scope
-- \`/triage\` — quick 7-Question Gate on a finding
-- \`/validate\` — full 4-gate finding validator
-- \`/report\` — draft a submission-ready report
-- \`/remember\` — log a finding to hunt memory
+- `/scope <asset>` — verify a specific asset is in scope
+- `/triage` — quick 7-Question Gate on a finding
+- `/validate` — full 4-gate finding validator
+- `/report` — draft a submission-ready report
+- `/remember` — log a finding to hunt memory
 CLAUDEMD
 
   # ============== scope.md ==============
@@ -103,7 +103,7 @@ CLAUDEMD
   cat >> "$dir/scope.md" <<'SCOPEMD'
 
 > Parse this from the program page (Bugcrowd / HackerOne / etc.) before
-> doing any active testing. \`/scope <asset>\` can verify individual assets.
+> doing any active testing. `/scope <asset>` can verify individual assets.
 
 ## In scope
 
@@ -134,7 +134,7 @@ CLAUDEMD
 
 ## Account / testing setup
 
-- **Test account email:** (\`alias@bugcrowdninja.com\` if Bugcrowd)
+- **Test account email:** (`alias@bugcrowdninja.com` if Bugcrowd)
 - **Test account uid:**
 - **Production vs QA:** (which environment is in scope, and any special access notes)
 - **Mobile builds:** (Android APK / iOS IPA download URLs if provided)
@@ -143,7 +143,7 @@ CLAUDEMD
 ## OOS clauses worth pre-empting in submissions
 
 > Note any OOS clauses that might be miscategorized against your findings.
-> Use this to draft \`In-scope justification\` paragraphs proactively.
+> Use this to draft `In-scope justification` paragraphs proactively.
 
 - (e.g., "Rate limiting on non-authentication endpoints" — applies to
   non-auth endpoints only; verify_password / OTP / token-validate are auth)
@@ -158,7 +158,7 @@ SCOPEMD
 # Format (tab-separated):
 # <UUID>  <severity>  <VRT-or-class>  <one-line title>
 #
-# Use \`/remember\` after each submission to append the new ID and link
+# Use `/remember` after each submission to append the new ID and link
 # back to chained primitives.
 
 SUBSEOF
@@ -171,18 +171,18 @@ One markdown file per lead.
 
 ## Naming
 
-\`finding-<NN>-<short-name>.md\`
+`finding-<NN>-<short-name>.md`
 
 Examples:
-- \`finding-01-graphql-apq-bypass.md\`
-- \`finding-02-verify-password-no-rate-limit.md\`
-- \`finding-03-update-password-no-stepup.md\`
+- `finding-01-graphql-apq-bypass.md`
+- `finding-02-verify-password-no-rate-limit.md`
+- `finding-03-update-password-no-stepup.md`
 
 ## Per-finding template
 
 Each finding file should have:
 1. Status (lead / validated / drafted / submitted / triaged / paid / closed)
-2. The finding summary (use \`triage-validation\`'s 7-Question Gate format)
+2. The finding summary (use `triage-validation`'s 7-Question Gate format)
 3. Reproduction steps with exact requests/responses
 4. Evidence inventory (path to redacted screenshots in ../evidence/)
 5. Severity reasoning + VRT mapping (if Bugcrowd)
