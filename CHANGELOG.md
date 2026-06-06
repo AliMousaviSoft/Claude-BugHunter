@@ -6,7 +6,12 @@ versioning is loosely [SemVer](https://semver.org/) at the bundle level.
 
 ## [Unreleased]
 
-_Nothing yet._
+### Added
+- **Claude Code plugin marketplace** — `.claude-plugin/marketplace.json` + `.claude-plugin/plugin.json`
+  make the bundle installable natively: `/plugin marketplace add elementalsouls/Claude-BugHunter`
+  then `/plugin install claude-bughunter@elementalsouls`. Skills load namespaced under
+  `claude-bughunter:` and update on version bump. The `scripts/install.sh` copy method stays as a
+  fallback. This is the convention used by Anthropic's own marketplaces and Trail of Bits.
 
 ## [2.1] - 2026-06-05
 

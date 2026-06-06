@@ -38,6 +38,17 @@ All triggered automatically by topic — describe what you're testing in plain E
 
 ## Quickstart
 
+**Option A — install as a Claude Code plugin (recommended).** From inside Claude Code:
+
+```text
+/plugin marketplace add elementalsouls/Claude-BugHunter
+/plugin install claude-bughunter@elementalsouls
+```
+
+All 71 skills + 15 commands load namespaced under `claude-bughunter:` and update when you bump the plugin version — no files copied into `~/.claude/`.
+
+**Option B — copy install (no plugin system / pin to a clone):**
+
 ```bash
 git clone https://github.com/elementalsouls/Claude-BugHunter.git
 cd Claude-BugHunter
