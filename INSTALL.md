@@ -42,11 +42,24 @@ chmod +x scripts/install.sh
 ```
 
 This copies:
-- All 51 skills → `~/.claude/skills/`
+- All 71 skills → `~/.claude/skills/`
 - All 15 slash commands → `~/.claude/commands/`
 - The `hunt` shell command → `~/.claude/scripts/hunt.sh` (sourced from your `.zshrc` or `.bashrc` automatically)
 
-Existing skills with the same name are backed up (e.g. `bugcrowd-reporting.backup-20260505-153000`) so re-runs are non-destructive.
+Existing skills with the same name are backed up to `~/.claude/install-backups/<timestamp>/` — **outside** the skills/commands directories, so backups never load as duplicate skills. Re-runs are non-destructive.
+
+### Run on other harnesses (OpenCode · Codex · Hermes)
+
+The skills are plain Agent Skills, so they also run outside Claude Code:
+
+```bash
+./scripts/install.sh --all          # also installs to ~/.agents/skills (Codex + OpenCode) and ~/.hermes/skills (Hermes)
+./scripts/install.sh --agents       # just Codex + OpenCode
+./scripts/install.sh --hermes       # just Hermes
+./scripts/install.sh --agents --burp-mcp   # also wire your Burp MCP into those harnesses
+```
+
+Slash commands, the plugin marketplace, and the `/hunt` engine are Claude-Code-only; other harnesses get the skill knowledge + Burp MCP. Full details and per-harness MCP snippets: [`docs/multi-harness.md`](docs/multi-harness.md).
 
 ## Step 3 — (Optional) Set up Burp MCP
 
