@@ -39,6 +39,37 @@ python3 eval/run_eval.py --model claude-opus-4-8    # change model (constant acr
 ```
 Results stream to `eval/results/run.jsonl`; a summary table prints at the end.
 
+## PortSwigger tier (v1) — the real skill-delta
+Juice Shop is memorized; PortSwigger Academy lab solutions are far less so, which is where
+the skills-on/off delta actually shows. Same engine + metrics, different target + oracle.
+
+- **Oracle:** `oracle_portswigger.py` — GETs the live lab instance root and reads its
+  self-rendered status widget (`widgetcontainer-lab-status is-solved` / `is-notsolved`).
+- **Launch is manual** (the Academy launch flow is JS + CSRF gated; every existing tool does
+  this too): you launch in a logged-in browser and paste the instance URL. The harness does
+  everything after.
+
+```bash
+# 1. self-test the oracle parser (offline)
+python3 eval/oracle_portswigger.py
+
+# 2. for each lab in ps_labs.json: open its `slug` on portswigger.net (logged in),
+#    click "Access the lab", and paste the https://<id>.web-security-academy.net URL into
+#    instances.skills (and a SECOND fresh launch into instances.baseline for the ablation —
+#    a solved instance can't reset in place; relaunching gives a new URL).
+
+# 3. run
+python3 eval/run_eval_ps.py                      # both conditions, all labs with URLs filled
+python3 eval/run_eval_ps.py --conditions skills  # skills-on only (one instance per lab)
+```
+Results stream to `eval/results/ps_run.jsonl`; the summary prints overall + per-class solve
+rates for each condition. `ps_labs.json` ships an HTTP-solvable lab set (SQLi / IDOR /
+access-control / SSRF / auth — browser-victim XSS/CSRF labs are excluded: they need the
+exploit-server + simulated-victim loop, not pure HTTP).
+
+> v1.1 idea: a headless-browser (Playwright) launcher using your logged-in profile to
+> auto-launch + capture instance URLs, removing the manual paste.
+
 ## ⚠️ Read this before trusting a number
 - **Juice Shop is famous** — its solutions are in model training data. So v0 is a strong
   **pipeline proof + autonomy/cost** number, but a **weak skill-delta** measurement: a
@@ -60,6 +91,8 @@ Results stream to `eval/results/run.jsonl`; a summary table prints at the end.
 - `results/` — `run.jsonl` (per-run records) + `run.log`
 
 ## Roadmap
-- v0 (this) — Juice Shop, a few classes, ablation, solve/cost numbers. *Pipeline proof.*
-- v1 — PortSwigger lab oracle (real skill-delta), 5–6 classes, per-class breakdown, cost dashboard.
+- v0 — Juice Shop, ablation, solve/cost numbers. *Pipeline proof.* ✅
+- v1 — PortSwigger lab oracle (real skill-delta), HTTP-solvable set across SQLi/IDOR/AC/SSRF/auth,
+  per-class breakdown. ✅ *Needs your Academy login to launch instances.*
+- v1.1 — headless-browser auto-launcher (Playwright) to remove the manual instance-URL paste.
 - v2 — multi-class autonomous (agent picks the class), chaining, harden `/autopilot` into this loop.
