@@ -55,6 +55,8 @@ cd Claude-BugHunter
 bash scripts/install.sh        # copies skills + commands into ~/.claude/
 ```
 
+**Also runs on OpenCode · Codex · Hermes Agent.** The skills are plain Agent Skills, so the *knowledge* ports beyond Claude Code: `bash scripts/install.sh --all` installs them to every harness's path (`--burp-mcp` also wires Burp). Slash commands + the `/hunt` engine stay Claude-Code-only. See the [multi-harness guide](docs/multi-harness.md).
+
 That's it. Open Claude Code and describe what you're testing in plain English — the right skill loads automatically, no invocation by name:
 
 ```text

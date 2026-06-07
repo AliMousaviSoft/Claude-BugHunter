@@ -12,6 +12,25 @@ versioning is loosely [SemVer](https://semver.org/) at the bundle level.
   then `/plugin install claude-bughunter@elementalsouls`. Skills load namespaced under
   `claude-bughunter:` and update on version bump. The `scripts/install.sh` copy method stays as a
   fallback. This is the convention used by Anthropic's own marketplaces and Trail of Bits.
+- **Multi-harness install** — the 71 Agent Skills now run on **OpenCode, OpenAI Codex CLI, and
+  Hermes Agent**, not just Claude Code. `scripts/install.sh` gains `--agents` (→ `~/.agents/skills/`,
+  read by Codex + OpenCode), `--hermes` (→ `~/.hermes/skills/`), `--all`, and `--burp-mcp` (translates
+  the existing Burp MCP into each harness's config via `scripts/setup_harness_mcp.py`; OpenCode JSON +
+  Codex TOML + Hermes YAML written). Verified end-to-end on OpenCode, Codex, and Hermes
+  (skills load + live Burp MCP connects). Slash commands, the plugin marketplace, and `hunt-dispatch`
+  remain Claude-Code-only. New guide: `docs/multi-harness.md`.
+
+### Fixed
+- `hunt-ntlm-info`: quoted the `description` — it contained an unquoted `` `WWW-Authenticate: NTLM` ``
+  (`: ` makes strict YAML parsers read a nested mapping). Claude/OpenCode/Hermes tolerated it; **Codex
+  rejected it**. Surfaced by real multi-harness testing.
+
+### Changed
+- `install.sh --agents` **auto-truncates** descriptions > 1024 chars to ≤1024 in the `~/.agents/skills`
+  (Codex) copy only — Codex hard-rejects longer ones; `~/.claude`/`~/.hermes` keep full descriptions.
+  Affects the 3 aggregator router skills.
+- `scripts/lint_skills.py` hardened: adds a YAML-safety check (catches unquoted-value-with-`: `, the
+  `hunt-ntlm-info` bug class) and notes Codex's 1024 limit in the over-length message.
 
 ## [2.1] - 2026-06-05
 

@@ -116,6 +116,28 @@ def split_frontmatter(raw):
     return fm, body, None
 
 
+def yaml_safety_errors(name, raw):
+    """Catch frontmatter a STRICT YAML parser (e.g. Codex) rejects but our lenient
+    regex parser accepts — chiefly an unquoted value containing ': ' (colon-space),
+    which YAML reads as a nested mapping. This is the hunt-ntlm-info bug class."""
+    errs = []
+    if not raw.startswith("---"):
+        return errs
+    lines = raw.split("\n")
+    for i in range(1, len(lines)):
+        if lines[i].strip() == "---":
+            break
+        m = re.match(r"^([A-Za-z0-9_-]+):\s*(.*)$", lines[i])
+        if not m or not m.group(2):
+            continue
+        val = m.group(2)
+        quoted = len(val) >= 2 and val[0] == val[-1] and val[0] in "\"'"
+        if not quoted and ": " in val:
+            errs.append(f"{name}: frontmatter `{m.group(1)}` is unquoted and contains ': ' — "
+                        f"wrap the value in double quotes (strict YAML parsers like Codex reject it)")
+    return errs
+
+
 def lint_skill(skill_dir, denylist):
     errors, warnings = [], []
     name = os.path.basename(skill_dir.rstrip("/"))
@@ -128,6 +150,7 @@ def lint_skill(skill_dir, denylist):
     fm, body, fm_err = split_frontmatter(raw)
     if fm_err:
         errors.append(f"{name}: {fm_err}")
+    errors += yaml_safety_errors(name, raw)
     # name
     fn = fm.get("name", "")
     if not fn:
@@ -142,7 +165,8 @@ def lint_skill(skill_dir, denylist):
     if not desc:
         errors.append(f"{name}: frontmatter missing `description`")
     elif len(desc) > MAX_DESC:
-        msg = f"{name}: description {len(desc)} chars > {MAX_DESC} limit"
+        msg = (f"{name}: description {len(desc)} chars > {MAX_DESC} limit "
+               f"(Codex rejects >1024; install.sh --agents auto-truncates the Codex copy)")
         (warnings if name in DESC_LIMIT_GRANDFATHERED else errors).append(msg)
     elif len(desc) < 40:
         warnings.append(f"{name}: description very short ({len(desc)} chars) — weak trigger surface")
