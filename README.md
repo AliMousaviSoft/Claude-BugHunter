@@ -1,4 +1,4 @@
-![claude-bughunter banner](assets/banner.svg)
+![claude-bughunter banner](assets/banner-v2.svg)
 
 # claude-bughunter
 
