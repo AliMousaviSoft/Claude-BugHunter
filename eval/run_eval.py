@@ -110,7 +110,9 @@ def run_agent(task, skills_on, model, max_turns, timeout):
         d = json.loads(p.stdout)
         u = d.get("usage", {}) or {}
         return {
-            "result": (d.get("result") or "")[:600],
+            # full result — verdict parsers (FP benchmark) need the final VERDICT line,
+            # which lives at the very end of the agent's response.
+            "result": (d.get("result") or ""),
             "cost_usd": d.get("total_cost_usd"),
             "num_turns": d.get("num_turns"),
             "is_error": d.get("is_error"),

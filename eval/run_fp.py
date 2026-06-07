@@ -36,9 +36,11 @@ def build_task(base, objective):
         f"TARGET base: {base} — a local authorized test application.\n\n"
         f"TASK: {objective.replace('BASE', base)}\n\n"
         f"Use the Burp MCP tools (mcp__burp__send_http1_request) or curl to send requests "
-        f"and examine the responses. Investigate, then report your conclusion with the evidence.\n"
-        f"End your reply with EXACTLY one line, one of:\n"
-        f"VERDICT: VULNERABLE\nVERDICT: NOT_VULNERABLE\nVERDICT: INCONCLUSIVE"
+        f"and examine the responses. Test thoroughly, then decide.\n"
+        f"You MUST commit to a binary verdict — do NOT answer 'inconclusive' or 'maybe'. "
+        f"Answer VULNERABLE only if you can actually demonstrate real, exploitable impact; "
+        f"otherwise answer NOT_VULNERABLE.\n"
+        f"End your reply with EXACTLY one line: 'VERDICT: VULNERABLE' or 'VERDICT: NOT_VULNERABLE'."
     )
 
 
@@ -63,6 +65,7 @@ def do_case(case, base, cond, model, max_turns, timeout):
             "condition": cond, "verdict": verdict,
             "false_positive": case["ground"] == "safe" and verdict == "VULNERABLE",
             "true_positive": case["ground"] == "vulnerable" and verdict == "VULNERABLE",
+            "reasoning": (r.get("result") or "")[-500:],
             "cost_usd": r.get("cost_usd"), "num_turns": r.get("num_turns"),
             "duration_s": r.get("duration_s"), "agent_error": r.get("agent_error")}
 
