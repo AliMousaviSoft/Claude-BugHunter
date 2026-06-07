@@ -26,13 +26,16 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 EVAL = os.path.join(REPO, "eval")
 MCP_CONFIG = os.path.join(EVAL, "burp-mcp.json")
 
-# Burp MCP request tools + curl are the agent's "hands". Read-only Collaborator for OOB.
+# The agent's "hands": Burp MCP request tools + a scripting toolset so it can run
+# realistic scripted attacks (blind-SQLi char-by-char extraction loops, JWT forging,
+# encoding). Eval is sandboxed to authorized targets; bypassPermissions is set.
 ALLOWED_TOOLS = " ".join([
     "mcp__burp__send_http1_request",
     "mcp__burp__send_http2_request",
     "mcp__burp__get_collaborator_interactions",
     "mcp__burp__generate_collaborator_payload",
-    "Bash(curl:*)",
+    "Bash(curl:*)", "Bash(python3:*)", "Bash(jq:*)", "Bash(openssl:*)",
+    "Bash(base64:*)", "Bash(echo:*)", "Bash(printf:*)",
 ])
 
 
