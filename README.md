@@ -59,10 +59,11 @@ That's it. Open Claude Code and describe what you're testing in plain English �
 > Testing acme.com — an in-scope HackerOne target. Run recon and rank the surface.
 
   ⟳ loading skills: web2-recon, offensive-osint, bb-methodology …
-  → subdomain enum (subfinder + crt.sh) … 47 hosts
-  → live hosts (httpx) … 12 · tech fingerprint … 6 distinct stacks
-  → ranked surface: api.acme.com (GraphQL, introspection ON)  ← start here
-                    auth.acme.com (OAuth, SSO)               ← hunt-oauth
+    → subdomain enum (subfinder + crt.sh) … 47 hosts
+    → live hosts (httpx) … 12 · tech fingerprint … 6 distinct stacks
+    → ranked surface: api.acme.com (GraphQL, introspection ON)  ← start here
+                      auth.acme.com (OAuth, SSO)               ← hunt-oauth
+
   Next: want me to probe the GraphQL introspection + OAuth redirect_uri?
 ```
 
