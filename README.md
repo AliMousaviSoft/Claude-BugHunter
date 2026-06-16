@@ -89,6 +89,19 @@ bash scripts/install.sh --all --burp-mcp
 
 ---
 
+## Star History
+
+<a href="https://www.star-history.com/?repos=elementalsouls%2FClaude-BugHunter&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=elementalsouls/Claude-BugHunter&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=elementalsouls/Claude-BugHunter&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=elementalsouls/Claude-BugHunter&type=date&legend=top-left" />
+ </picture>
+</a>
+
+---
+
+
 ## Scope — what this bundle is for, and what it isn't
 
 This bundle covers the **external attack surface** — anything reachable from the internet without first compromising an internal endpoint.
