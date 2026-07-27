@@ -78,8 +78,8 @@ Built from authorized red-team engagements (enterprise targets including on-prem
 
 ### Tooling and docs
 
-- **`hunt <target>` shell command** — Engagement-folder scaffolding: creates `~/Targets/<name>/` with `CLAUDE.md`, `scope.md`, `findings/`, `evidence/`, `submissions.txt`, `notes.md`, and a sensible `.gitignore` for engagement artifacts.
-- **Bundle packaging** — Single-step installer (`scripts/install.sh`) that copies all 82 skills, 15 commands, and the hunt scaffold into `~/.claude/`.
+- **`hunt <target>` command** — Engagement-folder scaffolding: creates `~/Targets/<name>/` with `CLAUDE.md`, `scope.md`, `findings/`, `evidence/`, `submissions.txt`, `notes.md`, and a sensible `.gitignore` for engagement artifacts. Ships as `scripts/hunt.sh` (bash) and `scripts/hunt.ps1` (PowerShell).
+- **Bundle packaging** — Single-step installer that copies all 82 skills, 15 commands, and the hunt scaffold into `~/.claude/`: `scripts/install.sh` (macOS/Linux) and `scripts/install.ps1` (Windows/PowerShell).
 - **`assets/banner-v2.svg`** — Hand-coded SVG banner.
 - **Documentation** — `README.md`, `INSTALL.md`, `USAGE.md`, `CONTRIBUTING.md`, `docs/architecture.md`, this credits file.
 

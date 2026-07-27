@@ -50,8 +50,17 @@ All 82 skills + 15 commands load namespaced under `claude-bughunter:` and update
 ```bash
 git clone https://github.com/elementalsouls/Claude-BugHunter.git
 cd Claude-BugHunter
-bash scripts/install.sh        # copies skills + commands into ~/.claude/
 ```
+
+```bash
+# macOS / Linux
+bash scripts/install.sh
+
+# Windows (PowerShell)
+pwsh ./scripts/install.ps1
+```
+
+Both copy the skills + commands into `~/.claude/` (macOS/Linux) or `%USERPROFILE%\.claude\` (Windows) and wire the `hunt` engagement scaffolder.
 
 **What each install path gives you:**
 
@@ -92,10 +101,14 @@ That's it. Open Claude Code and describe what you're testing in plain English �
 The skills are plain [Agent Skills](https://docs.claude.com/en/docs/claude-code/skills) — the same `SKILL.md` format that **Claude Code · OpenCode · OpenAI Codex CLI · Hermes Agent** all load. One command installs them everywhere:
 
 ```bash
+# macOS / Linux
 bash scripts/install.sh --all --burp-mcp
+
+# Windows (PowerShell)
+pwsh ./scripts/install.ps1 -All -BurpMcp
 ```
 
-`--all` copies the skills to every harness's path (`~/.claude/skills`, `~/.agents/skills`, `~/.hermes/skills`); `--burp-mcp` wires the Burp MCP server into each. The full *knowledge* layer ports to all four — the slash commands and `/hunt` engine stay Claude-Code-only by design.
+`--all` (`-All`) copies the skills to every harness's path (`~/.claude/skills`, `~/.agents/skills`, `~/.hermes/skills`); `--burp-mcp` (`-BurpMcp`) wires the Burp MCP server into each. The full *knowledge* layer ports to all four — the slash commands and `/hunt` engine stay Claude-Code-only by design.
 
 → [Multi-harness guide](docs/multi-harness.md)
 
@@ -261,7 +274,7 @@ Operational tradecraft accumulated across bug-bounty engagements and authorized 
 
 **Author:** [ElementalSoul](https://github.com/elementalsouls) · GenAI Security Research
 
-**Sister project:** [Claude-OSINT](https://github.com/elementalsouls/Claude-OSINT) — paired skills for the recon phase that this bundle picks up after. Its two recon skills (`offensive-osint`, `osint-methodology`) are **canonically maintained here** and re-exported there, so the two are byte-identical. **Installing both is safe:** each bundle's `install.sh` records a manifest, the script skips re-copying an identical skill, and `--uninstall` keeps any skill the other bundle still owns — uninstalling one never breaks the other.
+**Sister project:** [Claude-OSINT](https://github.com/elementalsouls/Claude-OSINT) — paired skills for the recon phase that this bundle picks up after. Its two recon skills (`offensive-osint`, `osint-methodology`) are **canonically maintained here** and re-exported there, so the two are byte-identical. **Installing both is safe:** each bundle's installer (`install.sh` on macOS/Linux, `install.ps1` on Windows) records a manifest, the script skips re-copying an identical skill, and `--uninstall` keeps any skill the other bundle still owns — uninstalling one never breaks the other.
 
 **Vendored foundation:** [shuvonsec/claude-bug-bounty](https://github.com/shuvonsec/claude-bug-bounty) — methodology, validation, reporting, payload library (8 of 82 skills + 15 slash commands)
 

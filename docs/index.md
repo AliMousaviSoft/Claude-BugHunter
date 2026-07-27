@@ -35,10 +35,17 @@ platform CVE chains, and the hygiene, and it stays in scope.
 ## Quickstart
 
 ```bash
-# Clone and install into ~/.claude/
+# macOS / Linux — clone and install into ~/.claude/
 git clone https://github.com/elementalsouls/Claude-BugHunter.git
 cd Claude-BugHunter
 bash scripts/install.sh
+```
+
+```powershell
+# Windows (PowerShell)
+git clone https://github.com/elementalsouls/Claude-BugHunter.git
+cd Claude-BugHunter
+pwsh ./scripts/install.ps1
 ```
 
 Then open Claude Code and describe what you're testing in plain English —

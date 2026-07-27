@@ -55,8 +55,8 @@ You are installing 71 `SKILL.md` files plus shell and Python helpers into your A
 **What we do on our side:**
 
 - **CI gate on every skill change** — [`.github/workflows/skill-lint.yml`](.github/workflows/skill-lint.yml) runs `scripts/lint_skills.py` on each PR: it validates `SKILL.md` structure against `CONTRIBUTING.md` and scans for leaked secrets and client/engagement identifiers.
-- **Pinned, reviewable provenance** — installing via the **plugin marketplace** pins each release to a specific commit SHA and runs Anthropic's automated screening. From a clone you can pin yourself: `git checkout <tag-or-commit>` before `bash scripts/install.sh`.
-- **No network calls at install time** — `install.sh` only copies local files and (unless `--no-shell`) appends one `source` line to your shell rc, which it prints back to you.
+- **Pinned, reviewable provenance** — installing via the **plugin marketplace** pins each release to a specific commit SHA and runs Anthropic's automated screening. From a clone you can pin yourself: `git checkout <tag-or-commit>` before running the installer (`bash scripts/install.sh` on macOS/Linux, `pwsh ./scripts/install.ps1` on Windows).
+- **No network calls at install time** — the installer only copies local files and (unless `--no-shell`/`-NoProfile`) appends one `source`/dot-source line to your shell rc / PowerShell profile, which it prints back to you.
 
 **What this does NOT prove — read this:**
 
@@ -71,7 +71,7 @@ If you find a skill or script in this repo that could be abused, see **Reporting
 If you discover a security issue in **this repository itself** (not in a target you're hunting):
 
 - **Skill content** that you believe could enable abuse against unauthorized targets without commensurate defensive value: open a GitHub issue with the `security` label, or contact the author at the address listed on the [GitHub profile](https://github.com/elementalsouls).
-- **Vulnerabilities in installer scripts** (`scripts/install.sh`, `scripts/install-community-skills.sh`, `scripts/hunt.sh`): same channels.
+- **Vulnerabilities in installer scripts** (`scripts/install.sh`, `scripts/install-community-skills.sh`, `scripts/hunt.sh` on macOS/Linux; their `scripts/*.ps1` counterparts on Windows): same channels.
 - **Sensitive content accidentally shipped** (engagement-specific data, real account UIDs, real bounty amounts): flag immediately — these will be sanitized in a follow-up commit.
 
 Please **do not** post issues that include unauthorized exploitation evidence against third-party targets.

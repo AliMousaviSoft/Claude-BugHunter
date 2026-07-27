@@ -5,7 +5,7 @@ Step-by-step setup for the Claude-BugHunter skill bundle.
 ## Prerequisites
 
 - **Claude Code** — install from https://claude.ai/download
-- **macOS or Linux** — most steps are macOS-flavored; Linux users adjust paths
+- **macOS, Linux, or Windows** — macOS/Linux use the bash installers; Windows uses the native PowerShell installers
 - **Python 3.9+** — for the `cbh` CLI runner
 
 ### Optional (recommended but not required)
@@ -28,8 +28,14 @@ All three modes are first-class supported. The skills + CLI work identically acr
 ## Step 1 — Clone this repo
 
 ```bash
-mkdir -p ~/security-research
-cd ~/security-research
+# macOS / Linux
+mkdir -p ~/security-research && cd ~/security-research
+
+# Windows (PowerShell)
+New-Item -ItemType Directory -Force -Path "$HOME\security-research"
+cd "$HOME\security-research"
+
+# both
 git clone https://github.com/elementalsouls/Claude-BugHunter.git
 cd Claude-BugHunter
 ```
@@ -37,19 +43,24 @@ cd Claude-BugHunter
 ## Step 2 — Run the installer
 
 ```bash
+# macOS / Linux
 bash scripts/install.sh
+
+# Windows (PowerShell)
+pwsh ./scripts/install.ps1
 ```
 
-> On Windows/WSL, the repo ships a `.gitattributes` that forces LF line endings, so a
-> **fresh clone installs cleanly**. If you have an **existing** checkout that already
-> picked up CRLF (cloned before this `.gitattributes`), normalize it once with
+> The repo ships a `.gitattributes` that forces LF line endings on shell and
+> PowerShell scripts, so a **fresh clone installs cleanly** on every platform. If you
+> have an **existing** checkout that already picked up CRLF (cloned before this
+> `.gitattributes`), normalize it once with
 > `git add --renormalize . && git checkout .` (or just re-clone) — a CRLF-corrupted
-> shell script aborts with a `syntax error` and cannot fix itself.
+> script aborts with a `syntax error` and cannot fix itself.
 
 This copies:
-- All 82 skills → `~/.claude/skills/`
+- All 82 skills → `~/.claude/skills/` (macOS/Linux) or `%USERPROFILE%\.claude\skills\` (Windows)
 - All 15 slash commands → `~/.claude/commands/`
-- The `hunt` shell command → `~/.claude/scripts/hunt.sh` (sourced from your `.zshrc` or `.bashrc` automatically)
+- The `hunt` scaffolder → `~/.claude/scripts/hunt.sh` (sourced from your `.zshrc`/`.bashrc`) on macOS/Linux, or `~\.claude\scripts\hunt.ps1` (dot-sourced from your PowerShell `$PROFILE`) on Windows
 
 Existing skills with the same name are backed up to `~/.claude/install-backups/<timestamp>/` — **outside** the skills/commands directories, so backups never load as duplicate skills. Re-runs are non-destructive.
 
@@ -58,10 +69,19 @@ Existing skills with the same name are backed up to `~/.claude/install-backups/<
 The skills are plain Agent Skills, so they also run outside Claude Code:
 
 ```bash
+# macOS / Linux
 ./scripts/install.sh --all          # also installs to ~/.agents/skills (Codex + OpenCode) and ~/.hermes/skills (Hermes)
 ./scripts/install.sh --agents       # just Codex + OpenCode
 ./scripts/install.sh --hermes       # just Hermes
 ./scripts/install.sh --agents --burp-mcp   # also wire your Burp MCP into those harnesses
+```
+
+```powershell
+# Windows (PowerShell)
+pwsh ./scripts/install.ps1 -All          # Codex + OpenCode + Hermes
+pwsh ./scripts/install.ps1 -Agents       # just Codex + OpenCode
+pwsh ./scripts/install.ps1 -Hermes       # just Hermes
+pwsh ./scripts/install.ps1 -Agents -BurpMcp   # also wire your Burp MCP into those harnesses
 ```
 
 Slash commands, the plugin marketplace, and the `/hunt` engine are Claude-Code-only; other harnesses get the skill knowledge + Burp MCP. Full details and per-harness MCP snippets: [`docs/multi-harness.md`](docs/multi-harness.md).
@@ -78,7 +98,13 @@ In Burp Suite:
 In your terminal:
 
 ```bash
+# macOS / Linux
 claude mcp add burp -s user -- java -jar ~/.BurpSuite/mcp-proxy/mcp-proxy-all.jar
+```
+
+```powershell
+# Windows (PowerShell)
+claude mcp add burp -s user -- java -jar "$HOME\.BurpSuite\mcp-proxy\mcp-proxy-all.jar"
 ```
 
 Verify in a fresh `claude` session:
@@ -94,11 +120,20 @@ You should see `burp · ✓ connected`.
 The bundle ships a frozen snapshot of shuvonsec's skills. To pull the latest from upstream and re-bundle:
 
 ```bash
+# macOS / Linux
 chmod +x scripts/install-community-skills.sh
 ./scripts/install-community-skills.sh
+
+# Windows (PowerShell)
+pwsh ./scripts/install-community-skills.ps1
 ```
 
 This clones `shuvonsec/claude-bug-bounty` into `~/security-research/community-skills/` and runs its installer. Useful when you want fresher hunt patterns; not needed for first-time setup.
+
+> **Windows note:** the upstream `shuvonsec/claude-bug-bounty` ships its own bash
+> installer. `install-community-skills.ps1` runs it through Git-for-Windows `bash`
+> if available, and skips it (with a notice) otherwise. Install Git for Windows
+> (https://git-scm.com).
 
 ## Step 5 — (Optional) Set up the skill regenerator
 
@@ -180,7 +215,11 @@ If all three smoke tests pass, you're set up.
 Delete the test target:
 
 ```bash
+# macOS / Linux
 rm -rf ~/Targets/acme-test
+
+# Windows (PowerShell)
+Remove-Item -Recurse -Force "$HOME\Targets\acme-test"
 ```
 
 Then go find a real program and put it to work. See [USAGE.md](USAGE.md) for the full workflow walkthrough.
@@ -190,10 +229,11 @@ Then go find a real program and put it to work. See [USAGE.md](USAGE.md) for the
 | Symptom | Likely cause | Fix |
 |---|---|---|
 | `/mcp` doesn't show burp | Burp Suite not running, or extension not loaded | Re-open Burp, confirm Extensions tab shows MCP Server with "Loaded" checked |
-| `hunt: command not found` | Shell didn't pick up the `source` line | Restart your terminal, or `source ~/.zshrc` |
+| `hunt: command not found` (macOS/Linux) | Shell didn't pick up the `source` line | Restart your terminal, or `source ~/.zshrc` |
+| `hunt` not recognized (Windows) | PowerShell didn't load the profile | Open a new PowerShell window, or `. $PROFILE`; check execution policy is `RemoteSigned` or less restrictive (`Get-ExecutionPolicy -List`) |
 | Skills don't trigger as expected | Description-field keyword mismatch | Mention the bug class explicitly in your prompt (e.g., "I'm testing IDOR on this endpoint") |
 | `burp - get_proxy_history_regex` returns empty | Burp's proxy history is empty for that target | Browse the target through Burp first to populate history |
-| Python build errors during step 5 | Using system Python 3.9 | Use Homebrew Python 3.12 explicitly: `/opt/homebrew/bin/python3.12 -m venv .venv` |
+| Python build errors during step 5 | Using system Python 3.9 | macOS: use Homebrew Python 3.12 (`/opt/homebrew/bin/python3.12 -m venv .venv`); Windows: use the official python.org installer or `py -3.12 -m venv .venv` |
 
 ## Uninstall
 
@@ -202,10 +242,14 @@ The installer writes a manifest of exactly what it placed (under
 **only** that footprint — with:
 
 ```bash
+# macOS / Linux
 bash scripts/install.sh --uninstall
+
+# Windows (PowerShell)
+pwsh ./scripts/install.ps1 -Uninstall
 ```
 
-This removes the bundle's skills, slash commands, the `hunt.sh` script, and its
+This removes the bundle's skills, slash commands, the `hunt.sh`/`hunt.ps1` script, and its
 shell-rc source line. Skills you also installed from the **sister bundle**
 [Claude-OSINT](https://github.com/elementalsouls/Claude-OSINT) — `offensive-osint`
 and `osint-methodology` — are **kept** if Claude-OSINT's manifest still claims them,

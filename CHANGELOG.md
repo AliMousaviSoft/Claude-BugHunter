@@ -7,6 +7,13 @@ versioning is loosely [SemVer](https://semver.org/) at the bundle level.
 ## [Unreleased]
 
 ### Added
+- **Native Windows install ** — every `.sh` installer now has a PowerShell
+  counterpart: `scripts/install.ps1`, `scripts/install-community-skills.ps1`, `scripts/hunt.ps1`.
+  Same behavior, same flags (hyphen-style: `-All`, `-Agents`, `-Hermes`, `-BurpMcp`, `-NoProfile`,
+  `-Uninstall`), same manifest-driven uninstall. `hunt.ps1` is dot-sourced from the PowerShell
+  `$PROFILE` (the Windows equivalent of the `.zshrc`/`.bashrc` `source` line). `.gitattributes`
+  now pins `*.ps1` to LF alongside `*.sh`/`*.py`. Docs (README, INSTALL, USAGE, multi-harness,
+  SECURITY, index, credits) updated to show both paths. macOS/Linux unchanged.
 - **Skill library expanded 71 → 82** — 9 new hunt skills (`hunt-jwt-crypto`, `hunt-rag-vector`,
   `hunt-shadow-api`, `hunt-captcha-bypass`, `hunt-clickjacking`, `hunt-html-injection`,
   `hunt-forgot-password`, `hunt-exceptional-conditions`, `ios-redteam-pipeline`) plus `hunt-spa-api`

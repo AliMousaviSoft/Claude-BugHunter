@@ -5,6 +5,7 @@
 
 # Executable text MUST be LF regardless of platform.
 *.sh   text eol=lf
+*.ps1  text eol=lf
 *.py   text eol=lf
 *.bash text eol=lf
 

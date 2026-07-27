@@ -20,7 +20,7 @@ You don't "learn" the bundle. You install it once, then describe what you're tes
 
 ### What you DO need before starting
 
-1. **A laptop running macOS or Linux** (Windows users: WSL2 Ubuntu works).
+1. **A laptop running macOS, Linux, or Windows** — macOS/Linux use bash, Windows uses native PowerShell.
 2. **Claude Code installed** (from https://claude.ai/download) — this is the CLI app, not Claude.ai in your browser.
 3. **A Claude paid plan** (Pro/Team/Max) or an Anthropic API key with credit. Free Claude.ai doesn't include Claude Code.
 4. **The terminal app open** and the willingness to copy-paste 3 commands.
@@ -32,23 +32,42 @@ You don't "learn" the bundle. You install it once, then describe what you're tes
 - ❌ You don't need to know Burp Suite. It's optional. Skills work with curl + browser.
 - ❌ You don't need a bug bounty account yet. You can practice on OWASP Juice Shop first.
 - ❌ You don't need to read all 82 skills. They auto-load when relevant.
-- ❌ You don't need Python beyond `python3 --version` working.
+- ❌ You don't need Python beyond `python --version` working (run `python3 --version` on macOS/Linux).
 
 ### Your first 30 minutes
 
-Open your terminal. Copy-paste this entire block:
+Open your terminal. Copy-paste the block for your platform:
 
 ```bash
+# macOS / Linux
 # 1. Get the bundle
 mkdir -p ~/security-research && cd ~/security-research
 git clone https://github.com/elementalsouls/Claude-BugHunter.git
 cd Claude-BugHunter
 
 # 2. Install (copies 82 skills + 15 commands into Claude Code)
-./scripts/install.sh
+bash scripts/install.sh
 
 # 3. Reload your shell so the 'hunt' command becomes available
 source ~/.zshrc 2>/dev/null || source ~/.bashrc
+
+# 4. Verify — running 'hunt' with no args should print usage info
+hunt
+```
+
+```powershell
+# Windows (PowerShell)
+# 1. Get the bundle
+New-Item -ItemType Directory -Force -Path "$HOME\security-research"
+cd "$HOME\security-research"
+git clone https://github.com/elementalsouls/Claude-BugHunter.git
+cd Claude-BugHunter
+
+# 2. Install (copies 82 skills + 15 commands into Claude Code)
+pwsh ./scripts/install.ps1
+
+# 3. Reload your profile so the 'hunt' command becomes available
+. $PROFILE
 
 # 4. Verify — running 'hunt' with no args should print usage info
 hunt
@@ -61,7 +80,7 @@ Creates a new engagement folder at $HUNT_BASE/<target-name>
 Default $HUNT_BASE is /Users/you/Targets
 ```
 
-If it says `command not found` instead, restart your terminal entirely and try again. Still failing? Go to [INSTALL.md → Troubleshooting](INSTALL.md#troubleshooting).
+If it says `command not found` (macOS/Linux) or `not recognized` (Windows), restart your terminal entirely and try again. Still failing? Go to [INSTALL.md → Troubleshooting](INSTALL.md#troubleshooting).
 
 ### Pick a practice target
 
@@ -261,7 +280,7 @@ Required for external red-team work where targets are full enterprise estates ra
 | Tool | Purpose | Setup |
 |---|---|---|
 | **Burp MCP** | Claude reads/replays HTTP traffic directly from Burp's proxy history — eliminates manual paste-curl-into-chat | Burp Suite + MCP Server extension (port 9876) → `claude mcp add burp -s user -- java -jar ~/.BurpSuite/mcp-proxy/mcp-proxy-all.jar` |
-| **`hunt <target>` shell command** | Scaffolds `~/Targets/<name>/` with CLAUDE.md, scope.md, findings/, evidence/, submissions.txt | `source ~/.claude/scripts/hunt.sh` in your `.zshrc` |
+| **`hunt <target>` command** | Scaffolds `~/Targets/<name>/` with CLAUDE.md, scope.md, findings/, evidence/, submissions.txt | macOS/Linux: `source ~/.claude/scripts/hunt.sh` in `.zshrc` · Windows: `. "$HOME\.claude\scripts\hunt.ps1"` in `$PROFILE` |
 | **Anthropic API (separate from Claude Max)** | Powers `public-skills-builder` for periodic skill regeneration | `console.anthropic.com/billing` → API key → `export ANTHROPIC_API_KEY=...` |
 | **HackerOne API** | Pulls disclosed reports for the skill builder | `hackerone.com/settings/api_token` → `H1_API_KEY=username:token` in `.env` |
 
@@ -378,9 +397,9 @@ Cross-reference this UUID in any chained submissions you file later.
 If another pentester wants to replicate this stack, the install steps are in [INSTALL.md](INSTALL.md). The short version:
 
 1. Clone this repo
-2. Run `./scripts/install.sh` (installs all 82 skills, 15 commands, and hunt scaffold in one step)
+2. Run the installer — `bash scripts/install.sh` (macOS/Linux) or `pwsh ./scripts/install.ps1` (Windows) — installs all 82 skills, 15 commands, and the `hunt` scaffold in one step
 3. Set up Burp MCP (BApp Store extension + `claude mcp add burp ...`)
-4. (Optional) Refresh upstream snapshots via `./scripts/install-community-skills.sh`
+4. (Optional) Refresh upstream snapshots via `./scripts/install-community-skills.sh` (macOS/Linux) or `pwsh ./scripts/install-community-skills.ps1` (Windows)
 5. (Optional) Set up the skill regenerator with Anthropic + H1 API keys
 
 Total setup time: ~10 minutes including Burp MCP.
