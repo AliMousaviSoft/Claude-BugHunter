@@ -232,10 +232,17 @@ class Engine:
                 todo.append(it)
         self.eng.log(f"hunt: testing {len(todo)} item(s), {self.parallel} at a time")
         for it, f in self._run_parallel(self._hunt_agent, todo):
-            self.eng.mark_tested(it)
             if f and f.get("rate_limited"):
                 self.eng.log("hunt: ⚠ claude usage limit hit — remaining results may be partial")
-            if f and f.get("vulnerable"):
+            if (not f) or f.get("errored"):
+                # Not actually tested (agent hard error / worker exception): do NOT mark
+                # tested, so the item stays on the worklist and is retried on the next run.
+                reason = (f or {}).get("error", "worker-exception")
+                self.eng.log(f"hunt: ⚠ NOT tested ({reason}) — left on worklist: "
+                             f"{it.get('vuln_class')}@{it.get('url')}")
+                continue
+            self.eng.mark_tested(it)
+            if f.get("vulnerable"):
                 oos = self._scope_audit(f)
                 cand = {"url": it["url"], "param": it.get("param", ""), "vuln_class": it.get("vuln_class"),
                         "severity": f.get("severity", "unknown"), "evidence": f.get("evidence", ""),
@@ -269,8 +276,16 @@ class Engine:
         r = A.run_agent(task, model=self.model, max_turns=self.max_turns, timeout=self.timeout)
         if r.get("error"):
             self.eng.log(f"hunt agent error ({it['url']}): {r['error']}")
-            return {"vulnerable": False, "rate_limited": r["error"] == "rate-limited"}
-        return A.extract_json(r["result"]) or {"vulnerable": False}
+            # Hard error (timeout / rate-limit / parse / missing CLI): the item was NOT
+            # actually tested. Flag it so the caller leaves it on the worklist for retry.
+            return {"vulnerable": False, "errored": True, "error": r["error"],
+                    "rate_limited": r["error"] == "rate-limited"}
+        verdict = A.extract_json(r["result"])
+        if verdict is None:
+            # Agent ran but produced no parseable verdict — inconclusive, not a real negative.
+            self.eng.log(f"hunt: no parseable verdict for {it['url']} — inconclusive, left for retry")
+            return {"vulnerable": False, "errored": True, "error": "no-verdict"}
+        return verdict
 
     # ---------------- validate ----------------
     def validate(self):

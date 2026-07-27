@@ -91,16 +91,17 @@ def test_oauth_userinfo_bypass():
     cross-origin.
 
     Server validates redirect_uri by prefix-match (starts with
-    `http://localhost:58020/legit/`). Attacker sends a redirect_uri of:
-       http://localhost:58020/legit/@127.0.0.1:58021/attacker-callback
-    Per RFC 3986, the browser parses:
+    `http://localhost:58020`, per target_app.py). Attacker sends a redirect_uri of:
+       http://localhost:58020@evil.attacker.example/attacker-callback
+    Per RFC 3986 the authority ends at the first `/`, so the browser parses:
        scheme:   http
-       userinfo: localhost:58020/legit/
-       host:     127.0.0.1
-       port:     58021
+       userinfo: localhost:58020            (credentials — ignored for navigation)
+       host:     evil.attacker.example
        path:     /attacker-callback
-    So the browser navigates to 127.0.0.1:58021 even though the server
-    prefix-check passed.
+    The string still starts with `http://localhost:58020`, so the server
+    prefix-check passes — yet the browser navigates to evil.attacker.example.
+    (The earlier `.../legit/@host/...` form is WRONG: the `@` lands in the path,
+    not userinfo, so the browser stays on localhost and the test refutes a real bug.)
 
     This test verifies BROWSER BEHAVIOR — not server behavior. The
     server-side Phase 2F verification already showed the prefix check
@@ -119,7 +120,10 @@ def test_oauth_userinfo_bypass():
         # Build the malicious redirect_uri
         evil_host = "evil.attacker.example"  # browser will fail to resolve;
                                               # we capture the navigation attempt first
-        redirect_uri = f"http://localhost:58020/legit/@{evil_host}/attacker-callback"
+        # `@` must sit right after the registered prefix so localhost:58020 becomes
+        # USERINFO and evil_host becomes the real host (RFC 3986) — while the string
+        # still startswith the server's allowed prefix `http://localhost:58020`.
+        redirect_uri = f"http://localhost:58020@{evil_host}/attacker-callback"
         from urllib.parse import quote
         oauth_url = f"http://localhost:58020/oauth/authorize?client_id=acme-spa&redirect_uri={quote(redirect_uri, safe='')}"
 

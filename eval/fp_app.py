@@ -43,7 +43,11 @@ class H(BaseHTTPRequestHandler):
             return self._send(200, json.dumps({"query": g("q"), "results": []}), "application/json")
         if p == "/go":                # same-origin-validated redirect -> not open redirect
             url = g("url")
-            if url.startswith("/") and not url.startswith("//"):
+            # Reject backslashes (browsers normalize \ -> /) and control chars — otherwise
+            # `/\evil.com` becomes protocol-relative `//evil.com`, an EXTERNAL redirect, which
+            # would make this "safe" ground-truth trap actually vulnerable and mis-score agents.
+            if (url.startswith("/") and not url.startswith("//")
+                    and "\\" not in url and all(ord(c) >= 0x20 for c in url)):
                 return self._send(302, "", extra={"Location": url})
             return self._send(400, "External redirects are not allowed")
         if p == "/api/product":       # canned: no injection, no boolean/error diff

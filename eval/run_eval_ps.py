@@ -74,15 +74,19 @@ def main():
             task = RE.build_task(lab["objective"], url, TARGET_DESC)
             r = RE.run_agent(task, cond == "skills", a.model, a.max_turns, a.timeout)
             time.sleep(3)
-            post, _ = ps_solved(url)
-            solved = bool(post)
+            post, post_ok = ps_solved(url)
+            # If the oracle can't be read post-run (instance expired DURING the run), that's
+            # an infra failure, NOT a genuine miss — record solved=None and exclude it from
+            # the solve-rate denominator in the summary.
+            solved = bool(post) if post_ok else None
             rec = {"ts": datetime.now(timezone.utc).isoformat(), "lab": lab["key"],
                    "class": lab.get("class"), "condition": cond, "solved": solved,
-                   "instance": url, **r}
+                   "oracle_ok": post_ok, "instance": url, **r}
             rows.append(rec)
             out.write(json.dumps(rec) + "\n"); out.flush()
+            note = "" if post_ok else "  [oracle unreadable — excluded from solve-rate]"
             print(f"  -> solved={solved}  turns={r.get('num_turns')}  cost=${r.get('cost_usd')}  "
-                  f"{r.get('duration_s')}s{'  [' + r['agent_error'] + ']' if r.get('agent_error') else ''}")
+                  f"{r.get('duration_s')}s{'  [' + r['agent_error'] + ']' if r.get('agent_error') else ''}{note}")
     out.close()
 
     # summary
@@ -91,16 +95,20 @@ def main():
     for r in rows:
         by_cond.setdefault(r["condition"], []).append(r)
     for cond, rs in by_cond.items():
-        s = sum(1 for r in rs if r["solved"])
+        scored = [r for r in rs if r.get("solved") is not None]   # exclude oracle-unreadable runs
+        s = sum(1 for r in scored if r["solved"])
+        skipped = len(rs) - len(scored)
         cost = sum((r.get("cost_usd") or 0) for r in rs)
-        print(f"  {cond:9s}: solved {s}/{len(rs)}   total ${cost:.2f}")
+        extra = f"  ({skipped} oracle-unreadable, excluded)" if skipped else ""
+        print(f"  {cond:9s}: solved {s}/{len(scored)}   total ${cost:.2f}{extra}")
     # per-class skill-delta (only where both conditions ran)
     classes = sorted({r["class"] for r in rows})
     if "skills" in by_cond and "baseline" in by_cond:
         print("\n  per-class (solved / ran):")
         for cl in classes:
             for cond in ("skills", "baseline"):
-                rs = [r for r in rows if r["class"] == cl and r["condition"] == cond]
+                rs = [r for r in rows if r["class"] == cl and r["condition"] == cond
+                      and r.get("solved") is not None]        # exclude oracle-unreadable
                 if rs:
                     print(f"    {cl:16s} {cond:9s} {sum(1 for r in rs if r['solved'])}/{len(rs)}")
     print(f"\n  raw: {a.out}")

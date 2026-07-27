@@ -36,6 +36,10 @@ def run_agent(task, skills_on=False, model="claude-sonnet-4-6", max_turns=40, ti
         p = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
     except subprocess.TimeoutExpired:
         return {"result": "", "error": "timeout", "duration_s": round(time.time() - t0, 1)}
+    except (FileNotFoundError, OSError) as e:
+        # e.g. the `claude` CLI isn't installed / not on PATH — return a structured
+        # error instead of raising, so a single missing binary can't crash the phase.
+        return {"result": "", "error": f"exec:{e}", "duration_s": round(time.time() - t0, 1)}
     try:
         d = json.loads(p.stdout)
         res = d.get("result") or ""

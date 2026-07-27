@@ -110,37 +110,43 @@ def run_cmd(cmd: list[str], timeout: int = 30) -> tuple[int, str, str]:
 _HTTP_OPENER: urllib.request.OpenerDirector | None = None
 
 
-def configure_http_proxy(proxy_url: str | None = None) -> tuple[bool, str]:
+def configure_http_proxy(proxy_url: str | None = None, insecure: bool = False) -> tuple[bool, str]:
     """Configure urllib to route through a proxy (typically Burp Suite at
     127.0.0.1:8080). Returns (configured, message) — message describes the mode.
 
-    Resolution order:
-      1. explicit proxy_url argument
-      2. CBH_BURP_PROXY env var
-      3. HTTPS_PROXY / HTTP_PROXY env vars
-      4. fallback: auto-detect default Burp on http://127.0.0.1:8080 (only if --burp flag)
+    TLS certificate verification is disabled ONLY when `insecure=True` (an explicit
+    Burp/insecure opt-in). An ambient corporate HTTPS_PROXY/HTTP_PROXY is still used,
+    but keeps certificate verification ON — so a corporate proxy env var can never
+    silently turn off TLS validation while reconning a production target.
+
+    Resolution order when proxy_url is not given:
+      1. CBH_BURP_PROXY env var (the tool's own Burp var → implies insecure)
+      2. HTTPS_PROXY / HTTP_PROXY env vars (ambient/corporate → TLS stays verified)
     """
     global _HTTP_OPENER
     if not proxy_url:
-        proxy_url = os.environ.get("CBH_BURP_PROXY") or os.environ.get("HTTPS_PROXY") or os.environ.get("HTTP_PROXY")
+        burp_env = os.environ.get("CBH_BURP_PROXY")
+        if burp_env:
+            proxy_url, insecure = burp_env, True          # Burp's CA isn't trusted → insecure
+        else:
+            proxy_url = os.environ.get("HTTPS_PROXY") or os.environ.get("HTTP_PROXY")
     if not proxy_url:
         _HTTP_OPENER = None
         return False, "direct (no proxy)"
 
-    # Disable TLS verification when going through Burp (its CA isn't typically trusted)
     import ssl
     ctx = ssl.create_default_context()
-    ctx.check_hostname = False
-    # WARNING: TLS verification is disabled for Burp proxy traffic.
-    # Use --proxy only in isolated lab environments — not on production targets.
-    ctx.verify_mode = ssl.CERT_NONE
-    print("[warning] TLS certificate verification is DISABLED — proxy mode active. "
-          "Use only in isolated lab environments, not on production targets.", flush=True)
+    if insecure:
+        # Only for an explicit Burp/insecure opt-in: Burp's CA isn't typically trusted.
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+        print("[warning] TLS certificate verification is DISABLED — insecure/Burp proxy mode. "
+              "Use only in isolated lab environments, not on production targets.", flush=True)
 
     proxy_handler = urllib.request.ProxyHandler({"http": proxy_url, "https": proxy_url})
     https_handler = urllib.request.HTTPSHandler(context=ctx)
     _HTTP_OPENER = urllib.request.build_opener(proxy_handler, https_handler)
-    return True, f"via proxy {proxy_url}"
+    return True, f"via proxy {proxy_url} ({'TLS verify OFF' if insecure else 'TLS verify on'})"
 
 
 def detect_burp() -> str | None:
@@ -187,10 +193,17 @@ def recon_subdomains_via_crtsh(target: str) -> set[str]:
     url = f"https://crt.sh/?q=%25.{target}&output=json"
     status, _, body = http_get(url, timeout=20)
     if status != 200 or not body:
+        # An outage / rate-limit (crt.sh often 503s) must NOT be mistaken for
+        # "no subdomains exist" — warn loudly so a failed lookup isn't read as empty.
+        why = f"HTTP {status}" if status else "unreachable / network error"
+        print(f"[warning] crt.sh lookup failed ({why}) — subdomain results may be INCOMPLETE, "
+              f"not necessarily empty.", file=sys.stderr, flush=True)
         return set()
     try:
         rows = json.loads(body)
     except Exception:
+        print("[warning] crt.sh returned unparseable JSON — subdomain results may be INCOMPLETE.",
+              file=sys.stderr, flush=True)
         return set()
     subs = set()
     for r in rows:
@@ -246,11 +259,12 @@ def configure_proxy_from_args(args: argparse.Namespace) -> None:
     """If --burp or --proxy was passed, set up the urllib opener accordingly.
     Print the mode banner so the operator knows where traffic is going."""
     proxy_url = None
+    insecure = False
     if getattr(args, "proxy", None):
-        proxy_url = args.proxy
+        proxy_url, insecure = args.proxy, True            # explicit --proxy: operator opted in
     elif getattr(args, "burp", False):
-        proxy_url = detect_burp() or "http://127.0.0.1:8080"
-    configured, mode = configure_http_proxy(proxy_url)
+        proxy_url, insecure = (detect_burp() or "http://127.0.0.1:8080"), True
+    configured, mode = configure_http_proxy(proxy_url, insecure)
     if configured:
         say(color(f"  HTTP routing: {mode}", "yellow"))
         say(color(f"  Tip: requests will appear in Burp Proxy → HTTP history.", "dim"))

@@ -81,11 +81,13 @@ def _testable(item):
         item.get("source") == "form" or bool(item.get("param"))
 
 
-def _mine(text, found_rel, found_abs):
+def _mine(text, found_rel, found_abs, base=""):
+    # found_rel stores (base, relpath) so each route is later resolved against the
+    # document it was mined from — not a single shared seed origin (fixes multi-seed).
     for m in REL_API.findall(text):
-        found_rel.add(m)
+        found_rel.add((base, m))
     for m in NEXT_DATA.findall(text):
-        found_rel.add(m)
+        found_rel.add((base, m))
     for m in ABS_URL.findall(text):
         if not NOISE.search(m):
             found_abs.add(m.rstrip('.,);"\''))
@@ -148,8 +150,8 @@ def spa_recon(scope, seeds=None, max_js=20, interesting_only=True, log=print):
             for a, b in re.findall(r'(?:Allow|Disallow):\s*(\S+)|<loc>([^<]+)</loc>', t):
                 pp = a or b
                 if pp:
-                    found_rel.add(pp if pp.startswith('/') else (urlparse(pp).path or '/'))
-        _mine(html, found_rel, found_abs)
+                    found_rel.add((base, pp if pp.startswith('/') else (urlparse(pp).path or '/')))
+        _mine(html, found_rel, found_abs, base)
         secrets += scan_secrets(html, final)
         for m in JS_SRC.findall(html):
             ju = urljoin(base, m)
@@ -163,7 +165,8 @@ def spa_recon(scope, seeds=None, max_js=20, interesting_only=True, log=print):
     for ju in list(js_urls)[:max_js]:
         js, _, _ = _get(ju)
         if js:
-            _mine(js, found_rel, found_abs)
+            js_base = f"{urlparse(ju).scheme}://{urlparse(ju).netloc}"
+            _mine(js, found_rel, found_abs, js_base)
             secrets += scan_secrets(js, ju)
     # dedup secrets by (type, redacted)
     _seen = set()
@@ -175,8 +178,9 @@ def spa_recon(scope, seeds=None, max_js=20, interesting_only=True, log=print):
         log(f"recon:   🔑 SECRET {s['type']} = {s['redacted']} in {s['url']}")
 
     items, oos = [], set()
-    for rel in sorted(found_rel):
-        url = rel if rel.startswith('http') else urljoin(seed_base + '/', rel.lstrip('/'))
+    for base_i, rel in sorted(found_rel):
+        b = base_i or seed_base                        # resolve against the route's own source doc
+        url = rel if rel.startswith('http') else urljoin((b or "") + '/', rel.lstrip('/'))
         if scope.in_scope_host(url):
             items.append({"url": url, "param": "", "source": "js/html"})
     for au in sorted(found_abs):
@@ -370,7 +374,7 @@ def prune_inert_params(items, log=print):
     response beyond echoing itself). Deterministic: marker-normalized body-diff vs the no-param
     baseline — removing the marker first neutralizes the canonical/og:url reflection trap. Keeps
     only live, processable params. (Active: ~1 request per unique endpoint + 1 per param.)"""
-    kept, dead, inert, base_cache = [], 0, 0, {}
+    kept, dead, inert, failed, base_cache = [], 0, 0, 0, {}
     marker = "zq9k7xp"
     for it in items:
         base_path = it.get("url", "").split("?", 1)[0]
@@ -378,10 +382,18 @@ def prune_inert_params(items, log=print):
         if base_path not in base_cache:
             base_cache[base_path] = _probe(base_path)
         bcode, bbody = base_cache[base_path]
-        if bcode == 0 or bcode >= 400:
+        if bcode == 0:
+            kept.append(it)                            # probe FAILED (network/curl) — can't judge; keep, don't prune
+            failed += 1
+            continue
+        if bcode >= 400:
             dead += 1
-            continue                                   # dead endpoint
+            continue                                   # genuinely dead endpoint (real HTTP >= 400)
         tcode, tbody = _probe(f"{base_path}?{param}={marker}")
+        if tcode == 0:
+            kept.append(it)                            # param probe failed — keep rather than silently drop
+            failed += 1
+            continue
         if tcode >= 400:
             dead += 1
             continue
@@ -390,9 +402,9 @@ def prune_inert_params(items, log=print):
             inert += 1
             continue                                   # param ignored — no effect on response
         kept.append(it)
-    if dead or inert:
-        log(f"params: inertness-prune dropped {dead} dead-endpoint + {inert} inert param(s) "
-            f"-> {len(kept)} live/processable remain")
+    if dead or inert or failed:
+        log(f"params: inertness-prune dropped {dead} dead-endpoint + {inert} inert param(s); "
+            f"kept {failed} unprobeable (probe failed, not judged dead) -> {len(kept)} remain")
     return kept
 
 
@@ -432,7 +444,9 @@ def auth_enforcement_sweep(spec, base, log=print, junk="zzz-pentest-nonexistent-
     import urllib.request
     import urllib.error
     import time
-    glob = "security" in spec
+    # A global `security: []` means "no auth for the whole API" — treat as NOT secured
+    # (mirror the op-level `!= []` check below), else public ops are wrongly swept as broken-auth.
+    glob = spec.get("security") not in (None, [])
     broken, n = [], 0
     for path, methods in spec.get("paths", {}).items():
         for m, op in methods.items():
@@ -546,7 +560,7 @@ def openapi_recon(scope, log=print):
             paths = spec.get("paths")
             if not paths:
                 continue
-            glob_sec = "security" in spec
+            glob_sec = spec.get("security") not in (None, [])   # `security: []` == public, not secured
             title = spec.get("info", {}).get("title", "API")
             noauth = 0
             for p, methods in paths.items():
@@ -613,7 +627,8 @@ if __name__ == "__main__":
         rel, ab = set(), set()
         _mine('a "/api/completion" b fetch("/api/v1/users") <a href="https://api.acme.com/x">'
               ' "/graphql" "https://www.googleapis.com/y"', rel, ab)
-        assert "/api/completion" in rel and "/api/v1/users" in rel and "/graphql" in rel, rel
+        rels = {r for _, r in rel}
+        assert "/api/completion" in rels and "/api/v1/users" in rels and "/graphql" in rels, rel
         assert "https://api.acme.com/x" in ab, ab
         assert not any("googleapis" in a for a in ab), "noise not filtered"
         assert classify({"url": "/api/completion"}) == "llm-ai"

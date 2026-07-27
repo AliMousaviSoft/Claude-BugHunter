@@ -89,6 +89,12 @@ def main():
 
     cases = json.load(open(a.cases))
     conds = [c.strip() for c in a.conditions.split(",") if c.strip()]
+    # Validate up front: an unknown/typo'd condition (e.g. "skils") would silently run as
+    # baseline under the wrong label and quietly invalidate the ablation.
+    _VALID_CONDS = {"baseline", "skills"}
+    _bad = [c for c in conds if c not in _VALID_CONDS]
+    if _bad:
+        sys.exit(f"unknown --conditions: {', '.join(_bad)} (valid: {', '.join(sorted(_VALID_CONDS))})")
     os.makedirs(os.path.dirname(a.out), exist_ok=True)
     out = open(a.out, "a")
     rows = []
