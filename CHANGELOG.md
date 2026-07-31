@@ -41,6 +41,32 @@ versioning is loosely [SemVer](https://semver.org/) at the bundle level.
   rejected it**. Surfaced by real multi-harness testing.
 
 ### Changed
+- **Four engagement-derived false-positive guards** — hardening in `hunt-dispatch`,
+  `triage-validation`, `hunt-source-leak`, and `hunt-ssrf`, each closing a specific way the
+  toolkit produced or nearly produced a wrong finding on a real authorized test.
+  `hunt-dispatch` gains a mandatory **`step 0` 404 baseline for all modes** — record status +
+  byte length + body hash per host from two bogus paths, and treat no path as "found" until its
+  response differs from that control; SPA/CDN estates return HTTP 200 with the app shell for
+  everything, so `security.txt`, revalidate routes and framework dev endpoints all appear to
+  exist when they don't. Previously `step 1` was red-team only, leaving WAPT runs with no
+  fingerprinting phase at all. `hunt-dispatch` also gains **`subagent scope inheritance`**:
+  scope is not inherited implicitly, so delegated prompts must carry the authorized host list
+  verbatim as data, treat mid-run discoveries as report-only, apply an action-verb deny-list
+  **before** any read-shaped allow-list (a path ending `/status` can still be a refund route),
+  and spell "read-only" out as forbidden verbs — as an adjective it does not stop an agent
+  POSTing `{}` to a `generate*` endpoint and creating a real record. `triage-validation` gains
+  **THE LAYER-ORDERING TRAP** after Q7: a validation error does *not* prove auth was passed,
+  because a sanitiser or body parser ahead of the auth middleware yields an identical response
+  shape — re-test with a minimal well-formed body, and read input-shape errors as a parser vs
+  domain-field errors as business logic. `hunt-source-leak` Phase 2 now requires resolving the
+  **current** build hash before testing and before re-verifying; content-hashed bundles rotate
+  on deploy, so a 404 at a recorded `.map` URL is a new build, not remediation. `hunt-ssrf`
+  gains per-parameter callback attribution (Burp keys interactions by payload ID, not subdomain,
+  so sub-tagging one payload is not distinguishable — use a fresh payload per candidate
+  parameter, and record the negative controls) plus a **blind vs full-read** check, since a
+  returned upstream body is what moves a finding off the never-submit list.
+  The 7-Question Gate and never-submit list are deliberately unchanged — both worked, and
+  rejecting DNS-only SSRF is what forced the check that established full-read.
 - **Dispatch dedup (description-scoping only — bodies unchanged)** — `hunt-jwt-crypto` set as the
   JWT-crypto owner (`hunt-ato`/`hunt-auth-bypass`/`hunt-api-misconfig` defer to it); `bb-local-toolkit`
   differentiated from `bug-bounty` (had a byte-identical description); scoped `hunt-sqli`↔`hunt-nosqli`,
