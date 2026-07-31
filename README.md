@@ -194,6 +194,25 @@ The bundle explicitly **excludes**: weaponizing 0-days against unauthorized targ
 
 > **Heads-up — Anthropic runtime cyber safeguards.** Anthropic's models apply real-time safeguards that **block "vulnerability exploitation or offensive security tooling development" by default** — so even *authorized, in-scope* work can hit a refusal that isn't this bundle's doing. If you do authorized offensive security (pentest / bug bounty / red team), enroll in Anthropic's **free, application-based [Cyber Verification Program (CVP)](https://claude.com/form/cyber-use-case)** to get safeguards adjusted for legitimate dual-use work. (Mass data exfiltration and ransomware development stay prohibited and are *not* adjustable.) Details: [Anthropic — real-time cyber safeguards](https://support.claude.com/en/articles/14604842-real-time-cyber-safeguards-on-claude).
 
+### Why your model switched mid-session
+
+Separate from refusals, and easy to miss. On **Opus 5**, a narrow set of higher-risk cyber requests —
+Anthropic names *exploit generation*, *binary-based vulnerability scanning* and *penetration testing* —
+**fall back to Opus 4.8** rather than being refused. You get a notice and the response is labelled with
+the model that answered, but in a long agentic run that is easy to scroll past, so it can look like
+Opus 5 quietly got worse. See [why Claude switched models](https://support.claude.com/en/articles/16049681-why-claude-switched-models-in-your-conversation-with-opus-5).
+
+What to do depends on what you are actually doing:
+
+| Situation | What helps |
+|---|---|
+| **Auditing your own code** — reviewing a repo you own for defects | Say so. "Defensive review of my own repo", "check this against the OWASP Top 10", "secure refactor to remediate" describe the work accurately and read as remediation. This is not a workaround; the work genuinely is defensive. |
+| **Authorized offensive work** — live engagement, PoC for a bounty submission | This is what the bundle is for, and the supported route is [CVP](https://claude.com/form/cyber-use-case). Do not reword an offensive engagement to look defensive to get past a classifier — enroll instead. |
+| **You just want the switching off** | Settings → Capabilities disables automatic model switching. |
+
+`/hunt` states the engagement frame (authorized, scope-bounded, remediable finding) on its first turn
+for exactly this reason — engagement context belongs in the session explicitly, not implied.
+
 ---
 
 ## Documentation

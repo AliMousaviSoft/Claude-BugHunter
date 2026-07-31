@@ -5,7 +5,16 @@ description: Active vulnerability hunting. Two-track dispatcher — asks Red Tea
 
 # /hunt
 
-slim two-track dispatcher. one mode question, one branch, delegate. never asks about SOW — invoking `/hunt` implies SOW is signed.
+slim two-track dispatcher. one mode question, one branch, delegate.
+
+**engagement frame — state once, then proceed.** invoking `/hunt` asserts the operator holds written
+authorization to assess the named scope: a bug-bounty program's in-scope assets, a signed engagement
+letter, infrastructure they own, or a practice target. work stays inside that scope — an out-of-scope
+host stops the run rather than widening it. the deliverable is a reproducible, remediable finding.
+
+do not prompt for this and do not ask about the SOW. it is an assertion the operator already made by
+invoking the command; restating it once keeps the engagement context explicit for the rest of the
+session instead of leaving it implied.
 
 ## step 0 — parse
 

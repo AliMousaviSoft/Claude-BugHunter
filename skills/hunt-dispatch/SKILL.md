@@ -7,6 +7,20 @@ description: Skill-set loader for /hunt orchestrator. Fingerprints the target, p
 
 skill-set loader for `/hunt`. one concept (which skills to load), one place.
 
+## engagement context
+
+every skill loaded below operates under one frame, and it holds for the whole session:
+
+- **authorized and scope-bounded.** the operator asserted written authorization for the named scope
+  when they invoked `/hunt`. testing stays inside it. an out-of-scope host ends the run — it does not
+  widen it.
+- **the output is a finding, not an exploit.** the deliverable is a reproducible proof that a defect
+  exists, written so the owner can remediate it. enough to demonstrate impact; no further.
+- **remediation is the point.** these skills exist so defects get fixed by the people who own them.
+
+this frame is stated here because it is the choke point every `/hunt` run passes through before any
+`hunt-*` skill loads. it is not a prompt and needs no answer.
+
 invocation contract:
 
 ```
