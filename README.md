@@ -116,13 +116,16 @@ pwsh ./scripts/install.ps1 -All -BurpMcp
 
 ## Star History
 
-<a href="https://www.star-history.com/?repos=elementalsouls%2FClaude-BugHunter&type=date&legend=top-left">
+<a href="https://github.com/elementalsouls/Claude-BugHunter/stargazers">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=elementalsouls/Claude-BugHunter&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=elementalsouls/Claude-BugHunter&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=elementalsouls/Claude-BugHunter&type=date&legend=top-left" />
+   <source media="(prefers-color-scheme: dark)" srcset="assets/star-history-dark.svg" />
+   <source media="(prefers-color-scheme: light)" srcset="assets/star-history-light.svg" />
+   <img alt="Star history chart for Claude-BugHunter" src="assets/star-history-light.svg" width="840" />
  </picture>
 </a>
+
+<sub>Chart is self-hosted — regenerate with `python3 scripts/gen_star_history.py` (needs `gh auth login`).
+Refreshes automatically each Monday via `.github/workflows/star-history.yml`.</sub>
 
 ---
 
