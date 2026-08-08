@@ -25,6 +25,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from scope import Scope            # noqa: E402
 from state import Engagement       # noqa: E402
 import agent as A                  # noqa: E402
+import memory                     # noqa: E402  (autopilot ledger; import-isolated)
 
 # deterministic priority by class (impact-ish); used by rank
 CLASS_WEIGHT = {"rce": 100, "sqli": 90, "ssrf": 85, "auth-bypass": 85, "idor": 80,
@@ -40,7 +41,7 @@ DEFAULT_PHASES = ["recon", "rank", "map"]
 
 class Engine:
     def __init__(self, scope_path, base, model, max_hunts, max_turns, timeout, mock=False,
-                 allow_intrusive=False, parallel=3, expand=False):
+                 allow_intrusive=False, parallel=3, expand=False, use_memory=False):
         self.scope = Scope.load(scope_path)
         self.eng = Engagement(base, self.scope.name)
         self.model, self.max_hunts = model, max_hunts
@@ -48,6 +49,7 @@ class Engine:
         self.allow_intrusive = allow_intrusive
         self.expand = expand
         self.parallel = max(1, parallel)
+        self.use_memory = use_memory
         self.eng.log(f"engine start | scope={self.scope.name} in={self.scope.in_scope} "
                      f"out={self.scope.out_of_scope} seeds={self.scope.seeds} mock={mock} "
                      f"intrusive={'ALLOWED' if allow_intrusive else 'READ-ONLY (default)'}")
@@ -219,17 +221,31 @@ class Engine:
                     self.eng.log(f"  worker error on {it.get('url')}: {e}")
                     yield it, {}
 
+    def _tech(self):
+        """Sorted union of tech fingerprints across recon targets (the stack signature source)."""
+        return sorted({t for tg in self.eng.state.get("targets", []) for t in tg.get("tech", [])})
+
     # ---------------- hunt ----------------
     def hunt(self):
         self.eng.set_phase("hunt")
         wl = self.eng.worklist()[: self.max_hunts]
         todo = []
+        tech = self._tech()
         for it in wl:
             if not self.scope.in_scope_host(it["url"]):     # belt-and-suspenders scope gate
                 self.eng.log(f"hunt: REFUSING out-of-scope {it['url']} ({self.scope.reject_reason(it['url'])})")
                 self.eng.mark_tested(it)
-            else:
-                todo.append(it)
+                continue
+            if self.use_memory:
+                d = memory.skip_decision(memory._host(it["url"]), tech, it)
+                if d["skip"]:
+                    self.eng.log(f"hunt: skipped via ledger ({d['reason']}): "
+                                 f"{it.get('vuln_class')}@{it['url']}")
+                    if d["carry"]:
+                        self.eng.confirm(d["carry"], d["carry"]["verdict"])
+                    self.eng.mark_tested(it)
+                    continue
+            todo.append(it)
         self.eng.log(f"hunt: testing {len(todo)} item(s), {self.parallel} at a time")
         for it, f in self._run_parallel(self._hunt_agent, todo):
             if f and f.get("rate_limited"):
@@ -299,6 +315,10 @@ class Engine:
                 if v.get("severity"):
                     c["severity"] = v["severity"]  # use the validator's CALIBRATED severity, not the hunt's
                 self.eng.confirm(c, v)
+                try:
+                    memory.record_finding(self.scope.name, memory._host(c["url"]), self._tech(), c, v)
+                except Exception as e:
+                    self.eng.log(f"memory: capture skipped ({e})")
                 self.eng.log(f"validate: CONFIRMED {c['vuln_class']} @ {c['url']} ({v.get('severity','')})"
                              + (f" ⚠ scope-flagged: {', '.join(c['scope_warning'])}" if c.get('scope_warning') else ''))
             else:
@@ -353,6 +373,10 @@ class Engine:
         path = os.path.join(self.eng.dir, "report.md")
         open(path, "w").write("\n".join(lines))
         self.eng.log(f"report: wrote {len(c)} confirmed finding(s) -> {path}")
+        try:
+            memory.record_run(self.scope.name, self._tech(), self.eng.state["tested"], self.eng.state["confirmed"])
+        except Exception as e:
+            self.eng.log(f"memory: rollup skipped ({e})")
         return path
 
     def run(self, phases):
@@ -402,6 +426,9 @@ def main():
     ap.add_argument("--expand", action="store_true",
                     help="OSINT bridge: enumerate subdomains, probe, and recon every live in-scope host "
                          "(the apex is usually just marketing; the real surface is on subdomains)")
+    ap.add_argument("--use-memory", action="store_true",
+                    help="OPT-IN: skip provably-wasteful agent calls (known-confirmed / dead-class) "
+                         "using the autopilot ledger. Default OFF = full coverage.")
     a = ap.parse_args()
     if a.phases:
         phases = [p.strip() for p in a.phases.split(",") if p.strip()]
@@ -410,7 +437,7 @@ def main():
     else:
         phases = DEFAULT_PHASES                   # default: recon -> rank -> map, then STOP for the operator
     eng = Engine(a.scope, a.base, a.model, a.max_hunts, a.max_turns, a.timeout, a.mock,
-                 a.allow_intrusive, a.parallel, a.expand)
+                 a.allow_intrusive, a.parallel, a.expand, a.use_memory)
     eng.run(phases)
     print("\n" + json.dumps(eng.eng.summary(), indent=2))
     print("engagement dir:", eng.eng.dir)

@@ -434,7 +434,14 @@ The validation engagement that produced this stack illustrated all three: the or
 
 If you keep using this and want to extend it:
 
-1. **Per-engagement memory** — extend `bb-methodology` to record patterns you've seen pay off across engagements. After 5+ engagements, your personal patterns will outperform the disclosed-report patterns.
+1. **Per-engagement memory — ✅ now shipped (the autopilot ledger).** The engine auto-captures confirmed findings and dead-class negatives to `~/.claude/bughunter/memory/`, and the autonomous hunt loop can skip provably-wasteful agent calls — re-confirming a finding already confirmed on a prior run, or re-testing a vuln class that never pays off on a stack.
+   - **Off by default = full coverage.** Enable per run with `--use-memory`:
+     ```bash
+     python3 engine/engine.py --scope <engagement>.json --hunt --use-memory
+     ```
+   - `/autopilot` maps modes to it: `--paranoid` (default) / `--normal` → memory **off** (full coverage); `--quick` / `--yolo` → memory **on** (token-saving skips).
+   - A class never hunted on a stack is never skipped, and every skip is logged — coverage is never silently reduced. Manage the store with `/memory-gc`; review a target's history with `/pickup <host>`.
+   - Benefit scales with repeat targets / recurring stacks; expect little effect on a cold start (new or one-off stack).
 2. **HackerOne MCP integration** — wire up the H1 MCP in shuvonsec's repo for live duplicate-search and program intel during reports.
 3. **Specialized `hunt-*` skills** for high-payout niches you focus on (e.g., `hunt-fintech-graphql`, `hunt-healthcare-fhir`).
 4. **A `program-rules-parser` skill** that takes program text and produces a structured `scope.md` automatically.

@@ -63,7 +63,6 @@ Runs the full hunt cycle without stopping for approval at each step:
 ## Safety Guarantees
 
 - **Every URL** is checked against the scope allowlist before any request
-- **Every request** is logged to `hunt-memory/audit.jsonl`
 - **Reports are NEVER auto-submitted** — always requires explicit approval
 - **PUT/DELETE/PATCH** require human approval in --yolo mode (safe methods only)
 - **Circuit breaker** stops hammering if 5 consecutive 403/429/timeout on same host
@@ -77,8 +76,20 @@ Runs the full hunt cycle without stopping for approval at each step:
 | `--normal` | After validation batch | Systematic coverage |
 | `--yolo` | After full surface exhausted | Familiar targets, experienced hunters |
 
+## Ledger memory (token saving)
+
+The autonomous loop can consult the **autopilot ledger** to skip provably-wasteful agent
+calls — an item already **confirmed** on a prior run (carried forward, not re-tested) or a
+vuln_class with strong **negative** history on this tech stack (`dead-class`).
+
+- **`--paranoid` (default) / `--normal`:** memory is **off** — full coverage, no skips.
+- **`--quick` / `--yolo`:** the command passes `--use-memory` to the engine — skips on.
+- A vuln_class never hunted on this stack is **never** skipped, and every skip is logged
+  (`hunt: skipped via ledger (...)`). Coverage is never silently reduced.
+- Capture is automatic; the ledger fills itself as you run. Manage size with `/memory-gc`.
+
 ## After Autopilot
 
 - Run `/remember` to log successful patterns to hunt memory
 - Run `/pickup target.com` next time to pick up where you left off
-- Check `hunt-memory/audit.jsonl` for a full request log
+- Check the ledger (`~/.claude/bughunter/memory/findings.jsonl`) or run `/memory-gc` for its size

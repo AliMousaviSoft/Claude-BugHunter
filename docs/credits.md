@@ -13,7 +13,7 @@ This is a **bundle**: skills and commands are vendored directly into `skills/` a
 | **Original / personally-curated skills** | 54 | This repo |
 | Community-contributed skills (v3) | 20 | community PRs (e.g. #7) |
 | Vendored foundation skills | 8 | shuvonsec/claude-bug-bounty (MIT) |
-| Vendored slash commands | 15 | shuvonsec/claude-bug-bounty (MIT) |
+| Vendored slash commands | 12 | shuvonsec/claude-bug-bounty (MIT) |
 | **Total** | 82 skills + 15 commands | |
 
 ---
@@ -80,6 +80,7 @@ Built from authorized red-team engagements (enterprise targets including on-prem
 
 - **`hunt <target>` command** — Engagement-folder scaffolding: creates `~/Targets/<name>/` with `CLAUDE.md`, `scope.md`, `findings/`, `evidence/`, `submissions.txt`, `notes.md`, and a sensible `.gitignore` for engagement artifacts. Ships as `scripts/hunt.sh` (bash) and `scripts/hunt.ps1` (PowerShell).
 - **Bundle packaging** — Single-step installer that copies all 82 skills, 15 commands, and the hunt scaffold into `~/.claude/`: `scripts/install.sh` (macOS/Linux) and `scripts/install.ps1` (Windows/PowerShell).
+- **Autopilot ledger (`engine/memory.py`) + the `/remember`, `/memory-gc`, `/pickup` commands** — Original design and implementation (cross-engagement capture + skip-decision for the engine hunt loop). Not derived from any external memory implementation.
 - **`assets/banner-v2.svg`** — Hand-coded SVG banner.
 - **Documentation** — `README.md`, `INSTALL.md`, `USAGE.md`, `CONTRIBUTING.md`, `docs/architecture.md`, this credits file.
 
@@ -87,7 +88,7 @@ Built from authorized red-team engagements (enterprise targets including on-prem
 
 ## Vendored foundation (from shuvonsec/claude-bug-bounty)
 
-These 8 skills + 15 slash commands form the methodology backbone of the bundle. Vendored as-is (MIT-licensed) so the entire stack installs in one step.
+These 8 skills + 12 slash commands form the methodology backbone of the bundle. Vendored as-is (MIT-licensed) so the entire stack installs in one step.
 
 ### Skills (8)
 
@@ -102,9 +103,9 @@ These 8 skills + 15 slash commands form the methodology backbone of the bundle. 
 | `web3-audit` | 10 DeFi bug classes, Foundry PoC template |
 | `meme-coin-audit` | Token rug-pull detection |
 
-### Slash commands (15)
+### Slash commands (12)
 
-`/hunt` `/recon` `/scope` `/triage` `/validate` `/report` `/autopilot` `/chain` `/intel` `/pickup` `/surface` `/remember` `/memory-gc` `/token-scan` `/web3-audit`
+`/hunt` `/recon` `/scope` `/triage` `/validate` `/report` `/autopilot` `/chain` `/intel` `/surface` `/token-scan` `/web3-audit`
 
 **Repo**: https://github.com/shuvonsec/claude-bug-bounty
 **License**: MIT (verify in upstream repo)
