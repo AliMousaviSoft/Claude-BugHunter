@@ -145,6 +145,17 @@ This principle informed the `offensive-osint` v3 refactor (lean SKILL.md + `refe
 
 **Repo**: https://github.com/trilwu/secskills
 
+### Community contributions
+
+- **[@sseshachala](https://github.com/sseshachala) (PR #30 → salvaged in #58)** — net-new offensive techniques folded into existing skills rather than merged as duplicate skills:
+  - `hunt-jwt-crypto` — `jwk`-header self-signed key injection, cross-tenant claim injection, HMAC secret cracking, `jwt_tool -X` automation
+  - `hunt-oauth` — OIDC dynamic client registration abuse, cross-client token confusion, `prompt=none` silent re-auth, `sub`-claim confusion
+  - `hunt-ssrf` — cloud-metadata payloads (AWS ECS creds, GCP alternate host, Azure IMDS token, Kubernetes SA `file://` paths)
+  - `hunt-graphql` — subscription hijacking, OTP brute-force via alias batching, `inql`/`graphql-cop` tooling
+  - `hunt-llm-ai` — provider/model response-header fingerprinting, multi-tenant context-bleed IDOR
+  - `hunt-websocket` — signed-message replay, out-of-order state-machine abuse
+  - `supply-chain-attack-recon` — GitHub Actions context injection, `zizmor`, Actions run-log secret extraction, polyfill.io detection
+
 ### Other community resources
 
 - `Eyadkelleh/awesome-claude-skills-security` — curated skill index
