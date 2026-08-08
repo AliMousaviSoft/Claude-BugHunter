@@ -232,6 +232,8 @@ for exactly this reason — engagement context belongs in the session explicitly
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | PR guidelines · skill quality standards · scope |
 | [`SECURITY.md`](SECURITY.md) | Authorized-use posture · responsible disclosure · what's excluded |
 | [`LICENSE`](LICENSE) | MIT |
+| [`NOTICE`](NOTICE) | Upstream-skills attribution · no-redistribution note |
+| [`LICENSE-CONTENT`](LICENSE-CONTENT) | CC BY 4.0 (skill methodology, wordlists, docs) |
 
 ---
 
@@ -312,7 +314,14 @@ Operational tradecraft accumulated across bug-bounty engagements and authorized 
 - [ProjectDiscovery](https://github.com/projectdiscovery) — subfinder · dnsx · httpx · katana · nuclei
 - [SecLists](https://github.com/danielmiessler/SecLists) · [Assetnote Wordlists](https://wordlists.assetnote.io/)
 
-**License:** [MIT](LICENSE) — use freely, attribution appreciated.
+## License
+
+This project is dual-licensed:
+
+- **Code** (Python helpers, shell scripts) — [MIT](LICENSE).
+- **Content** (skill methodology, wordlists, regex catalogs, severity rubrics, docs) — [Creative Commons Attribution 4.0 International](LICENSE-CONTENT) (CC BY 4.0).
+
+Reuse the content freely — including commercially — as long as you credit **Sachin Sharma / Claude-BugHunter** and link back to this repository. See [`NOTICE`](NOTICE) for upstream-skills attribution.
 
 ---
 

@@ -19,16 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-ADDITIONAL NOTES
-
-This repository contains:
-1. Original work by the copyright holder, licensed under MIT (above).
-2. References and recipes for installing upstream community skills, which
-   retain their original licenses (typically MIT). See docs/credits.md for
-   attribution.
-
-The repository does NOT redistribute upstream community skills directly —
-users install them from their original sources via the bootstrap script.
