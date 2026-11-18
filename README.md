@@ -131,7 +131,7 @@ pwsh ./scripts/install.ps1 -All -BurpMcp
 
 ## Star History
 
-<a href="https://github.com/elementalsouls/Claude-BugHunter/stargazers">
+<a href="https://github.com/AliMousaviSoft/Claude-BugHunter/stargazers">
  <picture>
    <source media="(prefers-color-scheme: dark)" srcset="assets/star-history-dark.svg" />
    <source media="(prefers-color-scheme: light)" srcset="assets/star-history-light.svg" />

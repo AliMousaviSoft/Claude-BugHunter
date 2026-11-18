@@ -30,7 +30,7 @@ jobs:
       - name: Regenerate chart
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python3 scripts/gen_star_history.py
+        run: python3 scripts/gen_star_history.py "${{ github.repository }}"
 
       - name: Commit if changed
         run: |

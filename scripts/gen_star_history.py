@@ -13,12 +13,13 @@ Usage:
 Writes assets/star-history-light.svg and assets/star-history-dark.svg.
 """
 import json
+import os
 import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-REPO = sys.argv[1] if len(sys.argv) > 1 else "elementalsouls/Claude-BugHunter"
+REPO = sys.argv[1] if len(sys.argv) > 1 else os.environ.get("GITHUB_REPOSITORY", "AliMousaviSoft/Claude-BugHunter")
 OUT = Path(__file__).resolve().parent.parent / "assets"
 
 # Validated with the dataviz palette validator against GitHub's real surfaces:
@@ -61,6 +62,9 @@ def fetch_stars(repo):
 
 def build_series(stamps):
     """Cumulative count per day."""
+    if not stamps:
+        now = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+        return [(now, 0)]
     days = {}
     for s in stamps:
         d = s[:10]
@@ -74,6 +78,8 @@ def build_series(stamps):
 
 def nice_ticks(hi, count=4):
     """Round y-axis ticks to a readable step."""
+    if hi <= 0:
+        return [0, 1]
     raw = hi / count
     mag = 10 ** (len(str(int(raw))) - 1)
     for m in (1, 2, 2.5, 5, 10):
@@ -101,7 +107,7 @@ def render(series, theme_name):
     span = max((t1 - t0).total_seconds(), 1)
     hi = series[-1][1]
     ticks = nice_ticks(hi)
-    ymax = ticks[-1]
+    ymax = max(ticks[-1], 1)
 
     def X(dt):
         return PAD_L + (dt - t0).total_seconds() / span * (W - PAD_L - PAD_R)
@@ -109,7 +115,10 @@ def render(series, theme_name):
     def Y(v):
         return H - PAD_B - (v / ymax) * (H - PAD_T - PAD_B)
 
-    pts = [(X(d), Y(v)) for d, v in series]
+    if len(series) == 1 or t0 == t1:
+        pts = [(PAD_L, Y(series[0][1])), (W - PAD_R, Y(series[0][1]))]
+    else:
+        pts = [(X(d), Y(v)) for d, v in series]
     line = "M" + " L".join(f"{x:.1f},{y:.1f}" for x, y in pts)
     area = line + f" L{pts[-1][0]:.1f},{H - PAD_B} L{pts[0][0]:.1f},{H - PAD_B} Z"
 
@@ -135,15 +144,20 @@ def render(series, theme_name):
           f'font-size="12" font-variant-numeric="tabular-nums" fill="{t["muted"]}">{v:,}</text>')
 
     # x labels: first, middle, last — anchored so the outer two never overrun the canvas
-    xlabels = ((series[0][0], "start"), (series[len(series) // 2][0], "middle"), (t1, "end"))
-    for dt, anchor in xlabels:
-        x = X(dt)
-        if anchor == "start":
-            x -= 4
-        elif anchor == "end":
-            x += 4
-        a(f'<text x="{x:.1f}" y="{H - PAD_B + 22:.1f}" text-anchor="{anchor}" '
-          f'font-family="{font}" font-size="12" fill="{t["muted"]}">{dt:%d %b %Y}</text>')
+    if len(series) == 1 or t0 == t1:
+        x = (PAD_L + W - PAD_R) / 2
+        a(f'<text x="{x:.1f}" y="{H - PAD_B + 22:.1f}" text-anchor="middle" '
+          f'font-family="{font}" font-size="12" fill="{t["muted"]}">{t1:%d %b %Y}</text>')
+    else:
+        xlabels = ((series[0][0], "start"), (series[len(series) // 2][0], "middle"), (t1, "end"))
+        for dt, anchor in xlabels:
+            x = X(dt)
+            if anchor == "start":
+                x -= 4
+            elif anchor == "end":
+                x += 4
+            a(f'<text x="{x:.1f}" y="{H - PAD_B + 22:.1f}" text-anchor="{anchor}" '
+              f'font-family="{font}" font-size="12" fill="{t["muted"]}">{dt:%d %b %Y}</text>')
 
     a(f'<path d="{area}" fill="url(#fill-{theme_name})"/>')
     a(f'<path d="{line}" fill="none" stroke="{t["accent"]}" stroke-width="2" '
@@ -168,10 +182,11 @@ def render(series, theme_name):
 def main():
     print(f"fetching stargazers for {REPO} …")
     stamps = fetch_stars(REPO)
-    if not stamps:
-        sys.exit("no stargazer data returned — is `gh` authenticated?")
     series = build_series(stamps)
-    print(f"  {len(stamps):,} stars, {series[0][0]:%Y-%m-%d} → {series[-1][0]:%Y-%m-%d}")
+    if stamps:
+        print(f"  {len(stamps):,} stars, {series[0][0]:%Y-%m-%d} → {series[-1][0]:%Y-%m-%d}")
+    else:
+        print(f"  0 stars yet for {REPO}")
     OUT.mkdir(exist_ok=True)
     for name in THEMES:
         p = OUT / f"star-history-{name}.svg"
